@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.AppTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-14T11:21:52.915Z" hostname="etec-AB350M-DS3H-V2" time="0.048">
+  <properties/>
+  <testcase name="colision circulo-caja()" classname="org.example.AppTest" time="0.026"/>
+  <testcase name="circulo contiene su centro y no un punto fuera()" classname="org.example.AppTest" time="0.004"/>
+  <testcase name="colision caja-caja()" classname="org.example.AppTest" time="0.001"/>
+  <testcase name="caja contiene su interior y no un punto fuera()" classname="org.example.AppTest" time="0.001"/>
+  <testcase name="colision circulo-circulo()" classname="org.example.AppTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
