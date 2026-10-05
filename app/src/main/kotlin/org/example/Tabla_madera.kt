@@ -16,4 +16,6 @@ class Tabla_madera(
     hitboxFactory = { s -> BoxHitbox(halfWidth = s * 0.06, halfHeight = s * 0.20) },
     hitboxOffsetX = size * (-0.25),
     hitboxOffsetY = size * (-0.02)
-), Block
+), Block {
+    override val material: String = "madera"
+}

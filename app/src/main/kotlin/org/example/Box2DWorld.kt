@@ -51,27 +51,35 @@ class Box2DWorld(private val config: GameConfig) {
         val groundWidth = config.windowWidth / ppm * 2
         val groundShape = Rectangle(groundWidth, 1.0)
         ground.addFixture(groundShape, 0.0, 0.0, 0.0)
-        ground.translate(config.windowWidth / 2.0 / ppm, 0.5)
+        // La superficie del piso queda a 'floorMargin' px del borde inferior.
+        ground.translate(config.windowWidth / 2.0 / ppm, config.floorMargin / ppm - 0.5)
 
         world.addBody(ground)
     }
 
-    /** Registra un pájaro como cuerpo dinámico con su masa específica. */
+        /** Registra un pájaro como cuerpo dinámico con su masa específica. */
     fun registerBird(bird: GameEntity, mass: Float) {
-        val cx = bird.x + bird.width / 2
-        val cy = bird.y + bird.height / 2
-        val pos = screenToWorld(cx, cy)
+        val (bx, by, radius) = when (val h = bird.hitbox) {
+            is CircularHitbox -> Triple(h.centerX, h.centerY, h.radius)
+            else -> {
+                val cx = bird.x + bird.width / 2
+                val cy = bird.y + bird.height / 2
+                Triple(cx, cy, bird.width / 2.0)
+            }
+        }
+        val pos = screenToWorld(bx, by)
 
         val body = Body()
-        body.setMass(MassType.NORMAL) // dinámico
 
-        val radius = bird.width / 2.0 / ppm
-        val shape = Circle(radius)
+        val r = radius / ppm
+        val shape = Circle(r)
         // Calcular densidad para que la masa coincida: masa = densidad * área
         // Área del círculo = π * r²
-        val area = Math.PI * radius * radius
+        val area = Math.PI * r * r
         val density = mass / area
         body.addFixture(shape, density.toDouble(), 0.4, 0.3) // densidad, fricción, rebote
+        // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
+        body.setMass(MassType.NORMAL) // dinámico
         body.translate(pos.x, pos.y)
         body.linearDamping = 0.1
 
@@ -80,25 +88,35 @@ class Box2DWorld(private val config: GameConfig) {
     }
 
     /** Registra un bloque como cuerpo dinámico (se puede mover por colisiones). */
-    fun registerBlock(block: GameEntity, dynamic: Boolean = true) {
-        val cx = block.x + block.width / 2
-        val cy = block.y + block.height / 2
+    fun registerBlock(block: Block, dynamic: Boolean = true) {
+        val h = block.hitbox
+        var cx = block.x + block.width / 2
+        var cy = block.y + block.height / 2
+        var halfW = block.width / 2
+        var halfH = block.height / 2
+        if (h is BoxHitbox) {
+            cx = h.centerX
+            cy = h.centerY
+            halfW = h.halfWidth
+            halfH = h.halfHeight
+        }
         val pos = screenToWorld(cx, cy)
 
         val body = Body()
-        if (dynamic) {
-            body.setMass(MassType.NORMAL)
-        } else {
-            body.setMass(MassType.INFINITE)
-        }
 
-        val halfW = block.width / 2.0 / ppm
-        val halfH = block.height / 2.0 / ppm
-        val shape = Rectangle(halfW * 2, halfH * 2)
-        // Densidad baja para que las tablas/cubos se muevan cuando un pájaro
-        // les pega (si fueran muy densos, quedarían casi inmóviles).
-        val density = if (dynamic) 0.8 else 0.0
-        body.addFixture(shape, density, 0.4, 0.1)
+        // Densidad según el material: la madera es liviana y la piedra pesada,
+        // así el peso del pájaro lanzado importa al impactar (un Bomb de 10 kg
+        // empuja mucho más que un Chuck de 3 kg).
+        val shape = Rectangle(halfW / ppm * 2, halfH / ppm * 2)
+        val density = if (dynamic) when (block.material) {
+            "madera" -> config.woodDensity
+            "piedra" -> config.stoneDensity
+            else -> 0.8f
+        } else 0.0f
+        body.addFixture(shape, density.toDouble(), 0.4, 0.1)
+        // OJO: setMass debe ir después de addFixture; de lo contrario dyn4j 5
+        // reemplaza el body por uno estático (íntegra infinitas).
+        body.setMass(if (dynamic) MassType.NORMAL else MassType.INFINITE)
         body.translate(pos.x, pos.y)
 
         world.addBody(body)
@@ -130,7 +148,13 @@ class Box2DWorld(private val config: GameConfig) {
     /** Mueve un cuerpo a una posición específica (para drag del pájaro). */
     fun setTransform(entity: GameEntity, sx: Double, sy: Double) {
         val body = bodies[entity] ?: return
-        val pos = screenToWorld(sx, sy)
+        // El cuerpo está centrado en el centro de la hitbox, no del sprite:
+        // convertir la posición de sprite a posición de hitbox.
+        val spriteCx = entity.x + entity.width / 2
+        val spriteCy = entity.y + entity.height / 2
+        val ox = entity.hitbox.centerX - spriteCx
+        val oy = entity.hitbox.centerY - spriteCy
+        val pos = screenToWorld(sx + ox, sy + oy)
         val t = body.transform
         t.setTranslation(pos.x, pos.y)
         t.setRotation(0.0)
@@ -167,10 +191,17 @@ class Box2DWorld(private val config: GameConfig) {
 
     /** Genera onda expansiva en la posición del pájaro (habilidad de Bomb). */
     fun explodeAt(bird: GameEntity, radiusPx: Float, force: Float) {
-        val body = bodies[bird] ?: return
-        val t = body.transform
-        val cx = t.translationX
-        val cy = t.translationY
+        // Si el cuerpo del pájaro todavía existe usamos su centro real; si ya
+        // se frenó en el piso y se sacó del mundo, usamos su hitbox visual,
+        // para que igualmente explote en el lugar donde quedó.
+        val body = bodies[bird]
+        val centerWorld = if (body != null) {
+            Vector2(body.transform.translationX, body.transform.translationY)
+        } else {
+            screenToWorld(bird.hitbox.centerX, bird.hitbox.centerY)
+        }
+        val cx = centerWorld.x
+        val cy = centerWorld.y
         val radiusM = radiusPx / ppm
 
         // Aplicar fuerza radial a todos los cuerpos dinámicos cercanos
@@ -198,7 +229,7 @@ class Box2DWorld(private val config: GameConfig) {
 
     /** Avanza la simulación con un paso fijo de tiempo y sincroniza. */
     fun step(dt: Double = 1.0 / 60.0) {
-        world.step(config.velocityIterations, dt)
+        world.step(1, dt)
         syncAll()
     }
 
@@ -208,10 +239,11 @@ class Box2DWorld(private val config: GameConfig) {
 
             val t = body.transform
             val (sx, sy) = worldToScreen(t.translationX, t.translationY)
-            val drawX = sx - entity.width / 2
-            val drawY = sy - entity.height / 2
-            val dx = drawX - entity.x
-            val dy = drawY - entity.y
+            // El centro del cuerpo dinámico coincide con el centro de la hitbox
+            // (puede estar corrido respecto del sprite): mover el sprite para
+            // que la hitbox siga al cuerpo.
+            val dx = sx - entity.hitbox.centerX
+            val dy = sy - entity.hitbox.centerY
             if (kotlin.math.abs(dx) > 0.01 || kotlin.math.abs(dy) > 0.01) {
                 entity.moveBy(dx, dy)
             }

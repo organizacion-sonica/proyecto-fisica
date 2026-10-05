@@ -27,6 +27,7 @@ class MenuController(
 
     private val mainMenu = createMainMenu()
     private val instructionsMenu = createInstructionsMenu()
+    private val gamesMenu = createGamesMenu()
     private val root = StackPane(mainMenu)
 
     /** Escena del menú. */
@@ -35,14 +36,13 @@ class MenuController(
     /** Crea el menú principal. */
     private fun createMainMenu(): VBox {
         val title = Label("ANGRY BIRDS CLONE").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 72.0)
+            font = Font.font("Arial", FontWeight.BOLD, 72.0 * (config.windowWidth / 960.0))
             textFill = Color.WHITE
             style = "-fx-effect: dropshadow(gaussian, black, 10, 0.5, 2, 2);"
         }
 
         val playButton = createMenuButton("JUGAR") {
-            // Transición de fade out del menú y iniciar juego
-            fadeOutAndStart()
+            switchToGames()
         }
 
         val instructionsButton = createMenuButton("INSTRUCCIONES") {
@@ -53,17 +53,21 @@ class MenuController(
             Platform.exit()
         }
 
-        return VBox(30.0, title, playButton, instructionsButton, exitButton).apply {
+        return VBox(30.0 * (config.windowWidth / 960.0), title, playButton, instructionsButton, exitButton).apply {
             alignment = Pos.CENTER
-            padding = Insets(50.0)
+            padding = Insets(50.0 * (config.windowWidth / 960.0))
             style = "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #2c3e50, #1a1a2e);"
         }
+    }
+
+    private fun switchToGames() {
+        crossFade(mainMenu, gamesMenu)
     }
 
     /** Crea el menú de instrucciones. */
     private fun createInstructionsMenu(): VBox {
         val title = Label("INSTRUCCIONES").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 48.0)
+            font = Font.font("Arial", FontWeight.BOLD, 48.0 * (config.windowWidth / 960.0))
             textFill = Color.WHITE
         }
 
@@ -97,7 +101,7 @@ class MenuController(
                - Derribá la casita de bloques con los pájaros
             
         """.trimIndent()).apply {
-            font = Font.font("Arial", 20.0)
+            font = Font.font("Arial", 20.0 * (config.windowWidth / 960.0))
             textFill = Color.WHITE
             isWrapText = true
             maxWidth = config.windowWidth * 0.75
@@ -115,13 +119,65 @@ class MenuController(
             maxHeight = config.windowHeight * 0.5
         }
 
+        // Callback para cada minijuego... el 1 ya es este
         val backButton = createMenuButton("VOLVER") {
             switchToMain()
         }
 
-        return VBox(20.0, title, scroll, backButton).apply {
+        return VBox(20.0 * (config.windowWidth / 960.0), title, scroll, backButton).apply {
             alignment = Pos.CENTER
-            padding = Insets(30.0)
+            padding = Insets(30.0 * (config.windowWidth / 960.0))
+            style = "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #2c3e50, #1a1a2e);"
+        }
+    }
+
+    /** Menú para elegir cuál minijuego jugar. */
+    private fun createGamesMenu(): VBox {
+        val title = Label("SELECCIONÁ UN MINIJUEGO").apply {
+            font = Font.font("Arial", FontWeight.BOLD, 48.0 * (config.windowWidth / 960.0))
+            textFill = Color.WHITE
+        }
+
+        val minigames = listOf(
+            Pair("Acertar en las dianas", { fadeOutAndStart() }),
+            Pair("Minijuego 2", null),
+            Pair("Minijuego 3", null)
+        )
+
+        val s = config.windowWidth / 960.0
+        val row = javafx.scene.layout.HBox(
+            30.0 * s,
+            *minigames.map { (name, onPlay) ->
+                VBox(
+                    10.0 * s,
+                    Label(name).apply {
+                        font = Font.font("Arial", FontWeight.BOLD, 22.0 * s)
+                        textFill = Color.WHITE
+                        maxWidth = 200.0 * s
+                        isWrapText = true
+                        alignment = Pos.CENTER
+                    },
+                    createMenuButton("JUGAR") {
+                        if (onPlay != null) onPlay()
+                    }.apply {
+                        prefWidth = 180.0 * s
+                        prefHeight = 90.0 * s
+                        if (onPlay == null) {
+                            isDisable = true
+                            opacity = 0.6
+                        }
+                    }
+                ).apply { alignment = Pos.CENTER }
+            }.toTypedArray()
+        ).apply { alignment = Pos.CENTER }
+
+        val backButton = createMenuButton("VOLVER") {
+            crossFade(gamesMenu, mainMenu)
+        }
+
+        return VBox(40.0 * s, title, row, backButton).apply {
+            alignment = Pos.CENTER
+            padding = Insets(50.0 * s)
             style = "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #2c3e50, #1a1a2e);"
         }
     }
@@ -129,10 +185,10 @@ class MenuController(
     /** Crea un botón estilizado del menú. */
     private fun createMenuButton(text: String, onClick: () -> Unit): Button {
         return Button(text).apply {
-            font = Font.font("Arial", FontWeight.BOLD, 28.0)
+            font = Font.font("Arial", FontWeight.BOLD, 28.0 * (config.windowWidth / 960.0))
             textFill = Color.WHITE
-            prefWidth = 300.0
-            prefHeight = 60.0
+            prefWidth = 300.0 * (config.windowWidth / 960.0)
+            prefHeight = 60.0 * (config.windowWidth / 960.0)
             style = """
                 -fx-background-color: linear-gradient(#e74c3c, #c0392b);
                 -fx-background-radius: 10;
