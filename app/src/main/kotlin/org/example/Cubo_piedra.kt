@@ -16,4 +16,6 @@ class Cubo_piedra(
     hitboxFactory = { s -> BoxHitbox(halfWidth = s * 0.11, halfHeight = s * 0.11) },
     hitboxOffsetX = size * 0.08,
     hitboxOffsetY = size * 0.08
-), Block
+), Block {
+    override val material: String = "piedra"
+}

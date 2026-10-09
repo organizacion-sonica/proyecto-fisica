@@ -16,7 +16,10 @@ class SlingshotApp : Application() {
 
     override fun start(stage: Stage) {
         val spriteSource: SpriteSource = FileSpriteSource(File(assetsDir))
-        val config = GameConfig()
+        // Usar el área visible de la pantalla (sin la barra del sistema) para
+        // que el contenido se adapte siempre, en 1920x1080 o en cualquier otra.
+        val bounds = javafx.stage.Screen.getPrimary().visualBounds
+        val config = GameConfig(windowWidth = bounds.width, windowHeight = bounds.height)
 
         // Primero mostramos el menú
         val menuController = MenuController(spriteSource, config) {
@@ -31,6 +34,8 @@ class SlingshotApp : Application() {
         stage.isResizable = false
         stage.width = config.windowWidth
         stage.height = config.windowHeight
+        stage.x = 0.0
+        stage.y = 0.0
         stage.show()
     }
 }

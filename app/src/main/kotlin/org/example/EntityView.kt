@@ -76,7 +76,11 @@ class EntityView(
     fun placeAt(pane: Pane, x: Double, y: Double) {
         imageView.layoutX = x
         imageView.layoutY = y
-        pane.children.addAll(imageView, overlay)
+        // Solo agregar al pane la primera vez; agregar de nuevo lanza
+        // IllegalArgumentException por hijos duplicados.
+        if (imageView.parent == null) {
+            pane.children.addAll(imageView, overlay)
+        }
         syncOverlay()
     }
 

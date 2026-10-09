@@ -15,4 +15,11 @@ class FileSpriteSource(private val baseDir: File) : SpriteSource {
         require(file.exists()) { "No se encontró el sprite '$name': ${file.absolutePath}" }
         return Image(file.toURI().toString())
     }
+
+    /** Carga decodificando ya en el tamaño pedido (más rápido para cachés). */
+    fun loadScaled(name: String, width: Double, height: Double): Image {
+        val file = File(baseDir, name)
+        require(file.exists()) { "No se encontró el sprite '$name': ${file.absolutePath}" }
+        return Image(file.toURI().toString(), width, height, true, true)
+    }
 }
