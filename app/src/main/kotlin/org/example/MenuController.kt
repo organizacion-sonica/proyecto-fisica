@@ -60,9 +60,12 @@ class MenuController(
     /** Crea el menú principal. */
     private fun createMainMenu(): VBox {
         val title = Label("ANGRY BIRDS CLONE").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 72.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 72.0 * s)
             textFill = Color.WHITE
             style = "-fx-effect: dropshadow(gaussian, black, 10, 0.5, 2, 2);"
+            isWrapText = true
+            maxWidth = config.windowWidth * 0.9
+            alignment = Pos.CENTER
         }
 
         val playButton = createMenuButton("JUGAR") {
@@ -77,9 +80,9 @@ class MenuController(
             Platform.exit()
         }
 
-        return VBox(30.0 * (config.windowWidth / 960.0), title, playButton, instructionsButton, exitButton).apply {
+        return VBox(30.0 * s, title, playButton, instructionsButton, exitButton).apply {
             alignment = Pos.CENTER
-            padding = Insets(50.0 * (config.windowWidth / 960.0))
+            padding = Insets(50.0 * s)
             style = "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #2c3e50, #1a1a2e);"
         }
     }
