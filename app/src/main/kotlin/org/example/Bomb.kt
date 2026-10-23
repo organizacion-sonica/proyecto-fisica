@@ -20,8 +20,7 @@ class Bomb(
     hitboxOffsetY = size * 0.04
 ), Bird {
 
-    /** True si ya usó su habilidad especial (solo una vez por lanzamiento). */
-    var abilityUsed = false
+    override var abilityUsed = false
 
     /** Genera onda expansiva en la posición actual. */
     fun explode(physics: Box2DWorld, config: GameConfig) {
@@ -29,4 +28,13 @@ class Bomb(
         abilityUsed = true
         physics.explodeAt(this, config.bombExplosionRadius, config.bombExplosionForce)
     }
+
+    override fun useAbility(physics: Box2DWorld, config: GameConfig): Boolean {
+        if (abilityUsed) return false
+        explode(physics, config)
+        return true
+    }
+
+    override val centerX: Double get() = x + width / 2
+    override val centerY: Double get() = y + height / 2
 }

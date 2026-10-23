@@ -300,22 +300,17 @@ class GameController(
     /**
      * Habilidad del pájaro lanzado (G). Solo funciona si ese pájaro sigue
      * en vuelo; una vez usada, queda consumida.
+     * Usa polimorfismo (Bird.useAbility) en lugar de checks de tipo (OCP).
      */
     private fun useSpecialAbility() {
         val bird = lastLaunched ?: return
-        when (bird) {
-            is Bomb -> {
-                if (!bird.abilityUsed) {
-                    bird.explode(physics, config)
-                    val bx = bird.x + bird.width / 2
-                    val by = bird.y + bird.height / 2
-                    explosionPlayer.playAt(bx, by)
-                    // La onda expansiva derriba dianas dentro de su radio
-                    dianaManager.breakTargetsWithin(bx, by, config.bombExplosionRadius.toDouble())
-                }
-            }
-            is Chuck -> bird.boostSpeed(config.chuckSpeedBoost, physics)
-            else -> {}
+        val didUse = bird.useAbility(physics, config)
+        if (didUse && bird is Bomb) {
+            val bx = bird.centerX
+            val by = bird.centerY
+            explosionPlayer.playAt(bx, by)
+            // La onda expansiva derriba dianas dentro de su radio
+            dianaManager.breakTargetsWithin(bx, by, config.bombExplosionRadius.toDouble())
         }
     }
 
