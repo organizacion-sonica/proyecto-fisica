@@ -22,12 +22,22 @@ class SlingshotApp : Application() {
         val config = GameConfig(windowWidth = bounds.width, windowHeight = bounds.height)
 
         // Primero mostramos el menú
-        val menuController = MenuController(spriteSource, config) {
-            // Callback cuando se presiona JUGAR: crear y mostrar el juego
-            val controller = GameController(spriteSource, config)
-            stage.scene = controller.buildScene()
-            stage.title = "Angry Birds Clone - Juego"
-        }
+        val menuController = MenuController(
+            spriteSource,
+            config,
+            onStartGame = {
+                // Callback cuando se presiona JUGAR: crear y mostrar el juego
+                val controller = GameController(spriteSource, config)
+                stage.scene = controller.buildScene()
+                stage.title = "Angry Birds Clone - Juego"
+            },
+            onStartBasketGame = {
+                // Callback para el minijuego 2: tiro al aro de basket
+                val controller = BasketGameController(spriteSource, config)
+                stage.scene = controller.buildScene()
+                stage.title = "Angry Birds Clone - Tiro al Aro"
+            }
+        )
 
         stage.scene = menuController.menuScene
         stage.title = "Angry Birds Clone"

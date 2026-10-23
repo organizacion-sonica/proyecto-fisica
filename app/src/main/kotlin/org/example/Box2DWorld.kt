@@ -160,19 +160,6 @@ class Box2DWorld(private val config: GameConfig) {
         t.setRotation(0.0)
     }
 
-    /** Obtiene la posición en pantalla de una entidad registrada. */
-    fun getPosition(entity: GameEntity): Pair<Double, Double>? {
-        val body = bodies[entity] ?: return null
-        val t = body.transform
-        return worldToScreen(t.translationX, t.translationY)
-    }
-
-    /** Obtiene el ángulo de rotación de una entidad (en grados). */
-    fun getAngle(entity: GameEntity): Double {
-        val body = bodies[entity] ?: return 0.0
-        return Math.toDegrees(body.transform.rotationAngle)
-    }
-
     /** Verifica si un cuerpo está en reposo (velocidad < umbral). */
     fun isResting(entity: GameEntity): Boolean {
         val body = bodies[entity] ?: return true
@@ -225,6 +212,12 @@ class Box2DWorld(private val config: GameConfig) {
         }
     }
 
+    /** Elimina un cuerpo del mundo físico. */
+    fun remove(entity: GameEntity) {
+        val body = bodies.remove(entity) ?: return
+        world.removeBody(body)
+    }
+
     // ── Simulación ────────────────────────────────────────────────────
 
     /** Avanza la simulación con un paso fijo de tiempo y sincroniza. */
@@ -255,12 +248,6 @@ class Box2DWorld(private val config: GameConfig) {
                 }
             }
         }
-    }
-
-    /** Elimina un cuerpo del mundo físico. */
-    fun remove(entity: GameEntity) {
-        val body = bodies.remove(entity) ?: return
-        world.removeBody(body)
     }
 
     /** Libera todo el mundo dyn4j. */

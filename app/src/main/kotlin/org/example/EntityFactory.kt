@@ -15,13 +15,6 @@ class EntityFactory(private val spriteSource: SpriteSource, private val config: 
         else -> throw IllegalArgumentException("Pájaro desconocido: $name")
     }
 
-    /** Crea los tres pájaros del juego en orden de lanzamiento. */
-    fun createBirdQueue(): List<Bird> = listOf(
-        createBird("red"),
-        createBird("chuck"),
-        createBird("bomb")
-    )
-
     /** Crea un bloque por tipo y material. */
     fun createBlock(type: String, material: String): Block {
         val size = when (type) {

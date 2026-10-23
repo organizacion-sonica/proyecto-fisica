@@ -16,8 +16,10 @@ class EntityView(
     spriteSource: SpriteSource,
     assetName: String,
     size: Double,
-    private val hitbox: Hitbox,
-    showHitbox: Boolean
+    val hitbox: Hitbox,
+    showHitbox: Boolean,
+    var hitboxOffsetX: Double = 0.0,
+    var hitboxOffsetY: Double = 0.0
 ) {
     val imageView: ImageView
     private val overlay: Shape
@@ -33,16 +35,24 @@ class EntityView(
     val height: Double get() = imageView.fitHeight
     val bottom: Double get() = y + height
 
+    /** Mueve la hitbox para seguir al sprite y actualiza el contorno rojo. */
+    fun syncHitbox() {
+        hitbox.recenter(centerX + hitboxOffsetX, centerY + hitboxOffsetY)
+        syncOverlay()
+    }
+
     /** Traslada el sprite. */
     fun moveBy(dx: Double, dy: Double) {
         imageView.layoutX = x + dx
         imageView.layoutY = y + dy
+        syncHitbox()
     }
 
     /** Establece la posición exacta del sprite. */
     fun setPosition(sx: Double, sy: Double) {
         imageView.layoutX = sx
         imageView.layoutY = sy
+        syncHitbox()
     }
 
     /** Establece la rotación del sprite en grados. */
@@ -81,7 +91,7 @@ class EntityView(
         if (imageView.parent == null) {
             pane.children.addAll(imageView, overlay)
         }
-        syncOverlay()
+        syncHitbox()
     }
 
     /** Mueve el contorno rojo para que coincida con la geometría actual de la hitbox. */

@@ -22,13 +22,37 @@ import javafx.util.Duration
 class MenuController(
     private val spriteSource: SpriteSource,
     private val config: GameConfig,
-    private val onStartGame: () -> Unit
+    private val onStartGame: () -> Unit,
+    private val onStartBasketGame: () -> Unit
 ) {
+
+    /** Apariencia del botón en estado normal. */
+    private val buttonNormalStyle = """
+        -fx-background-color: linear-gradient(#e74c3c, #c0392b);
+        -fx-background-radius: 10;
+        -fx-border-color: #ffffff;
+        -fx-border-width: 2;
+        -fx-border-radius: 10;
+        -fx-cursor: hand;
+    """
+
+    /** Apariencia del botón cuando el ratón está encima. */
+    private val buttonHoverStyle = """
+        -fx-background-color: linear-gradient(#ff6b5b, #e74c3c);
+        -fx-background-radius: 10;
+        -fx-border-color: #fff;
+        -fx-border-width: 3;
+        -fx-border-radius: 10;
+        -fx-cursor: hand;
+    """
 
     private val mainMenu = createMainMenu()
     private val instructionsMenu = createInstructionsMenu()
     private val gamesMenu = createGamesMenu()
     private val root = StackPane(mainMenu)
+
+    /** Menú que está visible en este momento (usado por las transiciones). */
+    private var currentMenu: VBox = mainMenu
 
     /** Escena del menú. */
     val menuScene: Scene = Scene(root, config.windowWidth, config.windowHeight)
@@ -60,10 +84,6 @@ class MenuController(
         }
     }
 
-    private fun switchToGames() {
-        crossFade(mainMenu, gamesMenu)
-    }
-
     /** Crea el menú de instrucciones. */
     private fun createInstructionsMenu(): VBox {
         val title = Label("INSTRUCCIONES").apply {
@@ -90,15 +110,18 @@ class MenuController(
                - Soltá el clic para lanzar
 
             3. HABILIDADES ESPECIALES (Tecla G, en pleno vuelo):
-               - RED (Rojo): Sin habilidad especial
+               - ROJO (Rojo): Sin habilidad especial
                - CHUCK (Amarillo): Presioná G en vuelo para BOOST de velocidad
-               - BOMB (Negro): Presioná G en vuelo para EXPLOSIÓN que derriba bloques
+               - BOMB (Negro): Presioná G en vuelo para EXPLOSIÓN con onda
+                 expansiva que derriba dianas
 
-            4. REINICIAR NIVEL (Tecla R):
+            4. PUNTUACIÓN Y TIEMPO:
+               - Cada diana que derribas suma puntos y vuelve a aparecer
+               - El contador de tiempo empieza al iniciar el nivel
+               - Al terminar el minuto se muestra la pantalla de rango
+
+            5. REINICIAR NIVEL (Tecla R):
                - Presioná R en cualquier momento para reiniciar todo de cero
-
-            5. OBJETIVO:
-               - Derribá la casita de bloques con los pájaros
             
         """.trimIndent()).apply {
             font = Font.font("Arial", 20.0 * (config.windowWidth / 960.0))
@@ -140,8 +163,8 @@ class MenuController(
 
         val minigames = listOf(
             Pair("Acertar en las dianas", { fadeOutAndStart() }),
-            Pair("Minijuego 2", null),
-            Pair("Minijuego 3", null)
+            Pair("Tiro al aro", { fadeOutAndStartBasket() }),
+            Pair("Minijuego 3 (en construcción)", null)
         )
 
         val s = config.windowWidth / 960.0
@@ -189,42 +212,26 @@ class MenuController(
             textFill = Color.WHITE
             prefWidth = 300.0 * (config.windowWidth / 960.0)
             prefHeight = 60.0 * (config.windowWidth / 960.0)
-            style = """
-                -fx-background-color: linear-gradient(#e74c3c, #c0392b);
-                -fx-background-radius: 10;
-                -fx-border-color: #ffffff;
-                -fx-border-width: 2;
-                -fx-border-radius: 10;
-                -fx-cursor: hand;
-            """
-            setOnMouseEntered { style = """
-                -fx-background-color: linear-gradient(#ff6b5b, #e74c3c);
-                -fx-background-radius: 10;
-                -fx-border-color: #fff;
-                -fx-border-width: 3;
-                -fx-border-radius: 10;
-                -fx-cursor: hand;
-            """ }
-            setOnMouseExited { style = """
-                -fx-background-color: linear-gradient(#e74c3c, #c0392b);
-                -fx-background-radius: 10;
-                -fx-border-color: #fff;
-                -fx-border-width: 2;
-                -fx-border-radius: 10;
-                -fx-cursor: hand;
-            """ }
+            style = buttonNormalStyle
+            setOnMouseEntered { style = buttonHoverStyle }
+            setOnMouseExited { style = buttonNormalStyle }
             setOnAction { onClick() }
         }
     }
 
-    /** Cambia al menú de instrucciones con animación. */
-    private fun switchToInstructions() {
-        crossFade(mainMenu, instructionsMenu)
-    }
-
     /** Vuelve al menú principal con animación. */
     private fun switchToMain() {
-        crossFade(instructionsMenu, mainMenu)
+        crossFade(currentMenu, mainMenu)
+    }
+
+    /** Cambia al menú de instrucciones con animación. */
+    private fun switchToInstructions() {
+        crossFade(currentMenu, instructionsMenu)
+    }
+
+    /** Cambia al menú de selección de minijuegos con animación. */
+    private fun switchToGames() {
+        crossFade(currentMenu, gamesMenu)
     }
 
     /** Transición cruzada entre dos paneles. */
@@ -234,6 +241,7 @@ class MenuController(
             toValue = 0.0
             onFinished = { _ ->
                 root.children.setAll(to)
+                currentMenu = to
                 val fadeIn = FadeTransition(Duration.millis(200.0), to).apply {
                     fromValue = 0.0
                     toValue = 1.0
@@ -244,12 +252,22 @@ class MenuController(
         fadeOut.play()
     }
 
-    /** Desvanece el menú y lanza el juego. */
+    /** Desvanece el menú actual y lanza el juego. */
     private fun fadeOutAndStart() {
-        val fadeOut = FadeTransition(Duration.millis(300.0), mainMenu).apply {
+        val fadeOut = FadeTransition(Duration.millis(300.0), currentMenu).apply {
             fromValue = 1.0
             toValue = 0.0
             onFinished = { _ -> onStartGame() }
+        }
+        fadeOut.play()
+    }
+
+    /** Desvanece el menú actual y lanza el minijuego del tiro al aro. */
+    private fun fadeOutAndStartBasket() {
+        val fadeOut = FadeTransition(Duration.millis(300.0), currentMenu).apply {
+            fromValue = 1.0
+            toValue = 0.0
+            onFinished = { _ -> onStartBasketGame() }
         }
         fadeOut.play()
     }
