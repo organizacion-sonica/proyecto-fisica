@@ -1,9 +1,9 @@
 package org.example
 
 /**
- * Objetivo/diana de práctica. Responsabilidad única: mantener su posición
- * y su estado (viva/destruida y cuándo revivir). El recorrido/ubicación
- * sinusoidal se calcula con baseY, amp y speed.
+ * Objetivo/diana de práctica. Responsabilidad única: guardar su posición
+ * y su estado (viva/destruida y cuándo revivir). El movimiento sinusoidal
+ * se calcula con [cy].
  */
 class Target(
     val view: EntityView,
@@ -15,8 +15,12 @@ class Target(
     val size: Double,
     var hit: Boolean = false,
     var alive: Boolean = true,
-    var respawnAt: Double = Double.POSITIVE_INFINITY
+    var respawnAt: Double = Double.POSITIVE_INFINITY // tiempo del mundo donde reaparece
 ) {
-    /** Y del target en función del tiempo del mundo. */
+    /** Hitbox de la diana, centrado donde se encuentra el sprite. */
+    val hitbox: Hitbox
+        get() = view.hitbox
+
+    /** Y de la diana en función del tiempo del mundo. */
     fun cy(t: Double): Double = baseY + amp * kotlin.math.sin(speed * t)
 }

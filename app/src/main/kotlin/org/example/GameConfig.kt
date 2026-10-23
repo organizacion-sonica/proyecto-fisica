@@ -13,6 +13,9 @@ class GameConfig(
     val windowHeight: Double = 1080.0,
     val floorMargin: Double = 0.0,
 
+    /** Segundos que dura el nivel antes de pasar a la pantalla de rango. */
+    val timeLimitSeconds: Int = 105, // 01:45
+
     /** Factor de escala respecto del lienzo base de 960x640. */
     val scale: Double = windowWidth / 960.0,
 
@@ -24,9 +27,6 @@ class GameConfig(
     // -- Física (Box2D) --
     val ppm: Float = 50f * scale.toFloat(), // píxeles por metro (escala Box2D)
     val gravity: Float = 9.81f,          // m/s² (eje Y positivo en Box2D)
-    val physicsDt: Float = 1.0f / 60.0f, // paso fijo de integración
-    val velocityIterations: Int = 8,
-    val positionIterations: Int = 3,
 
     // -- Resortera --
     val slingshotHeight: Double = 175.0 * scale, // alto de la resortera (px)

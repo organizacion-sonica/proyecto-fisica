@@ -21,7 +21,7 @@ abstract class AbstractEntity(
     final override val hitbox: Hitbox = hitboxFactory(entitySize)
 
     final override val view: EntityView =
-        EntityView(spriteSource, assetName, entitySize, hitbox, showHitbox)
+        EntityView(spriteSource, assetName, entitySize, hitbox, showHitbox, hitboxOffsetX, hitboxOffsetY)
 
     final override val x: Double get() = view.x
     final override val y: Double get() = view.y
