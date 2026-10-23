@@ -1,5 +1,7 @@
 package org.example
 
+import javafx.scene.input.KeyCode
+
 /**
  * Chuck (pájaro amarillo): sprite + hitbox circular.
  * Masa: 3 kg
@@ -21,8 +23,7 @@ class Chuck(
     hitboxFactory = { s -> CircularHitbox(radius = s * 0.42) }
 ), Bird {
 
-    /** True si ya usó su habilidad especial (solo una vez por lanzamiento). */
-    var abilityUsed = false
+    override var abilityUsed = false
 
     /** Aumenta la velocidad actual del pájaro (boost de Chuck). */
     fun boostSpeed(multiplier: Float, physics: Box2DWorld) {
@@ -30,4 +31,13 @@ class Chuck(
         abilityUsed = true
         physics.boostBirdSpeed(this, multiplier)
     }
+
+    override fun useAbility(physics: Box2DWorld, config: GameConfig): Boolean {
+        if (abilityUsed) return false
+        boostSpeed(config.chuckSpeedBoost, physics)
+        return true
+    }
+
+    override val centerX: Double get() = x + width / 2
+    override val centerY: Double get() = y + height / 2
 }

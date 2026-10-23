@@ -32,8 +32,8 @@ class SlingshotView(
 
     private val drawWidth: Double = frames.first().width / frames.first().height * fitHeight
 
-    /** Factor de escala respecto del lienzo base (1920x1080 → 2.0). */
-    val uiScale: Double = config.windowWidth / 960.0
+    /** Factor de escala respecto del lienzo base (960x640 → scale). */
+    val uiScale: Double = config.scale
 
     /** Punto donde reposa la badana sin estirar (ancla de la resortera). */
     val anchor: Point2D
