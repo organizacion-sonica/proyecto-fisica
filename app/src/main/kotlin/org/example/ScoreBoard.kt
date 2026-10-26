@@ -13,10 +13,12 @@ class ScoreBoard(private val config: GameConfig) {
     private val scale = config.scale
 
     private val scoreLabel = Label("Puntos: 0").apply {
-        style = "-fx-font-size: ${20 * scale}px; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        style = "-fx-font-size: ${20 * scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        textFill = javafx.scene.paint.Color.WHITE
     }
     private val timerLabel = Label("Tiempo: 01:45").apply {
-        style = "-fx-font-size: ${20 * scale}px; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        style = "-fx-font-size: ${20 * scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        textFill = javafx.scene.paint.Color.WHITE
     }
 
     var score: Int = 0
