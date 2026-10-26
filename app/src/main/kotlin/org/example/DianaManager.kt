@@ -19,8 +19,8 @@ class DianaManager(
     /** Segundos que lleva el mundo (para movimientos y reapariciones). */
     private var globalTime = 0.0
 
-    /** Notifica cada vez que una diana pasa a "golpeada". */
-    var onTargetHit: (() -> Unit)? = null
+    /** Notifica cada vez que una diana pasa a "golpeada", con los puntos que vale. */
+    var onTargetHit: ((Int) -> Unit)? = null
 
     /** Crea las dianas del nivel. */
     fun setup() {
@@ -46,7 +46,7 @@ class DianaManager(
                 if (CollisionDetector.collides(bird.hitbox, target.hitbox)) {
                     // Target.strike devuelve false si ya no cuenta (por la
                     // primera diana alcanzada por este mismo pájaro).
-                    if (target.strike(globalTime)) onTargetHit?.invoke()
+                    if (target.strike(globalTime)) onTargetHit?.invoke(target.points)
                 }
             }
         }
@@ -62,7 +62,7 @@ class DianaManager(
             val dx = target.centerX - cx
             val dy = target.yAt(globalTime) - cy
             if (kotlin.math.sqrt(dx * dx + dy * dy) <= radius) {
-                if (target.strike(globalTime)) onTargetHit?.invoke()
+                if (target.strike(globalTime)) onTargetHit?.invoke(target.points)
             }
         }
     }
@@ -72,19 +72,14 @@ class DianaManager(
     private fun createFixedDiana() {
         val x = config.windowWidth * 0.85
         val y = config.windowHeight * 0.52
-        val fixed = Target.fixed(spriteSource, config, cx = x, baseY = y)
+        val fixed = Target.fixed(
+            spriteSource, config,
+            cx = x, baseY = y,
+            amp = 40.0, speed = 0.7,
+            points = 3
+        )
         fixed.placeIn(pane)
         targets += fixed
-
-        // Barrote de hierro: poste desde la diana hasta el suelo
-        val size = 150.0 * config.scale
-        val barrote = javafx.scene.shape.Rectangle(
-            x - 6 * config.scale,
-            y + size / 2,
-            12 * config.scale,
-            config.windowHeight - (y + size / 2)
-        ).apply { fill = javafx.scene.paint.Color.DARKSLATEGRAY }
-        pane.children.add(barrote)
     }
 
     private fun createMobileDianas() {

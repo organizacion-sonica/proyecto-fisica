@@ -59,6 +59,9 @@ class MenuController(
     /** Escena del menú. */
     val menuScene: Scene = Scene(root, config.windowWidth, config.windowHeight)
 
+    /** Reconstruye una escena nueva sobre el mismo menú (útil al volver del juego). */
+    fun rebuildScene(): Scene = Scene(root, config.windowWidth, config.windowHeight)
+
     /** Crea el menú principal. */
     private fun createMainMenu(): VBox {
         val title = Label("ANGRY BIRDS CLONE").apply {
@@ -123,13 +126,16 @@ class MenuController(
                - BOMB (Negro): Presioná G en vuelo para EXPLOSIÓN con onda
                  expansiva que derriba dianas
 
-            4. PUNTUACIÓN Y TIEMPO:
+            4. CONTROLES ADICIONALES:
+               - Tecla R: reinicia el nivel en cualquier momento
+               - Tecla ESC: vuelve al menú principal (en cualquier minijuego)
+               - El pájaro que queda en el piso desaparece tras 3 segundos
+
+            5. PUNTUACIÓN Y TIEMPO:
                - Cada diana que derribas suma puntos y vuelve a aparecer
+               - En basket: encestar suma 2 puntos
                - El contador de tiempo empieza al iniciar el nivel
                - Al terminar el minuto se muestra la pantalla de rango
-
-            5. REINICIAR NIVEL (Tecla R):
-               - Presioná R en cualquier momento para reiniciar todo de cero
              
         """.trimIndent()).apply {
             font = Font.font("Arial", 20.0 * s)
@@ -174,8 +180,7 @@ class MenuController(
 
         val minigames = listOf(
             Pair("Acertar en las dianas", { fadeOutAndStart(onStartGame) }),
-            Pair("Tiro al aro", { fadeOutAndStart(onStartBasketGame) }),
-            Pair("Minijuego 3 (en construcción)", null)
+            Pair("Tiro al aro", { fadeOutAndStart(onStartBasketGame) })
         )
 
         val row = javafx.scene.layout.HBox(

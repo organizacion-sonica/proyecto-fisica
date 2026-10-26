@@ -1,6 +1,7 @@
 package org.example
 
 import javafx.application.Application
+import javafx.application.Platform
 import javafx.stage.Stage
 import java.io.File
 
@@ -14,31 +15,30 @@ class SlingshotApp : Application() {
     // Ruta absoluta donde están todos los gráficos.
     private val assetsDir = "/home/simonkrasner/proyecto-fisica/elementos graficos/"
 
+    private lateinit var spriteSource: SpriteSource
+    private lateinit var config: GameConfig
+    private lateinit var stage: Stage
+    private lateinit var menuController: MenuController
+
     override fun start(stage: Stage) {
-        val spriteSource: SpriteSource = FileSpriteSource(File(assetsDir))
+        this.stage = stage
+        spriteSource = FileSpriteSource(File(assetsDir))
         // Usar el área visible de la pantalla (sin la barra del sistema) para
         // que el contenido se adapte siempre, en 1920x1080 o en cualquier otra.
         val bounds = javafx.stage.Screen.getPrimary().visualBounds
-        val config = GameConfig(windowWidth = bounds.width, windowHeight = bounds.height)
+        config = GameConfig(windowWidth = bounds.width, windowHeight = bounds.height)
 
-        // Primero mostramos el menú
-        val menuController = MenuController(
+        showMenu()
+    }
+
+    /** Muestra (o re-muestra) el menú principal con una instancia fresca. */
+    private fun showMenu() {
+        menuController = MenuController(
             spriteSource,
             config,
-            onStartGame = {
-                // Callback cuando se presiona JUGAR: crear y mostrar el juego
-                val controller = GameController(spriteSource, config)
-                stage.scene = controller.buildScene()
-                stage.title = "Angry Birds Clone - Juego"
-            },
-            onStartBasketGame = {
-                // Callback para el minijuego 2: tiro al aro de basket
-                val controller = BasketGameController(spriteSource, config)
-                stage.scene = controller.buildScene()
-                stage.title = "Angry Birds Clone - Tiro al Aro"
-            }
+            onStartGame = { startGame() },
+            onStartBasketGame = { startBasket() }
         )
-
         stage.scene = menuController.menuScene
         stage.title = "Angry Birds Clone"
         stage.isResizable = false
@@ -47,5 +47,21 @@ class SlingshotApp : Application() {
         stage.x = 0.0
         stage.y = 0.0
         stage.show()
+    }
+
+    private fun startGame() {
+        val controller = GameController(spriteSource, config, onExitToMenu = {
+            Platform.runLater { showMenu() }
+        })
+        stage.scene = controller.buildScene()
+        stage.title = "Angry Birds Clone - Juego"
+    }
+
+    private fun startBasket() {
+        val controller = BasketGameController(spriteSource, config, onExitToMenu = {
+            Platform.runLater { showMenu() }
+        })
+        stage.scene = controller.buildScene()
+        stage.title = "Angry Birds Clone - Tiro al Aro"
     }
 }

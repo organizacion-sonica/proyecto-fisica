@@ -13,8 +13,8 @@ import javafx.scene.layout.Pane
  *
  * La mecánica de resortera/pila/lanzamiento vive en [SlingshotGame] (DRY).
  */
-class GameController(spriteSource: SpriteSource, config: GameConfig) :
-    SlingshotGame(spriteSource, config), AbilityEffects {
+class GameController(spriteSource: SpriteSource, config: GameConfig, onExitToMenu: () -> Unit = {}) :
+    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu), AbilityEffects {
 
     private lateinit var angleIndicator: AngleIndicator
     private lateinit var trajectoryLayer: Pane
@@ -38,7 +38,7 @@ class GameController(spriteSource: SpriteSource, config: GameConfig) :
             it.onTimeOver = { rankScreen.show(pane, scoreBoard.score) }
         }
         dianaManager = DianaManager(spriteSource, config, pane).also {
-            it.onTargetHit = { scoreBoard.addPoint() }
+            it.onTargetHit = { points -> scoreBoard.addPoints(points) }
             it.setup()
         }
         rankScreen = RankScreen(spriteSource, config)

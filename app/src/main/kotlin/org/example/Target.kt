@@ -15,7 +15,8 @@ class Target private constructor(
     private val cx: Double,
     private val baseY: Double,
     private val amp: Double,
-    private val speed: Double
+    private val speed: Double,
+    val points: Int = 1
 ) {
     /** Hitbox de la diana, centrada donde se encuentra el sprite. */
     val hitbox: Hitbox get() = view.hitbox
@@ -72,14 +73,15 @@ class Target private constructor(
     }
 
     companion object {
-        /** Proporción del radio de la hitbox respecto del tamaño del sprite. */
-        private const val RADIUS_RATIO = 0.42
+        /** Proporción de los radios de la hitbox oval respecto del tamaño del sprite. */
+        private const val RADIUS_X = 0.27
+        private const val RADIUS_Y = 0.40
 
         /** Segundos que la diana permanece fuera tras ser golpeada. */
         private const val RESPAWN_DELAY = 2.0
 
         /** Tamaño (base) de la diana grande fija y de las móviles. */
-        private const val FIXED_SIZE = 150.0
+        private const val FIXED_SIZE = 130.0
         private const val MOBILE_SIZE = 90.0
 
         /** Diana grande en una coordenada fija (columna de la diana). */
@@ -87,15 +89,19 @@ class Target private constructor(
             spriteSource: SpriteSource,
             config: GameConfig,
             cx: Double,
-            baseY: Double
+            baseY: Double,
+            amp: Double = 0.0,
+            speed: Double = 0.0,
+            points: Int = 3
         ): Target {
             val size = FIXED_SIZE * config.scale
             return Target(
-                EntityView(spriteSource, "diana.png", size, CircularHitbox(size * RADIUS_RATIO), true),
+                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true),
                 cx = cx,
                 baseY = baseY,
-                amp = 0.0,
-                speed = 0.0
+                amp = amp * config.scale,
+                speed = speed,
+                points = points
             )
         }
 
@@ -106,15 +112,17 @@ class Target private constructor(
             cx: Double,
             baseY: Double,
             amp: Double,
-            speed: Double
+            speed: Double,
+            points: Int = 1
         ): Target {
             val size = MOBILE_SIZE * config.scale
             return Target(
-                EntityView(spriteSource, "diana.png", size, CircularHitbox(size * RADIUS_RATIO), true),
+                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true),
                 cx = cx,
                 baseY = baseY,
                 amp = amp * config.scale,
-                speed = speed
+                speed = speed,
+                points = points
             )
         }
     }

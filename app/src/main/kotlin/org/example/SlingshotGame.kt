@@ -22,6 +22,8 @@ import kotlin.math.min
 abstract class SlingshotGame(
     protected val spriteSource: SpriteSource,
     protected val config: GameConfig,
+    /** Callback para volver al menú principal (tecla ESC). */
+    private val onExitToMenu: () -> Unit = {},
     /** Fábrica del mundo físico (Inversión de Dependencias: un test podría simularlo). */
     private val physicsFactory: () -> PhysicsWorld = { Box2DWorld(config) }
 ) {
@@ -39,6 +41,10 @@ abstract class SlingshotGame(
 
     // Pájaros ya lanzados que siguen en vuelo
     protected val inFlight = mutableListOf<Bird>()
+
+    // Pájaros que quedaron en el piso y cuánto tiempo llevan ahí
+    // (desaparecen tras SETTLE_DISAPPEAR_SECONDS).
+    private val settledBirds = mutableMapOf<Bird, Double>()
 
     // Último pájaro lanzado; la habilidad especial solo aplica a él.
     protected var lastLaunched: Bird? = null
@@ -77,6 +83,7 @@ abstract class SlingshotGame(
         slingshotBird = null
         inFlight.clear()
         lastLaunched = null
+        settledBirds.clear()
 
         pane.children.clear()
         setupWorld()
@@ -249,6 +256,10 @@ abstract class SlingshotGame(
 
     private fun handleKeyPressed(e: KeyEvent) {
         when (e.code) {
+            KeyCode.ESCAPE -> {
+                physicsTimer?.stop()
+                onExitToMenu()
+            }
             KeyCode.G -> onAbilityKey()
             KeyCode.R -> resetLevel()
             else -> {}
@@ -285,6 +296,7 @@ abstract class SlingshotGame(
                 }
 
                 removeSettledBirds()
+                tickSettled(fixedDt)
             }
         }.also { it.start() }
     }
@@ -300,11 +312,32 @@ abstract class SlingshotGame(
             physics.remove(bird)
             inFlight.remove(bird)
             onBirdSettled(bird)
+            settledBirds[bird] = 0.0
+        }
+    }
+
+    /** Hace desaparecer los pájaros que llevan ≥ 3 s en el piso. */
+    private fun tickSettled(dt: Double) {
+        val toRemove = mutableListOf<Bird>()
+        for ((bird, elapsed) in settledBirds) {
+            val next = elapsed + dt
+            if (next >= SETTLE_DISAPPEAR_SECONDS) {
+                toRemove += bird
+            } else {
+                settledBirds[bird] = next
+            }
+        }
+        for (bird in toRemove) {
+            bird.view.removeFrom(pane)
+            settledBirds.remove(bird)
         }
     }
 
     protected companion object {
         /** Estiramiento mínimo para considerarlo un tiro válido. */
         const val MIN_STRETCH = 10.0
+
+        /** Segundos que un pájaro queda en el piso antes de desaparecer. */
+        const val SETTLE_DISAPPEAR_SECONDS = 3.0
     }
 }
