@@ -3,7 +3,7 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación II (RepoSense + análisis de calidad POO/SOLID). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-10-25.
+> Generado: 2026-10-26.
 
 ## 1. Veredicto
 
@@ -45,7 +45,7 @@ Criterios de `CRITERIOS-CALIDAD.md`. **Aprobar** se juega con el perfil `estanda
 |---|---|---|---|
 | Código dentro de clases (%POO) | ≥ 95% | 72% | no |
 | Duplicación lógica | ≤ 5% | 16.3% | no |
-| Funciones fuera de clases | ≤ 0 | 21 | no |
+| Funciones fuera de clases | ≤ 1 | 21 | no |
 | Señales POO/SOLID críticas | ninguna | Clase demasiado grande (SRP), Baja cohesión (LCOM), Complejidad alta, Acoplamiento alto (CBO), Switch sobre tipos (OCP), Override vacío / 'no implementado' (LSP) | no |
 | Índice de calidad POO/SOLID | ≥ 60 | 3/100 | no |
 
@@ -296,14 +296,14 @@ Archivos donde el análisis encontró cada señal (sin número de línea, a prop
 
 ## 5. Evolución por commit
 
-Métricas calculadas sobre el estado de `main` en **cada commit** (8 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
+Métricas calculadas sobre el estado de `main` en **cada commit** (9 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
 
 ```mermaid
 xychart-beta
     title "Índice POO/SOLID a lo largo de los commits"
-    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559"]
+    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959"]
     y-axis "Índice" 0 --> 100
-    line [0, 0, 0, 0, 4, 3, 3, 3]
+    line [0, 0, 0, 0, 4, 3, 3, 3, 3]
 ```
 
 | # | Fecha | Commit | Autor | LOC | Índice | %POO | Duplic. | Sueltas |
@@ -316,6 +316,7 @@ xychart-beta
 | 6 | 2026-10-09 | `d5a0e6c` | simonK2010 | 2,087 | 3 | 69% | 4.7% | 16 |
 | 7 | 2026-10-23 | `577df69` | simonK2010 | 2,512 | 3 | 73% | 16.5% | 19 |
 | 8 | 2026-10-23 | `ee78559` | simonK2010 | 2,540 | 3 | 72% | 16.3% | 21 |
+| 9 | 2026-10-26 | `b932959` | simonK2010 | 2,540 | 3 | 72% | 16.3% | 21 |
 
 ---
 _Informe generado por la cátedra. Los criterios y umbrales de medición corresponden al perfil `exigente` de `calidad.py`; el semáforo de aprobación, a `CRITERIOS-CALIDAD.md` (ver `README.md`). Ante dudas, revisá el archivo señalado._
