@@ -9,7 +9,7 @@ class Bomb(
     spriteSource: SpriteSource,
     size: Double = 60.0,
     showHitbox: Boolean = true,
-    override val mass: Float = 10.0f
+    override val mass: Float = 10000.0f
 ) : AbstractEntity(
     spriteSource,
     assetName = "bomb.png",
