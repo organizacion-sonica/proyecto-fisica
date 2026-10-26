@@ -7,7 +7,8 @@ package org.example
 class Cubo_piedra(
     spriteSource: SpriteSource,
     size: Double = 140.0,
-    showHitbox: Boolean = true
+    showHitbox: Boolean = true,
+    override val density: Float
 ) : AbstractEntity(
     spriteSource,
     assetName = "cubo piedra.png",

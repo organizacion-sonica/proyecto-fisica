@@ -23,9 +23,7 @@ class TrajectoryCalculator(private val config: GameConfig) {
         val mag = min(pull.magnitude(), config.maxStretch)
         if (mag <= 10.0) return dots
 
-        val speed = mag / config.maxStretch * config.maxLaunchSpeed
-        var vx = pull.x / mag * speed
-        var vy = pull.y / mag * speed
+        var (vx, vy) = initialVelocity(pull, mag)
         val gPx = config.gravity * config.ppm // px/s² hacia abajo en pantalla
 
         var x = start.x
@@ -34,9 +32,8 @@ class TrajectoryCalculator(private val config: GameConfig) {
         val step = 1.0 / 60.0
         var stepsSinceDot = 0
         while (t < 2.5) {
-            val damp = 1.0 / (1.0 + 0.1 * step)
-            vx *= damp
-            vy *= damp
+            vx *= damping(step)
+            vy *= damping(step)
             vy += gPx * step
             x += vx * step
             y += vy * step
@@ -46,10 +43,23 @@ class TrajectoryCalculator(private val config: GameConfig) {
             // Un punto cada 3 pasos (~0.05 s)
             if (stepsSinceDot >= 3) {
                 stepsSinceDot = 0
-                if (y > config.windowHeight || x < 0 || x > config.windowWidth) break
+                if (leftCanvas(x, y)) break
                 dots.add(Point2D(x, y))
             }
         }
         return dots
     }
+
+    /** Velocidad inicial (px/s) según la magnitud del estiramiento. */
+    private fun initialVelocity(pull: Point2D, mag: Double): Pair<Double, Double> {
+        val speed = mag / config.maxStretch * config.maxLaunchSpeed
+        return pull.x / mag * speed to pull.y / mag * speed
+    }
+
+    /** Factor de amortiguamiento del aire por paso (igual al del juego real). */
+    private fun damping(step: Double): Double = 1.0 / (1.0 + 0.1 * step)
+
+    /** True si el punto ya salió de la pantalla (cortar la predicción). */
+    private fun leftCanvas(x: Double, y: Double): Boolean =
+        y > config.windowHeight || x < 0 || x > config.windowWidth
 }

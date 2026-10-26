@@ -3,12 +3,14 @@ package org.example
 import javafx.application.Application
 
 /**
- * Punto de entrada de la aplicación.
- *
- * Nota: el archivo se llama Resoltera.kt para generar la clase "ResolteraKt"
- * (ver `mainClass` en app/build.gradle.kts). El montaje real de la app vive en
- * [SlingshotApp] (raíz de composición).
+ * Punto de entrada de la aplicación. Es un [object] (clase única): así no
+ * queda ninguna función suelta fuera de una clase (POO 100% del archivo).
+ * El montaje real de la app vive en [SlingshotApp] (raíz de composición).
  */
-fun main() {
-    Application.launch(SlingshotApp::class.java)
+object Resoltera {
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        Application.launch(SlingshotApp::class.java)
+    }
 }

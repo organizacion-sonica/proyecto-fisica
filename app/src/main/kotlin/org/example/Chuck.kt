@@ -14,7 +14,7 @@ class Chuck(
     spriteSource: SpriteSource,
     size: Double = 60.0,
     showHitbox: Boolean = true,
-    val mass: Float = 3.0f
+    override val mass: Float = 3.0f
 ) : AbstractEntity(
     spriteSource,
     assetName = "chuck .png",
@@ -26,13 +26,13 @@ class Chuck(
     override var abilityUsed = false
 
     /** Aumenta la velocidad actual del pájaro (boost de Chuck). */
-    fun boostSpeed(multiplier: Float, physics: Box2DWorld) {
+    private fun boostSpeed(multiplier: Float, physics: PhysicsWorld) {
         if (abilityUsed) return
         abilityUsed = true
         physics.boostBirdSpeed(this, multiplier)
     }
 
-    override fun useAbility(physics: Box2DWorld, config: GameConfig): Boolean {
+    override fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean {
         if (abilityUsed) return false
         boostSpeed(config.chuckSpeedBoost, physics)
         return true

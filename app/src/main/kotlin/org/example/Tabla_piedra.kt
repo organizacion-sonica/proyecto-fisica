@@ -7,7 +7,8 @@ package org.example
 class Tabla_piedra(
     spriteSource: SpriteSource,
     size: Double = 160.0,
-    showHitbox: Boolean = true
+    showHitbox: Boolean = true,
+    override val density: Float
 ) : AbstractEntity(
     spriteSource,
     assetName = "tabla piedra.png",

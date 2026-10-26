@@ -43,7 +43,7 @@ abstract class AbstractEntity(
     override fun contains(x: Double, y: Double): Boolean = hitbox.contains(x, y)
 
     /** Establece la rotación del sprite en grados. */
-    fun setRotation(degrees: Double) {
+    override fun setRotation(degrees: Double) {
         view.setRotation(degrees)
     }
 
@@ -53,8 +53,8 @@ abstract class AbstractEntity(
         syncHitbox()
     }
 
+    /** Sincroniza la hitbox con la vista (y su contorno). */
     private fun syncHitbox() {
-        hitbox.recenter(view.centerX + hitboxOffsetX, view.centerY + hitboxOffsetY)
-        view.syncOverlay()
+        view.syncHitbox()
     }
 }

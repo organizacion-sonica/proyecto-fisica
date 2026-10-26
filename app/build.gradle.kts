@@ -51,8 +51,8 @@ java {
 }
 
 application {
-    // Apunta a tu clase con fun main() — ajustá el nombre de archivo/paquete si difiere
-    mainClass = "org.example.ResolteraKt"
+    // Punto de entrada: object Resoltera (con @JvmStatic fun main).
+    mainClass = "org.example.Resoltera"
 }
 
 tasks.named<Test>("test") {

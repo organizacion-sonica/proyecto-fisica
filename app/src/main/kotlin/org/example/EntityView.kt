@@ -2,15 +2,15 @@ package org.example
 
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
-import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 
 /**
- * Representación visual de una entidad: el sprite más un contorno rojo que
- * dibuja la [Hitbox]. Responsabilidad única: renderizado/posicionamiento.
- * No conoce lógica de juego ni física.
+ * Representación visual de una entidad: el sprite más el contorno de su
+ * [Hitbox]. Responsabilidad única: renderizado/posicionamiento. No conoce
+ * lógica de juego ni física.
+ *
+ * El contorno lo crea y lo mueve cada hitbox por sí misma (polimorfismo,
+ * OCP): al agregar una forma nueva esta clase no se modifica.
  */
 class EntityView(
     spriteSource: SpriteSource,
@@ -18,10 +18,10 @@ class EntityView(
     size: Double,
     val hitbox: Hitbox,
     showHitbox: Boolean,
-    var hitboxOffsetX: Double = 0.0,
-    var hitboxOffsetY: Double = 0.0
+    private val hitboxOffsetX: Double = 0.0,
+    private val hitboxOffsetY: Double = 0.0
 ) {
-    val imageView: ImageView
+    private val imageView: ImageView
     private val overlay: Shape
 
     /** Centro del sprite en coordenadas del mundo. */
@@ -35,10 +35,20 @@ class EntityView(
     val height: Double get() = imageView.fitHeight
     val bottom: Double get() = y + height
 
-    /** Mueve la hitbox para seguir al sprite y actualiza el contorno rojo. */
+    init {
+        imageView = ImageView(spriteSource.load(assetName)).apply {
+            isPreserveRatio = true
+            fitWidth = size
+            fitHeight = size
+        }
+        overlay = hitbox.createOverlayNode()
+        overlay.isVisible = showHitbox
+    }
+
+    /** Mueve la hitbox para seguir al sprite y actualiza el contorno. */
     fun syncHitbox() {
         hitbox.recenter(centerX + hitboxOffsetX, centerY + hitboxOffsetY)
-        syncOverlay()
+        hitbox.syncOverlayNode(overlay)
     }
 
     /** Traslada el sprite. */
@@ -60,29 +70,18 @@ class EntityView(
         imageView.rotate = degrees
     }
 
-    init {
-        imageView = ImageView(spriteSource.load(assetName))
-        imageView.isPreserveRatio = true
-        imageView.fitWidth = size
-        imageView.fitHeight = size
-
-        overlay = createOverlay()
-        overlay.isVisible = showHitbox
+    /** Muestra u oculta sprite + contorno (p. ej. dianas al reaparecer). */
+    fun setVisible(visible: Boolean) {
+        imageView.isVisible = visible
+        overlay.isVisible = visible
     }
 
-    /** Crea el contorno rojo correspondiente al tipo de hitbox. */
-    private fun createOverlay(): Shape = when (hitbox) {
-        is CircularHitbox -> Circle().apply(paintRed())
-        is BoxHitbox -> Rectangle().apply(paintRed())
+    /** Muestra u oculta solo el contorno de depuración. */
+    fun setHitboxVisible(visible: Boolean) {
+        overlay.isVisible = visible
     }
 
-    private fun paintRed(): Shape.() -> Unit = {
-        fill = null
-        stroke = Color.RED
-        strokeWidth = 2.0
-    }
-
-    /** Ubica el sprite en [pane] en (x, y) y actualiza el contorno rojo. */
+    /** Ubica el sprite en [pane] en (x, y) y actualiza el contorno. */
     fun placeAt(pane: Pane, x: Double, y: Double) {
         imageView.layoutX = x
         imageView.layoutY = y
@@ -92,27 +91,6 @@ class EntityView(
             pane.children.addAll(imageView, overlay)
         }
         syncHitbox()
-    }
-
-    /** Mueve el contorno rojo para que coincida con la geometría actual de la hitbox. */
-    fun syncOverlay() {
-        when (val h = hitbox) {
-            is CircularHitbox -> (overlay as Circle).apply {
-                centerX = h.centerX
-                centerY = h.centerY
-                radius = h.radius
-            }
-            is BoxHitbox -> (overlay as Rectangle).apply {
-                x = h.centerX - h.halfWidth
-                y = h.centerY - h.halfHeight
-                width = h.halfWidth * 2
-                height = h.halfHeight * 2
-            }
-        }
-    }
-
-    fun setHitboxVisible(visible: Boolean) {
-        overlay.isVisible = visible
     }
 
     /** Quita el sprite y su contorno del [pane]. */

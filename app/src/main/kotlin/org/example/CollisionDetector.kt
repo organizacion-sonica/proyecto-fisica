@@ -1,21 +1,19 @@
 package org.example
 
 /**
- * Servicio responsable de decidir si dos hitboxes se tocan (Responsabilidad
- * Única: la geometría vive en cada [Hitbox], la colisión vive acá). Es puro,
- * sin JavaFX, por lo que se puede probar en unit tests.
+ * Servicio responsable de enlazar colisiones entre [Hitbox]s.
+ *
+ * La decisión de QUÉ combinación aplicar vive en cada hitbox (doble dispatch,
+ * OCP: no hay `when` por tipos y agregar una forma nueva no modifica esto);
+ * este objeto conserva solo la matemática pura de cada par de formas.
+ * No depende de JavaFX, por lo que se puede probar en unit tests.
  */
 object CollisionDetector {
 
-    /** Devuelve true si las dos hitboxes se superponen (dispatch por tipo). */
-    fun collides(a: Hitbox, b: Hitbox): Boolean = when {
-        a is CircularHitbox && b is CircularHitbox -> circleCircle(a, b)
-        a is CircularHitbox && b is BoxHitbox -> circleBox(a, b)
-        a is BoxHitbox && b is CircularHitbox -> circleBox(b, a)
-        a is BoxHitbox && b is BoxHitbox -> boxBox(a, b)
-        else -> false
-    }
+    /** True si las dos hitboxes se superponen (dispatch polimórfico). */
+    fun collides(a: Hitbox, b: Hitbox): Boolean = a.collides(b)
 
+    /** Círculo vs círculo: comparación de distancia contra suma de radios. */
     fun circleCircle(a: CircularHitbox, b: CircularHitbox): Boolean {
         val dx = b.centerX - a.centerX
         val dy = b.centerY - a.centerY
@@ -23,6 +21,7 @@ object CollisionDetector {
         return dx * dx + dy * dy <= radii * radii
     }
 
+    /** Caja vs caja: AABB contra AABB. */
     fun boxBox(a: BoxHitbox, b: BoxHitbox): Boolean =
         kotlin.math.abs(a.centerX - b.centerX) < (a.halfWidth + b.halfWidth) &&
         kotlin.math.abs(a.centerY - b.centerY) < (a.halfHeight + b.halfHeight)
@@ -35,4 +34,7 @@ object CollisionDetector {
         val dy = circle.centerY - clampY
         return dx * dx + dy * dy <= circle.radius * circle.radius
     }
+
+    /** Rectángulo vs círculo (mismo caso, parámetros al revés). */
+    fun boxCircle(box: BoxHitbox, circle: CircularHitbox): Boolean = circleBox(circle, box)
 }
