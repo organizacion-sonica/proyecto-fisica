@@ -30,11 +30,11 @@ class ScoreBoard(private val config: GameConfig) {
     var onTimeOver: (() -> Unit)? = null
 
     fun placeIn(pane: Pane) {
-        val rightX = config.windowWidth - 220.0 * scale
+        val rightX = config.windowWidth - 160.0 * scale
         scoreLabel.layoutX = rightX
-        scoreLabel.layoutY = 40.0 * scale
+        scoreLabel.layoutY = 20.0 * scale
         timerLabel.layoutX = rightX
-        timerLabel.layoutY = 72.0 * scale
+        timerLabel.layoutY = 52.0 * scale
         pane.children.addAll(scoreLabel, timerLabel)
     }
 
