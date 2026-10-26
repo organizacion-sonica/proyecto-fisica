@@ -13,10 +13,12 @@ class ScoreBoard(private val config: GameConfig) {
     private val scale = config.scale
 
     private val scoreLabel = Label("Puntos: 0").apply {
-        style = "-fx-font-size: ${20 * scale}px; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        style = "-fx-font-size: ${20 * scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        textFill = javafx.scene.paint.Color.WHITE
     }
     private val timerLabel = Label("Tiempo: 01:45").apply {
-        style = "-fx-font-size: ${20 * scale}px; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        style = "-fx-font-size: ${20 * scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+        textFill = javafx.scene.paint.Color.WHITE
     }
 
     var score: Int = 0
@@ -28,10 +30,11 @@ class ScoreBoard(private val config: GameConfig) {
     var onTimeOver: (() -> Unit)? = null
 
     fun placeIn(pane: Pane) {
-        scoreLabel.layoutX = config.windowWidth / 2 - 90.0 * scale
-        scoreLabel.layoutY = 40.0 * scale
-        timerLabel.layoutX = config.windowWidth / 2 - 90.0 * scale
-        timerLabel.layoutY = 72.0 * scale
+        val rightX = config.windowWidth - 160.0 * scale
+        scoreLabel.layoutX = rightX
+        scoreLabel.layoutY = 20.0 * scale
+        timerLabel.layoutX = rightX
+        timerLabel.layoutY = 52.0 * scale
         pane.children.addAll(scoreLabel, timerLabel)
     }
 

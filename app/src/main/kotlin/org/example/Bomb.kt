@@ -9,7 +9,7 @@ class Bomb(
     spriteSource: SpriteSource,
     size: Double = 60.0,
     showHitbox: Boolean = true,
-    val mass: Float = 10.0f
+    override val mass: Float = 10000.0f
 ) : AbstractEntity(
     spriteSource,
     assetName = "bomb.png",
@@ -22,16 +22,18 @@ class Bomb(
 
     override var abilityUsed = false
 
-    /** Genera onda expansiva en la posición actual. */
-    fun explode(physics: Box2DWorld, config: GameConfig) {
-        if (abilityUsed) return
-        abilityUsed = true
-        physics.explodeAt(this, config.bombExplosionRadius, config.bombExplosionForce)
-    }
-
-    override fun useAbility(physics: Box2DWorld, config: GameConfig): Boolean {
+    /**
+     * Habilidad: onda expansiva (física) + pedido de efectos visuales.
+     * El pájaro no sabe cómo se pinta la explosión ni derriba dianas:
+     * solo lo pide a [AbilityEffects] (DIP). Y el controlador nunca
+     * pregunta el tipo: puro polimorfismo (OCP).
+     */
+    override fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean {
         if (abilityUsed) return false
-        explode(physics, config)
+        abilityUsed = true
+        val radiusPx = config.bombExplosionRadius
+        physics.explodeAt(this, radiusPx, config.bombExplosionForce)
+        fx.explosionAt(centerX, centerY, radiusPx.toDouble())
         return true
     }
 

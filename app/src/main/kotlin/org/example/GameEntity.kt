@@ -24,4 +24,7 @@ interface GameEntity {
     fun moveBy(dx: Double, dy: Double)
 
     fun contains(x: Double, y: Double): Boolean
+
+    /** Establece la rotación visual del sprite, en grados. */
+    fun setRotation(degrees: Double)
 }

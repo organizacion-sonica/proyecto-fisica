@@ -15,8 +15,8 @@ class AngleIndicator(private val config: GameConfig) {
     }
 
     fun placeIn(pane: javafx.scene.layout.Pane) {
-        text.layoutX = config.windowWidth - 340.0 * config.scale
-        text.layoutY = 60.0 * config.scale
+        text.layoutX = config.windowWidth - 160.0 * config.scale
+        text.layoutY = 84.0 * config.scale
         pane.children.add(text)
     }
 

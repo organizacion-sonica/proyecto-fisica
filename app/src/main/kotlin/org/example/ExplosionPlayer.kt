@@ -15,11 +15,11 @@ class ExplosionPlayer(
      * toque de la habilidad no congele el hilo de UI). */
     private val explosionFrames: List<javafx.scene.image.Image> =
         (0..15).map {
-            (spriteSource as? FileSpriteSource)?.loadScaled(
+            spriteSource.loadScaled(
                 "explosion_%02d.png".format(it),
                 160.0 * config.scale,
                 160.0 * config.scale
-            ) ?: spriteSource.load("explosion_%02d.png".format(it))
+            )
         }
 
     /** Reproduce los sprites de explosión (`explosion_XX.png`) en la posición. */

@@ -10,4 +10,7 @@ import javafx.scene.image.Image
  */
 interface SpriteSource {
     fun load(name: String): Image
+
+    /** Carga decodificando ya en el tamaño pedido (más rápido para cachés). */
+    fun loadScaled(name: String, width: Double, height: Double): Image = load(name)
 }

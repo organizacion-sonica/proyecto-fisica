@@ -46,6 +46,8 @@ class MenuController(
         -fx-cursor: hand;
     """
 
+    private val s = config.scale
+
     private val mainMenu = createMainMenu()
     private val instructionsMenu = createInstructionsMenu()
     private val gamesMenu = createGamesMenu()
@@ -90,8 +92,11 @@ class MenuController(
     /** Crea el menú de instrucciones. */
     private fun createInstructionsMenu(): VBox {
         val title = Label("INSTRUCCIONES").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 48.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 48.0 * s)
             textFill = Color.WHITE
+            isWrapText = true
+            maxWidth = config.windowWidth * 0.9
+            alignment = Pos.CENTER
         }
 
         val instructionsText = Label("""
@@ -125,9 +130,9 @@ class MenuController(
 
             5. REINICIAR NIVEL (Tecla R):
                - Presioná R en cualquier momento para reiniciar todo de cero
-            
+             
         """.trimIndent()).apply {
-            font = Font.font("Arial", 20.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", 20.0 * s)
             textFill = Color.WHITE
             isWrapText = true
             maxWidth = config.windowWidth * 0.75
@@ -150,9 +155,9 @@ class MenuController(
             switchToMain()
         }
 
-        return VBox(20.0 * (config.windowWidth / 960.0), title, scroll, backButton).apply {
+        return VBox(20.0 * s, title, scroll, backButton).apply {
             alignment = Pos.CENTER
-            padding = Insets(30.0 * (config.windowWidth / 960.0))
+            padding = Insets(30.0 * s)
             style = "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #2c3e50, #1a1a2e);"
         }
     }
@@ -160,17 +165,19 @@ class MenuController(
     /** Menú para elegir cuál minijuego jugar. */
     private fun createGamesMenu(): VBox {
         val title = Label("SELECCIONÁ UN MINIJUEGO").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 48.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 48.0 * s)
             textFill = Color.WHITE
+            isWrapText = true
+            maxWidth = config.windowWidth * 0.9
+            alignment = Pos.CENTER
         }
 
         val minigames = listOf(
-            Pair("Acertar en las dianas", { fadeOutAndStart() }),
-            Pair("Tiro al aro", { fadeOutAndStartBasket() }),
+            Pair("Acertar en las dianas", { fadeOutAndStart(onStartGame) }),
+            Pair("Tiro al aro", { fadeOutAndStart(onStartBasketGame) }),
             Pair("Minijuego 3 (en construcción)", null)
         )
 
-        val s = config.windowWidth / 960.0
         val row = javafx.scene.layout.HBox(
             30.0 * s,
             *minigames.map { (name, onPlay) ->
@@ -211,10 +218,11 @@ class MenuController(
     /** Crea un botón estilizado del menú. */
     private fun createMenuButton(text: String, onClick: () -> Unit): Button {
         return Button(text).apply {
-            font = Font.font("Arial", FontWeight.BOLD, 28.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 28.0 * s)
             textFill = Color.WHITE
-            prefWidth = 300.0 * (config.windowWidth / 960.0)
-            prefHeight = 60.0 * (config.windowWidth / 960.0)
+            prefWidth = 300.0 * s
+            prefHeight = 60.0 * s
+            minWidth = 300.0 * s
             style = buttonNormalStyle
             setOnMouseEntered { style = buttonHoverStyle }
             setOnMouseExited { style = buttonNormalStyle }
@@ -239,39 +247,27 @@ class MenuController(
 
     /** Transición cruzada entre dos paneles. */
     private fun crossFade(from: VBox, to: VBox) {
-        val fadeOut = FadeTransition(Duration.millis(200.0), from).apply {
-            fromValue = 1.0
-            toValue = 0.0
-            onFinished = { _ ->
-                root.children.setAll(to)
-                currentMenu = to
-                val fadeIn = FadeTransition(Duration.millis(200.0), to).apply {
-                    fromValue = 0.0
-                    toValue = 1.0
-                }
-                fadeIn.play()
-            }
+        fadeOut(from, 200.0) {
+            root.children.setAll(to)
+            currentMenu = to
+            FadeTransition(Duration.millis(200.0), to).apply {
+                fromValue = 0.0
+                toValue = 1.0
+            }.play()
         }
-        fadeOut.play()
     }
 
-    /** Desvanece el menú actual y lanza el juego. */
-    private fun fadeOutAndStart() {
-        val fadeOut = FadeTransition(Duration.millis(300.0), currentMenu).apply {
-            fromValue = 1.0
-            toValue = 0.0
-            onFinished = { _ -> onStartGame() }
-        }
-        fadeOut.play()
+    /** Desvanece el menú actual y lanza el juego que corresponda. */
+    private fun fadeOutAndStart(onStart: () -> Unit) {
+        fadeOut(currentMenu, 300.0) { onStart() }
     }
 
-    /** Desvanece el menú actual y lanza el minijuego del tiro al aro. */
-    private fun fadeOutAndStartBasket() {
-        val fadeOut = FadeTransition(Duration.millis(300.0), currentMenu).apply {
+    /** Genérico de desvanecimiento de un panel: lo baja y al terminar llama [onDone]. */
+    private fun fadeOut(menu: VBox, millis: Double, onDone: () -> Unit) {
+        FadeTransition(Duration.millis(millis), menu).apply {
             fromValue = 1.0
             toValue = 0.0
-            onFinished = { _ -> onStartBasketGame() }
-        }
-        fadeOut.play()
+            onFinished = { onDone() }
+        }.play()
     }
 }

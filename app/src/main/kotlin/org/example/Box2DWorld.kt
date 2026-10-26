@@ -1,21 +1,24 @@
 package org.example
 
 import org.dyn4j.dynamics.Body
-import org.dyn4j.world.World
 import org.dyn4j.geometry.Circle
 import org.dyn4j.geometry.MassType
 import org.dyn4j.geometry.Rectangle
 import org.dyn4j.geometry.Vector2
+import org.dyn4j.world.World
 import kotlin.math.sqrt
 
 /**
- * Adaptador entre dyn4j y el juego JavaFX.
- * Responsabilidad única: simular física y sincronizar resultados con las entidades.
- * Coordina conversiones de coordenadas: dyn4j (Y-up) ↔ JavaFX (Y-down).
+ * Adaptador entre dyn4j y el juego JavaFX. Responsabilidad única: simular
+ * física y sincronizar resultados con las entidades. Coordina conversiones
+ * de coordenadas: dyn4j (Y-up) ↔ JavaFX (Y-down).
+ *
+ * Implementa la abstracción [PhysicsWorld]: el resto del juego depende de
+ * la interfaz, no de este adaptador (Inversión de Dependencias).
  */
-class Box2DWorld(private val config: GameConfig) {
+class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
-    val world: World<Body> = World()
+    private val world: World<Body> = World()
 
     private val ppm: Float = config.ppm
     private val bodies = mutableMapOf<GameEntity, Body>()
@@ -31,7 +34,7 @@ class Box2DWorld(private val config: GameConfig) {
     fun screenToWorld(sx: Double, sy: Double): Vector2 {
         val wx = sx / ppm
         val wy = (config.windowHeight - sy) / ppm
-        return Vector2(wx.toDouble(), wy.toDouble())
+        return Vector2(wx, wy)
     }
 
     /** dyn4j (m, Y-up) → Pantalla (px, Y-down) */
@@ -57,27 +60,17 @@ class Box2DWorld(private val config: GameConfig) {
         world.addBody(ground)
     }
 
-        /** Registra un pájaro como cuerpo dinámico con su masa específica. */
-    fun registerBird(bird: GameEntity, mass: Float) {
-        val (bx, by, radius) = when (val h = bird.hitbox) {
-            is CircularHitbox -> Triple(h.centerX, h.centerY, h.radius)
-            else -> {
-                val cx = bird.x + bird.width / 2
-                val cy = bird.y + bird.height / 2
-                Triple(cx, cy, bird.width / 2.0)
-            }
-        }
+    /** Registra un pájaro como cuerpo dinámico con su masa específica. */
+    override fun registerBird(bird: GameEntity, mass: Float) {
+        val (bx, by, radius) = bird.hitbox.circleSpec()
         val pos = screenToWorld(bx, by)
 
         val body = Body()
-
-        val r = radius / ppm
-        val shape = Circle(r)
+        val shape = Circle(radius / ppm)
         // Calcular densidad para que la masa coincida: masa = densidad * área
         // Área del círculo = π * r²
-        val area = Math.PI * r * r
-        val density = mass / area
-        body.addFixture(shape, density.toDouble(), 0.4, 0.3) // densidad, fricción, rebote
+        val density = mass / (Math.PI * (radius / ppm) * (radius / ppm))
+        body.addFixture(shape, density, 0.4, 0.3) // densidad, fricción, rebote
         // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
         body.setMass(MassType.NORMAL) // dinámico
         body.translate(pos.x, pos.y)
@@ -87,35 +80,24 @@ class Box2DWorld(private val config: GameConfig) {
         bodies[bird] = body
     }
 
-    /** Registra un bloque como cuerpo dinámico (se puede mover por colisiones). */
-    fun registerBlock(block: Block, dynamic: Boolean = true) {
-        val h = block.hitbox
-        var cx = block.x + block.width / 2
-        var cy = block.y + block.height / 2
-        var halfW = block.width / 2
-        var halfH = block.height / 2
-        if (h is BoxHitbox) {
-            cx = h.centerX
-            cy = h.centerY
-            halfW = h.halfWidth
-            halfH = h.halfHeight
-        }
+    /** Registra un bloque como cuerpo (se puede mover por colisiones). */
+    override fun registerBlock(block: Block, dynamic: Boolean) {
+        val spec = block.hitbox.rectangleSpec()
+        val cx = spec.first.first
+        val cy = spec.first.second
+        val halfW = spec.second.first
+        val halfH = spec.second.second
         val pos = screenToWorld(cx, cy)
 
         val body = Body()
-
-        // Densidad según el material: la madera es liviana y la piedra pesada,
-        // así el peso del pájaro lanzado importa al impactar (un Bomb de 10 kg
-        // empuja mucho más que un Chuck de 3 kg).
         val shape = Rectangle(halfW / ppm * 2, halfH / ppm * 2)
-        val density = if (dynamic) when (block.material) {
-            "madera" -> config.woodDensity
-            "piedra" -> config.stoneDensity
-            else -> 0.8f
-        } else 0.0f
+        // La densidad la declara el propio bloque (madera liviana, piedra
+        // pesada): el pájaro lanzado importa al impactar (un Bomb de 10 kg
+        // empuja mucho más que un Chuck de 3 kg).
+        val density = if (dynamic) block.density else 0.0f
         body.addFixture(shape, density.toDouble(), 0.4, 0.1)
         // OJO: setMass debe ir después de addFixture; de lo contrario dyn4j 5
-        // reemplaza el body por uno estático (íntegra infinitas).
+        // reemplaza el body por uno estático (masas infinitas).
         body.setMass(if (dynamic) MassType.NORMAL else MassType.INFINITE)
         body.translate(pos.x, pos.y)
 
@@ -123,8 +105,27 @@ class Box2DWorld(private val config: GameConfig) {
         bodies[block] = body
     }
 
+    /** Caja estática (en px de pantalla) para que los cuerpos reboten. */
+    override fun addStaticBox(
+        centerXPx: Double,
+        centerYPx: Double,
+        widthPx: Double,
+        heightPx: Double,
+        friction: Double,
+        restitution: Double
+    ) {
+        val body = Body()
+        val shape = Rectangle(widthPx / ppm, heightPx / ppm)
+        body.addFixture(shape, 0.0, friction, restitution)
+        // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
+        body.setMass(MassType.INFINITE)
+        val pos = screenToWorld(centerXPx, centerYPx)
+        body.translate(pos.x, pos.y)
+        world.addBody(body)
+    }
+
     /** Aplica un impulso de lanzamiento a un pájaro registrado. */
-    fun launchBird(bird: GameEntity, vx: Double, vy: Double) {
+    override fun launchBird(bird: GameEntity, vx: Double, vy: Double) {
         val body = bodies[bird] ?: return
         // Impulso = masa * velocidad deseada (dyn4j usa kg·m/s).
         // dyn4j usa Y-up, JavaFX usa Y-down → invertir vy.
@@ -134,19 +135,19 @@ class Box2DWorld(private val config: GameConfig) {
     }
 
     /** Marca un cuerpo como kinemático (fijo, no responde a fuerzas). */
-    fun setKinematic(entity: GameEntity) {
+    override fun setKinematic(entity: GameEntity) {
         val body = bodies[entity] ?: return
         body.setMass(MassType.FIXED_LINEAR_VELOCITY)
     }
 
     /** Marca un cuerpo como dinámico. */
-    fun setDynamic(entity: GameEntity) {
+    override fun setDynamic(entity: GameEntity) {
         val body = bodies[entity] ?: return
         body.setMass(MassType.NORMAL)
     }
 
     /** Mueve un cuerpo a una posición específica (para drag del pájaro). */
-    fun setTransform(entity: GameEntity, sx: Double, sy: Double) {
+    override fun setTransform(entity: GameEntity, sx: Double, sy: Double) {
         val body = bodies[entity] ?: return
         // El cuerpo está centrado en el centro de la hitbox, no del sprite:
         // convertir la posición de sprite a posición de hitbox.
@@ -161,23 +162,21 @@ class Box2DWorld(private val config: GameConfig) {
     }
 
     /** Verifica si un cuerpo está en reposo (velocidad < umbral). */
-    fun isResting(entity: GameEntity): Boolean {
+    override fun isResting(entity: GameEntity): Boolean {
         val body = bodies[entity] ?: return true
         val v = body.linearVelocity
         return v.magnitudeSquared < 0.01
     }
 
     /** Aumenta la velocidad del pájaro (habilidad de Chuck). */
-    fun boostBirdSpeed(bird: GameEntity, multiplier: Float) {
+    override fun boostBirdSpeed(bird: GameEntity, multiplier: Float) {
         val body = bodies[bird] ?: return
         val v = body.linearVelocity
-        val newVx = v.x * multiplier
-        val newVy = v.y * multiplier
-        body.linearVelocity = Vector2(newVx, newVy)
+        body.linearVelocity = Vector2(v.x * multiplier, v.y * multiplier)
     }
 
     /** Genera onda expansiva en la posición del pájaro (habilidad de Bomb). */
-    fun explodeAt(bird: GameEntity, radiusPx: Float, force: Float) {
+    override fun explodeAt(bird: GameEntity, radiusPx: Float, force: Float) {
         // Si el cuerpo del pájaro todavía existe usamos su centro real; si ya
         // se frenó en el piso y se sacó del mundo, usamos su hitbox visual,
         // para que igualmente explote en el lugar donde quedó.
@@ -200,7 +199,7 @@ class Box2DWorld(private val config: GameConfig) {
             val dx = otherT.translationX - cx
             val dy = otherT.translationY - cy
             val distSq = dx * dx + dy * dy
-            val dist = sqrt(distSq).toDouble()
+            val dist = sqrt(distSq)
 
             if (dist > 0 && dist < radiusM) {
                 // Fuerza inversamente proporcional a la distancia
@@ -213,7 +212,7 @@ class Box2DWorld(private val config: GameConfig) {
     }
 
     /** Elimina un cuerpo del mundo físico. */
-    fun remove(entity: GameEntity) {
+    override fun remove(entity: GameEntity) {
         val body = bodies.remove(entity) ?: return
         world.removeBody(body)
     }
@@ -221,7 +220,7 @@ class Box2DWorld(private val config: GameConfig) {
     // ── Simulación ────────────────────────────────────────────────────
 
     /** Avanza la simulación con un paso fijo de tiempo y sincroniza. */
-    fun step(dt: Double = 1.0 / 60.0) {
+    override fun step(dt: Double) {
         world.step(1, dt)
         syncAll()
     }
@@ -229,7 +228,6 @@ class Box2DWorld(private val config: GameConfig) {
     /** Sincroniza la posición y rotación de cada entidad con su Body de dyn4j. */
     private fun syncAll() {
         for ((entity, body) in bodies) {
-
             val t = body.transform
             val (sx, sy) = worldToScreen(t.translationX, t.translationY)
             // El centro del cuerpo dinámico coincide con el centro de la hitbox
@@ -243,15 +241,13 @@ class Box2DWorld(private val config: GameConfig) {
             // Sincronizar rotación
             val angleDeg = Math.toDegrees(t.rotationAngle)
             if (kotlin.math.abs(angleDeg) > 0.1) {
-                if (entity is AbstractEntity) {
-                    entity.setRotation(angleDeg)
-                }
+                entity.setRotation(angleDeg)
             }
         }
     }
 
     /** Libera todo el mundo dyn4j. */
-    fun dispose() {
+    override fun dispose() {
         for (body in bodies.values) {
             world.removeBody(body)
         }
