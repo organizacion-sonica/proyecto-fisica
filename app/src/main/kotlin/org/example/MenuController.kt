@@ -46,6 +46,8 @@ class MenuController(
         -fx-cursor: hand;
     """
 
+    private val s = config.scale
+
     private val mainMenu = createMainMenu()
     private val instructionsMenu = createInstructionsMenu()
     private val gamesMenu = createGamesMenu()
@@ -90,8 +92,11 @@ class MenuController(
     /** Crea el menú de instrucciones. */
     private fun createInstructionsMenu(): VBox {
         val title = Label("INSTRUCCIONES").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 48.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 48.0 * s)
             textFill = Color.WHITE
+            isWrapText = true
+            maxWidth = config.windowWidth * 0.9
+            alignment = Pos.CENTER
         }
 
         val instructionsText = Label("""
@@ -125,9 +130,9 @@ class MenuController(
 
             5. REINICIAR NIVEL (Tecla R):
                - Presioná R en cualquier momento para reiniciar todo de cero
-            
+             
         """.trimIndent()).apply {
-            font = Font.font("Arial", 20.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", 20.0 * s)
             textFill = Color.WHITE
             isWrapText = true
             maxWidth = config.windowWidth * 0.75
@@ -150,9 +155,9 @@ class MenuController(
             switchToMain()
         }
 
-        return VBox(20.0 * (config.windowWidth / 960.0), title, scroll, backButton).apply {
+        return VBox(20.0 * s, title, scroll, backButton).apply {
             alignment = Pos.CENTER
-            padding = Insets(30.0 * (config.windowWidth / 960.0))
+            padding = Insets(30.0 * s)
             style = "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #2c3e50, #1a1a2e);"
         }
     }
@@ -160,8 +165,11 @@ class MenuController(
     /** Menú para elegir cuál minijuego jugar. */
     private fun createGamesMenu(): VBox {
         val title = Label("SELECCIONÁ UN MINIJUEGO").apply {
-            font = Font.font("Arial", FontWeight.BOLD, 48.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 48.0 * s)
             textFill = Color.WHITE
+            isWrapText = true
+            maxWidth = config.windowWidth * 0.9
+            alignment = Pos.CENTER
         }
 
         val minigames = listOf(
@@ -170,7 +178,6 @@ class MenuController(
             Pair("Minijuego 3 (en construcción)", null)
         )
 
-        val s = config.windowWidth / 960.0
         val row = javafx.scene.layout.HBox(
             30.0 * s,
             *minigames.map { (name, onPlay) ->
@@ -211,10 +218,11 @@ class MenuController(
     /** Crea un botón estilizado del menú. */
     private fun createMenuButton(text: String, onClick: () -> Unit): Button {
         return Button(text).apply {
-            font = Font.font("Arial", FontWeight.BOLD, 28.0 * (config.windowWidth / 960.0))
+            font = Font.font("Arial", FontWeight.BOLD, 28.0 * s)
             textFill = Color.WHITE
-            prefWidth = 300.0 * (config.windowWidth / 960.0)
-            prefHeight = 60.0 * (config.windowWidth / 960.0)
+            prefWidth = 300.0 * s
+            prefHeight = 60.0 * s
+            minWidth = 300.0 * s
             style = buttonNormalStyle
             setOnMouseEntered { style = buttonHoverStyle }
             setOnMouseExited { style = buttonNormalStyle }
