@@ -22,6 +22,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
     private val ppm: Float = config.ppm
     private val bodies = mutableMapOf<GameEntity, Body>()
+    private val namedBodies = mutableMapOf<String, Body>()
 
     init {
         world.setGravity(0.0, -config.gravity.toDouble())
@@ -80,31 +81,6 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         bodies[bird] = body
     }
 
-    /** Registra un bloque como cuerpo (se puede mover por colisiones). */
-    override fun registerBlock(block: Block, dynamic: Boolean) {
-        val spec = block.hitbox.rectangleSpec()
-        val cx = spec.first.first
-        val cy = spec.first.second
-        val halfW = spec.second.first
-        val halfH = spec.second.second
-        val pos = screenToWorld(cx, cy)
-
-        val body = Body()
-        val shape = Rectangle(halfW / ppm * 2, halfH / ppm * 2)
-        // La densidad la declara el propio bloque (madera liviana, piedra
-        // pesada): el pájaro lanzado importa al impactar (un Bomb de 10 kg
-        // empuja mucho más que un Chuck de 3 kg).
-        val density = if (dynamic) block.density else 0.0f
-        body.addFixture(shape, density.toDouble(), 0.4, 0.1)
-        // OJO: setMass debe ir después de addFixture; de lo contrario dyn4j 5
-        // reemplaza el body por uno estático (masas infinitas).
-        body.setMass(if (dynamic) MassType.NORMAL else MassType.INFINITE)
-        body.translate(pos.x, pos.y)
-
-        world.addBody(body)
-        bodies[block] = body
-    }
-
     /** Caja estática (en px de pantalla) para que los cuerpos reboten. */
     override fun addStaticBox(
         centerXPx: Double,
@@ -122,6 +98,35 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         val pos = screenToWorld(centerXPx, centerYPx)
         body.translate(pos.x, pos.y)
         world.addBody(body)
+    }
+
+    /** Caja estática con nombre, para poder moverla después (backboard del aro). */
+    override fun addNamedStaticBox(
+        name: String,
+        centerXPx: Double,
+        centerYPx: Double,
+        widthPx: Double,
+        heightPx: Double,
+        friction: Double,
+        restitution: Double
+    ) {
+        val body = Body()
+        val shape = Rectangle(widthPx / ppm, heightPx / ppm)
+        body.addFixture(shape, 0.0, friction, restitution)
+        body.setMass(MassType.INFINITE)
+        val pos = screenToWorld(centerXPx, centerYPx)
+        body.translate(pos.x, pos.y)
+        world.addBody(body)
+        namedBodies[name] = body
+    }
+
+    /** Mueve una caja estática nombrada a una nueva posición. */
+    override fun moveNamedStaticBox(name: String, centerXPx: Double, centerYPx: Double) {
+        val body = namedBodies[name] ?: return
+        val pos = screenToWorld(centerXPx, centerYPx)
+        val t = body.transform
+        t.setTranslation(pos.x, pos.y)
+        t.setRotation(0.0)
     }
 
     /** Aplica un impulso de lanzamiento a un pájaro registrado. */
@@ -251,6 +256,10 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         for (body in bodies.values) {
             world.removeBody(body)
         }
+        for (body in namedBodies.values) {
+            world.removeBody(body)
+        }
         bodies.clear()
+        namedBodies.clear()
     }
 }

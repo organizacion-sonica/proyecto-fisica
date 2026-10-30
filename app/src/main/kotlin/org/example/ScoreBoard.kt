@@ -47,11 +47,14 @@ class ScoreBoard(private val config: GameConfig) {
         scoreLabel.text = "Puntos: 0"
     }
 
-    /** Suma un punto y actualiza el marcador visible. */
-    fun addPoint() {
-        score++
+    /** Suma [n] puntos y actualiza el marcador visible. */
+    fun addPoints(n: Int) {
+        score += n
         scoreLabel.text = "Puntos: $score"
     }
+
+    /** Suma un punto y actualiza el marcador visible. */
+    fun addPoint() = addPoints(1)
 
     /** Avanza el tiempo; avisa cuando se agota el límite. */
     fun tick(dtStep: Double) {

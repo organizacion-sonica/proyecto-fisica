@@ -11,9 +11,6 @@ interface PhysicsWorld {
     /** Registra un pájaro como cuerpo dinámico con su masa específica (kg). */
     fun registerBird(bird: GameEntity, mass: Float)
 
-    /** Registra un bloque como cuerpo (dinámico o estático). */
-    fun registerBlock(block: Block, dynamic: Boolean = true)
-
     /** Caja estática (centro y tamaño en px de pantalla) para rebotes. */
     fun addStaticBox(
         centerXPx: Double,
@@ -23,6 +20,20 @@ interface PhysicsWorld {
         friction: Double = 0.4,
         restitution: Double = 0.4
     )
+
+    /** Caja estática con nombre, para poder moverla después (p. ej. backboard del aro). */
+    fun addNamedStaticBox(
+        name: String,
+        centerXPx: Double,
+        centerYPx: Double,
+        widthPx: Double,
+        heightPx: Double,
+        friction: Double = 0.4,
+        restitution: Double = 0.4
+    )
+
+    /** Mueve una caja estática nombrada a una nueva posición. */
+    fun moveNamedStaticBox(name: String, centerXPx: Double, centerYPx: Double)
 
     /** Aplica un impulso de lanzamiento a un cuerpo registrado. */
     fun launchBird(bird: GameEntity, vx: Double, vy: Double)

@@ -13,8 +13,8 @@ import javafx.scene.layout.Pane
  *
  * La mecánica de resortera/pila/lanzamiento vive en [SlingshotGame] (DRY).
  */
-class GameController(spriteSource: SpriteSource, config: GameConfig) :
-    SlingshotGame(spriteSource, config), AbilityEffects {
+class GameController(spriteSource: SpriteSource, config: GameConfig, onExitToMenu: () -> Unit = {}) :
+    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu), AbilityEffects {
 
     private lateinit var angleIndicator: AngleIndicator
     private lateinit var trajectoryLayer: Pane
@@ -23,6 +23,8 @@ class GameController(spriteSource: SpriteSource, config: GameConfig) :
     private lateinit var dianaManager: DianaManager
     private lateinit var explosionPlayer: ExplosionPlayer
     private lateinit var rankScreen: RankScreen
+
+    private var timerStarted = false
 
     override fun setupLevel() {
         angleIndicator = AngleIndicator(config).also { it.placeIn(pane) }
@@ -38,14 +40,14 @@ class GameController(spriteSource: SpriteSource, config: GameConfig) :
             it.onTimeOver = { rankScreen.show(pane, scoreBoard.score) }
         }
         dianaManager = DianaManager(spriteSource, config, pane).also {
-            it.onTargetHit = { scoreBoard.addPoint() }
+            it.onTargetHit = { points -> scoreBoard.addPoints(points) }
             it.setup()
         }
         rankScreen = RankScreen(spriteSource, config)
     }
 
     override fun onPhysicsStep(dt: Double) {
-        scoreBoard.tick(dt)
+        if (timerStarted) scoreBoard.tick(dt)
         dianaManager.update(dt, inFlight)
     }
 
@@ -57,6 +59,22 @@ class GameController(spriteSource: SpriteSource, config: GameConfig) :
     override fun clearAimLayer() {
         angleIndicator.reset()
         trajectoryLayer.children.clear()
+    }
+
+    /**
+     * Habilidad del pájaro lanzado (G). El pájaro decide su efecto por
+     * polimorfismo y pide los visuales vía [explosionAt]; el controlador
+     * nunca pregunta el tipo del pájaro (OCP).
+     */
+    override fun onBirdLoadedOntoSlingshot() {
+        if (!timerStarted) {
+            scoreBoard.reset()
+            timerStarted = true
+        }
+    }
+
+    override fun onLevelReset() {
+        timerStarted = false
     }
 
     /**

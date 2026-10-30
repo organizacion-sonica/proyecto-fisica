@@ -25,6 +25,10 @@ interface GameEntity {
 
     fun contains(x: Double, y: Double): Boolean
 
+    /** Indica si la entidad está dentro de la pantalla dada. */
+    fun isOnScreen(screenW: Double, screenH: Double): Boolean =
+        x in 0.0..screenW && y in 0.0..screenH
+
     /** Establece la rotación visual del sprite, en grados. */
     fun setRotation(degrees: Double)
 }

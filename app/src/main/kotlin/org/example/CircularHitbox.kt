@@ -36,6 +36,9 @@ class CircularHitbox(var radius: Double) : Hitbox() {
     override fun collidesWithBox(box: BoxHitbox): Boolean =
         CollisionDetector.boxCircle(box, this)
 
+    override fun collidesWithOval(oval: OvalHitbox): Boolean =
+        CollisionDetector.circleOval(this, oval)
+
     // ── Aparamiento físico ───────────────────────────────────────────────
 
     override fun circleSpec(): Triple<Double, Double, Double> = Triple(_cx, _cy, radius)

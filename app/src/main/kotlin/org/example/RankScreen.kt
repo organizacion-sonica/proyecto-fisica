@@ -16,14 +16,15 @@ class RankScreen(
     private val birdSpriteFiles = listOf("Red.png", "chuck .png", "bomb.png")
 
     /** Dibuja la pantalla final sobre [pane] con el [score] obtenido. */
-    fun show(pane: Pane, score: Int) {
+    fun show(pane: Pane, score: Int, rankLetter: String? = null) {
         pane.children.clear()
         BackgroundView(spriteSource, config).placeIn(pane)
 
         val s = config.scale
         val rankSize = 200.0 * s
 
-        pane.children.add(ImageView(spriteSource.load("${RankEvaluator.rankFor(score)} rank.png")).apply {
+        val letter = rankLetter ?: RankEvaluator.rankFor(score)
+        pane.children.add(ImageView(spriteSource.load("$letter rank.png")).apply {
             isPreserveRatio = true
             fitHeight = rankSize
             layoutX = config.windowWidth / 2 - rankSize / 2

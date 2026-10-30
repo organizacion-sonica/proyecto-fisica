@@ -30,6 +30,9 @@ sealed class Hitbox {
     /** Visita de una colisión provista desde una caja. */
     abstract fun collidesWithBox(box: BoxHitbox): Boolean
 
+    /** Visita de una colisión provista desde un óvalo. */
+    abstract fun collidesWithOval(oval: OvalHitbox): Boolean
+
     // ── Aparamiento físico (sin checks de tipos desde la física) ─────────
 
     /**

@@ -1,8 +1,9 @@
 package org.example
 
+import javafx.geometry.Point2D
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
-import kotlin.math.max
+import javafx.scene.layout.Pane
 import kotlin.random.Random
 
 /**
@@ -13,8 +14,8 @@ import kotlin.random.Random
  * costado derecho y cambia de altura en cada canasta: encestar suma
  * un punto; fallar resta (sin quedar en negativo).
  */
-class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
-    SlingshotGame(spriteSource, config) {
+class BasketGameController(spriteSource: SpriteSource, config: GameConfig, onExitToMenu: () -> Unit = {}) :
+    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu) {
 
     // ── Aro de basket ─────────────────────────────────────────────────
     private lateinit var hoopView: ImageView
@@ -22,9 +23,32 @@ class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
     private val hoopWidth: Double = 140.0 * config.scale
     private val hoopHeight: Double = 140.0 * config.scale
 
+    // Línea de trayectoria predictora (muy transparente)
+    private lateinit var trajectoryLayer: Pane
+    private lateinit var trajectoryCalculator: TrajectoryCalculator
+
+    // Estado de la trayectoria predictora: -1 = lista para iniciar al estirar,
+    // 0..N = frames restantes, -2 = expirada (no se vuelve a mostrar hasta
+    // soltar y volver a estirar).
+    private var trajectoryFramesRemaining = -1
+
+    // con el aro y bloquea el paso por detrás (evita tocar la red "gratis").
+    private val backboardWidth: Double = 8.0 * config.scale
+    private val backboardHeight: Double = 0.3 * 140.0 * config.scale
+
+    // Marcador visual (borde rojo) de la hitbox invisible del backboard.
+    private lateinit var backboardVisual: javafx.scene.shape.Rectangle
+
     // ── Puntuación ────────────────────────────────────────────────────
     private lateinit var scoreLabel: Label
+    private lateinit var rankView: ImageView
+    private lateinit var timerLabel: Label
+    private lateinit var rankScreen: RankScreen
     private var score = 0
+    private var timeLeft = BASKET_TIME_LIMIT.toDouble()
+    private var timeOver = false
+    private var timerStarted = false
+    private var rankShown = false
 
     // Tiempo del mundo y cooldown para contar canastas
     private var globalTime = 0.0
@@ -34,22 +58,62 @@ class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
     private var lastScoredBird: Bird? = null
 
     override fun setupLevel() {
+        trajectoryLayer = Pane()
+        pane.children.add(trajectoryLayer)
+        trajectoryCalculator = TrajectoryCalculator(config)
+
         scoreLabel = Label("Puntos: 0").apply {
-            style = "-fx-font-size: ${20 * config.scale}px; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+            style = "-fx-font-size: ${20 * config.scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+            textFill = javafx.scene.paint.Color.WHITE
             layoutX = config.windowWidth / 2 - 50.0 * config.scale
             layoutY = 40.0 * config.scale
         }
         pane.children.add(scoreLabel)
 
+        rankView = ImageView(spriteSource.load("${RankEvaluator.rankForBasket(score)} rank.png")).apply {
+            isPreserveRatio = true
+            fitWidth = 40.0 * config.scale
+            fitHeight = 40.0 * config.scale
+            layoutX = config.windowWidth / 2 - 110.0 * config.scale
+            layoutY = 34.0 * config.scale
+        }
+        pane.children.add(rankView)
+
+        rankScreen = RankScreen(spriteSource, config)
+
+        timerLabel = Label("Tiempo: 01:00").apply {
+            style = "-fx-font-size: ${16 * config.scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
+            textFill = javafx.scene.paint.Color.WHITE
+            layoutX = config.windowWidth / 2 - 110.0 * config.scale
+            layoutY = 78.0 * config.scale
+        }
+        pane.children.add(timerLabel)
+
         createHoop()
         createPole()
+        createBackboard()
     }
 
     override fun onLevelReset() {
         score = 0
+        timeLeft = BASKET_TIME_LIMIT.toDouble()
+        timeOver = false
+        timerStarted = false
         globalTime = 0.0
         lastHoopCheckTime = 0.0
         lastScoredBird = null
+        trajectoryFramesRemaining = -1
+        rankShown = false
+        timerLabel.text = "Tiempo: 01:00"
+        refreshRank()
+    }
+
+    override fun onBirdLoadedOntoSlingshot() {
+        if (!timerStarted) {
+            timeLeft = BASKET_TIME_LIMIT.toDouble()
+            timeOver = false
+            timerStarted = true
+        }
     }
 
     override fun onLaunch() {
@@ -79,6 +143,7 @@ class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
     private fun moveHoopToNewPosition() {
         hoopY = config.windowHeight * (0.2 + Random.nextDouble() * 0.5)
         hoopView.layoutY = hoopY - hoopHeight / 2
+        moveBackboard()
     }
 
     /**
@@ -104,11 +169,79 @@ class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
         physics.addStaticBox(poleCenterX, poleHeight / 2.0, poleWidth, poleHeight)
     }
 
+    /**
+     * Barrita negra (backboard) del aro: pequeña, ubicada en el hueco del
+     * aro, y se mueve verticalmente junto con el aro.
+     */
+    private fun createBackboard() {
+        val wallX = backboardX()
+        val wallY = hoopCenterY()
+
+        // Marcador visual (borde rojo, sin relleno) para ver la hitbox.
+        val rect = javafx.scene.shape.Rectangle(
+            wallX - backboardWidth / 2.0,
+            wallY - backboardHeight / 2.0,
+            backboardWidth,
+            backboardHeight
+        ).apply {
+            fill = javafx.scene.paint.Color.TRANSPARENT
+            stroke = javafx.scene.paint.Color.RED
+            strokeWidth = 2.0
+        }
+        pane.children.add(rect)
+        hoopView.toFront()
+        backboardVisual = rect
+
+        physics.addNamedStaticBox(BACKBOARD_NAME, wallX, wallY, backboardWidth, backboardHeight)
+    }
+
+    /** X fija de la barrita (relativa al aro, que no cambia horizontalmente). */
+    private fun backboardX(): Double {
+        val targetRightX = 1875.0 * (config.windowWidth / 1920.0)
+        val hoopX = targetRightX - hoopWidth * (482.0 / 554.0)
+        return hoopX + hoopWidth * 0.30
+    }
+
+    /** Y del centro del aro (rim center), un poco más abajo para el backboard. */
+    private fun hoopCenterY(): Double = hoopY + 15.0 * config.scale
+
+    /** Desplaza la barrita y su hitbox a la nueva posición del aro. */
+    private fun moveBackboard() {
+        val wallX = backboardX()
+        val wallY = hoopCenterY()
+        backboardVisual.x = wallX - backboardWidth / 2.0
+        backboardVisual.y = wallY - backboardHeight / 2.0
+        physics.moveNamedStaticBox(BACKBOARD_NAME, wallX, wallY)
+    }
+
     // ── Detección de canasta ──────────────────────────────────────────
 
     override fun onPhysicsStep(dt: Double) {
         globalTime += dt
-        checkHoops()
+
+        // Temporizador de 60 s (arranca al cargar un pájaro en la resortera)
+        if (timerStarted && !timeOver) {
+            timeLeft -= dt
+            if (timeLeft <= 0.0) {
+                timeLeft = 0.0
+                timeOver = true
+            }
+            val remaining = kotlin.math.max(0, timeLeft.toInt())
+            timerLabel.text = "Tiempo: %02d:%02d".format(remaining / 60, remaining % 60)
+        }
+
+        if (trajectoryFramesRemaining > 0) {
+            trajectoryFramesRemaining--
+            if (trajectoryFramesRemaining == 0) {
+                trajectoryLayer.children.clear()
+            }
+        }
+        if (!timeOver) checkHoops()
+
+        if (timeOver && !rankShown) {
+            rankShown = true
+            rankScreen.show(pane, score, RankEvaluator.rankForBasket(score))
+        }
     }
 
     /**
@@ -129,7 +262,9 @@ class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
         for (bird in fallen) {
             physics.remove(bird)
             inFlight.remove(bird)
+            inFlightTime.remove(bird)
             applyMiss(bird)
+            settledBirds[bird] = 0.0
         }
 
         for (bird in inFlight) {
@@ -150,31 +285,79 @@ class BasketGameController(spriteSource: SpriteSource, config: GameConfig) :
             h.centerY > config.windowHeight + 100
     }
 
-    /** ¡Canasta! +1 punto, cooldown y el aro cambia de altura. */
+    /** ¡Canasta! +1 punto (zona verde), cooldown y el aro cambia de altura. */
     private fun scoreBasket(bird: Bird) {
-        score++
+        if (timeOver) return
+        score += 1
         scoreLabel.text = "Puntos: $score"
         lastScoredBird = bird
         lastHoopCheckTime = globalTime
         moveHoopToNewPosition()
+        refreshRank()
     }
 
-    /** Tiro fallido (pájaro asentado o caído fuera de pantalla): -1 sin negativos. */
+    /** Tiro fallido (pájaro asentado o caído fuera de pantalla): sin puntos en contra. */
     private fun applyMiss(bird: Bird) {
         if (lastScoredBird === bird) return
-        score = max(0, score - 1)
-        scoreLabel.text = "Puntos: $score"
+        // No se restan puntos: el puntaje solo sube con las canastas.
+    }
+
+    /** Actualiza la imagen del rango según el puntaje actual. */
+    private fun refreshRank() {
+        rankView.image = spriteSource.load("${RankEvaluator.rankForBasket(score)} rank.png")
     }
 
     override fun onBirdSettled(bird: Bird) {
         applyMiss(bird)
     }
 
+    override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {
+        if (trajectoryFramesRemaining == -1) {
+            trajectoryFramesRemaining = TRAJECTORY_FRAMES
+        }
+        if (trajectoryFramesRemaining > 0) {
+            showTrajectory(stretchPos, pull)
+        }
+    }
+
+    override fun onBirdGrabbed() {
+        trajectoryFramesRemaining = -1
+    }
+
+    override fun clearAimLayer() {
+        trajectoryLayer.children.clear()
+        trajectoryFramesRemaining = -1
+    }
+
+    /** Dibuja los puntos de la trayectoria esperada (muy transparentes). */
+    private fun showTrajectory(start: Point2D, pull: Point2D) {
+        trajectoryLayer.children.clear()
+        val dots = trajectoryCalculator.predictedDots(start, pull)
+        for (dot in dots) {
+            trajectoryLayer.children.add(
+                javafx.scene.shape.Circle(dot.x, dot.y, 3.5 * config.scale).apply {
+                    fill = javafx.scene.paint.Color.web("#FFFFFF", 0.22)
+                    stroke = javafx.scene.paint.Color.web("#222222", 0.12)
+                    strokeWidth = 0.5
+                }
+            )
+        }
+    }
+
     protected companion object {
+        /** Nombre de la barrita negra (backboard) en el mundo físico. */
+        const val BACKBOARD_NAME = "backboard"
+
+        /** Duración del minijuego de basket (segundos). */
+        const val BASKET_TIME_LIMIT = 90
+
+        /** Frames que se muestra la trayectoria al estirar (1 s). */
+        const val TRAJECTORY_FRAMES = 60
+
         /** Segundos sin contar canastas tras sumar una. */
         const val CHECK_COOLDOWN = 0.5
 
-        /** Radio de canasta como fracción del ancho del aro. */
-        const val HOOP_SCORE_RATIO = 0.28
+        /** Radio de la zona verde (verificación) como fracción del ancho del aro. */
+        const val HOOP_SCORE_RATIO = 0.18
     }
 }
