@@ -180,7 +180,7 @@ class MenuController(
 
         val minigames = listOf(
             Pair("Acertar en las dianas", { fadeOutAndStart(onStartGame) }),
-            Pair("Tiro al aro", { fadeOutAndStart(onStartBasketGame) })
+            Pair("Basket", { fadeOutAndStart(onStartBasketGame) })
         )
 
         val row = javafx.scene.layout.HBox(

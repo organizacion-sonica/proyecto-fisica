@@ -1,0 +1,566 @@
+{
+  "app/build.gradle.kts": {
+    "mtime": 1793361460.4266703,
+    "seen": 1793365157.185853,
+    "ast_hash": "e8a26ce7c71668876d49427cf70bfa73",
+    "semantic_hash": "e8a26ce7c71668876d49427cf70bfa73"
+  },
+  "app/src/main/kotlin/org/example/AbilityEffects.kt": {
+    "mtime": 1793361460.427489,
+    "seen": 1793365157.1858585,
+    "ast_hash": "4f3b13ed079f55223e1caa150c32da63",
+    "semantic_hash": "4f3b13ed079f55223e1caa150c32da63"
+  },
+  "app/src/main/kotlin/org/example/AbstractEntity.kt": {
+    "mtime": 1793361460.427705,
+    "seen": 1793365157.1858616,
+    "ast_hash": "64fa488dfb3e292644a4c557b5732a94",
+    "semantic_hash": "64fa488dfb3e292644a4c557b5732a94"
+  },
+  "app/src/main/kotlin/org/example/AngleIndicator.kt": {
+    "mtime": 1793361476.352367,
+    "seen": 1793365157.185864,
+    "ast_hash": "8748cc038271eed758ecd2858bd96b66",
+    "semantic_hash": "8748cc038271eed758ecd2858bd96b66"
+  },
+  "app/src/main/kotlin/org/example/BackgroundView.kt": {
+    "mtime": 1793361455.2126615,
+    "seen": 1793365157.1858656,
+    "ast_hash": "0cff38a5a67ee1ec316fba1e1704d7c1",
+    "semantic_hash": "0cff38a5a67ee1ec316fba1e1704d7c1"
+  },
+  "app/src/main/kotlin/org/example/BasketGameController.kt": {
+    "mtime": 1793361476.3525712,
+    "seen": 1793365157.1858675,
+    "ast_hash": "d861aa37d2201e27bb5a8a3bad372a00",
+    "semantic_hash": "d861aa37d2201e27bb5a8a3bad372a00"
+  },
+  "app/src/main/kotlin/org/example/Bird.kt": {
+    "mtime": 1793361476.3525712,
+    "seen": 1793365157.1858692,
+    "ast_hash": "8f99ab1611ce82b8150c7e20beae8f29",
+    "semantic_hash": "8f99ab1611ce82b8150c7e20beae8f29"
+  },
+  "app/src/main/kotlin/org/example/BirdPile.kt": {
+    "mtime": 1793361460.4291425,
+    "seen": 1793365157.1858706,
+    "ast_hash": "ff08e474946edb9a545e4be34e022475",
+    "semantic_hash": "ff08e474946edb9a545e4be34e022475"
+  },
+  "app/src/main/kotlin/org/example/Bomb.kt": {
+    "mtime": 1793361460.4296703,
+    "seen": 1793365157.185872,
+    "ast_hash": "4102d16f2538d501ea061e38189353c3",
+    "semantic_hash": "4102d16f2538d501ea061e38189353c3"
+  },
+  "app/src/main/kotlin/org/example/Box2DWorld.kt": {
+    "mtime": 1793362244.3237622,
+    "seen": 1793365157.1858735,
+    "ast_hash": "2d6c3296f231f1e2780f581e8d875014",
+    "semantic_hash": "2d6c3296f231f1e2780f581e8d875014"
+  },
+  "app/src/main/kotlin/org/example/BoxHitbox.kt": {
+    "mtime": 1793361476.353178,
+    "seen": 1793365157.1858747,
+    "ast_hash": "2f7f572e9a45f6f347b0c4dc87c793a4",
+    "semantic_hash": "2f7f572e9a45f6f347b0c4dc87c793a4"
+  },
+  "app/src/main/kotlin/org/example/Chuck.kt": {
+    "mtime": 1793361460.4305842,
+    "seen": 1793365157.1858761,
+    "ast_hash": "c73a662625d772b9337a4380ec76afd8",
+    "semantic_hash": "c73a662625d772b9337a4380ec76afd8"
+  },
+  "app/src/main/kotlin/org/example/CircularHitbox.kt": {
+    "mtime": 1793361476.3533847,
+    "seen": 1793365157.1858778,
+    "ast_hash": "0002b8fc21dd42be6849d29cacc9e021",
+    "semantic_hash": "0002b8fc21dd42be6849d29cacc9e021"
+  },
+  "app/src/main/kotlin/org/example/CollisionDetector.kt": {
+    "mtime": 1793361476.3535905,
+    "seen": 1793365157.1858792,
+    "ast_hash": "8835e14c3e6d89ddf24ba3b228e75610",
+    "semantic_hash": "8835e14c3e6d89ddf24ba3b228e75610"
+  },
+  "app/src/main/kotlin/org/example/DianaManager.kt": {
+    "mtime": 1793361476.3535905,
+    "seen": 1793365157.1858807,
+    "ast_hash": "796baa5492ae05fdcb1cead2f2598b0a",
+    "semantic_hash": "796baa5492ae05fdcb1cead2f2598b0a"
+  },
+  "app/src/main/kotlin/org/example/EntityFactory.kt": {
+    "mtime": 1793361476.353697,
+    "seen": 1793365157.1858823,
+    "ast_hash": "dbb49080c51adfb575665be79faebf37",
+    "semantic_hash": "dbb49080c51adfb575665be79faebf37"
+  },
+  "app/src/main/kotlin/org/example/EntityView.kt": {
+    "mtime": 1793361476.353697,
+    "seen": 1793365157.185884,
+    "ast_hash": "c4bf8a10dca0b1b4d9cb21c28d7ecec2",
+    "semantic_hash": "c4bf8a10dca0b1b4d9cb21c28d7ecec2"
+  },
+  "app/src/main/kotlin/org/example/ExplosionPlayer.kt": {
+    "mtime": 1793361460.4326305,
+    "seen": 1793365157.1858852,
+    "ast_hash": "311d97b842e02931acbe53681be0cd29",
+    "semantic_hash": "311d97b842e02931acbe53681be0cd29"
+  },
+  "app/src/main/kotlin/org/example/FileSpriteSource.kt": {
+    "mtime": 1793361460.4326704,
+    "seen": 1793365157.1858861,
+    "ast_hash": "258f72fbce2f268b5c35493341b3ae80",
+    "semantic_hash": "258f72fbce2f268b5c35493341b3ae80"
+  },
+  "app/src/main/kotlin/org/example/GameConfig.kt": {
+    "mtime": 1793361455.218123,
+    "seen": 1793365157.1858876,
+    "ast_hash": "f742b94abf9c374283cf1c168e84cb5c",
+    "semantic_hash": "f742b94abf9c374283cf1c168e84cb5c"
+  },
+  "app/src/main/kotlin/org/example/GameController.kt": {
+    "mtime": 1793364147.829771,
+    "seen": 1793365157.1858888,
+    "ast_hash": "af68acb00ff216967ebd6d44ad20b9c8",
+    "semantic_hash": "af68acb00ff216967ebd6d44ad20b9c8"
+  },
+  "app/src/main/kotlin/org/example/GameEntity.kt": {
+    "mtime": 1793361476.353697,
+    "seen": 1793365157.18589,
+    "ast_hash": "c5a58e1ca0d699890f5713ab6547bbc1",
+    "semantic_hash": "c5a58e1ca0d699890f5713ab6547bbc1"
+  },
+  "app/src/main/kotlin/org/example/Hitbox.kt": {
+    "mtime": 1793361476.3544502,
+    "seen": 1793365157.1858916,
+    "ast_hash": "78d2a4a8b70eb1b42c7a5987900e63b5",
+    "semantic_hash": "78d2a4a8b70eb1b42c7a5987900e63b5"
+  },
+  "app/src/main/kotlin/org/example/LaunchZone.kt": {
+    "mtime": 1793361476.3544502,
+    "seen": 1793365157.1858928,
+    "ast_hash": "4377ea3421f7747a4f53ba64ba1aab74",
+    "semantic_hash": "4377ea3421f7747a4f53ba64ba1aab74"
+  },
+  "app/src/main/kotlin/org/example/MenuController.kt": {
+    "mtime": 1793361476.3544502,
+    "seen": 1793365157.1858943,
+    "ast_hash": "b33ea7d4f81d8688b80e085870bc8e7d",
+    "semantic_hash": "b33ea7d4f81d8688b80e085870bc8e7d"
+  },
+  "app/src/main/kotlin/org/example/OvalHitbox.kt": {
+    "mtime": 1793361476.354697,
+    "seen": 1793365157.1858954,
+    "ast_hash": "265b92f17fee0649fef5693c2b75e4a8",
+    "semantic_hash": "265b92f17fee0649fef5693c2b75e4a8"
+  },
+  "app/src/main/kotlin/org/example/PhysicsWorld.kt": {
+    "mtime": 1793361476.3550932,
+    "seen": 1793365157.1858966,
+    "ast_hash": "d41129b375d9d4c6081768a89a5298a6",
+    "semantic_hash": "d41129b375d9d4c6081768a89a5298a6"
+  },
+  "app/src/main/kotlin/org/example/RankEvaluator.kt": {
+    "mtime": 1793361476.3552897,
+    "seen": 1793365157.185898,
+    "ast_hash": "5c70a1d21f969e2d495cf11c79c4ab49",
+    "semantic_hash": "5c70a1d21f969e2d495cf11c79c4ab49"
+  },
+  "app/src/main/kotlin/org/example/RankScreen.kt": {
+    "mtime": 1793361476.3552897,
+    "seen": 1793365157.1858993,
+    "ast_hash": "46f152a2a334cad82a0d93be7fcbd1dc",
+    "semantic_hash": "46f152a2a334cad82a0d93be7fcbd1dc"
+  },
+  "app/src/main/kotlin/org/example/Red.kt": {
+    "mtime": 1793361460.4344184,
+    "seen": 1793365157.1859004,
+    "ast_hash": "35b883f48cd6e548ce42be9793a3a72b",
+    "semantic_hash": "35b883f48cd6e548ce42be9793a3a72b"
+  },
+  "app/src/main/kotlin/org/example/Resoltera.kt": {
+    "mtime": 1793361460.4346201,
+    "seen": 1793365157.185902,
+    "ast_hash": "159b648587fc537c1e0d8bfe23186468",
+    "semantic_hash": "159b648587fc537c1e0d8bfe23186468"
+  },
+  "app/src/main/kotlin/org/example/ScoreBoard.kt": {
+    "mtime": 1793364056.1908658,
+    "seen": 1793365157.1859035,
+    "ast_hash": "92cbe5d380f927d9d9061afadfaaa2aa",
+    "semantic_hash": "92cbe5d380f927d9d9061afadfaaa2aa"
+  },
+  "app/src/main/kotlin/org/example/ScreenMapper.kt": {
+    "mtime": 1793362232.1660366,
+    "seen": 1793365157.185905,
+    "ast_hash": "a3c476d7dddc1a241481d8c2870d6165",
+    "semantic_hash": "a3c476d7dddc1a241481d8c2870d6165"
+  },
+  "app/src/main/kotlin/org/example/SlingshotApp.kt": {
+    "mtime": 1793361476.3556046,
+    "seen": 1793365157.1859062,
+    "ast_hash": "90c1489cb877d5bf55ee2b3993f674e5",
+    "semantic_hash": "90c1489cb877d5bf55ee2b3993f674e5"
+  },
+  "app/src/main/kotlin/org/example/SlingshotGame.kt": {
+    "mtime": 1793361476.355697,
+    "seen": 1793365157.1859076,
+    "ast_hash": "09208ccd6b3a46b95034b8fd86850928",
+    "semantic_hash": "09208ccd6b3a46b95034b8fd86850928"
+  },
+  "app/src/main/kotlin/org/example/SlingshotView.kt": {
+    "mtime": 1793361455.2215714,
+    "seen": 1793365157.185909,
+    "ast_hash": "d97320df277ee2c2185feb79566d2323",
+    "semantic_hash": "d97320df277ee2c2185feb79566d2323"
+  },
+  "app/src/main/kotlin/org/example/SpriteSource.kt": {
+    "mtime": 1793361460.4354546,
+    "seen": 1793365157.1859102,
+    "ast_hash": "2aaceaabb68a7d479a69a01eaf19f8b8",
+    "semantic_hash": "2aaceaabb68a7d479a69a01eaf19f8b8"
+  },
+  "app/src/main/kotlin/org/example/Target.kt": {
+    "mtime": 1793361476.355697,
+    "seen": 1793365157.1859112,
+    "ast_hash": "1dd83801277d1b6d8f3c0b92fb29231b",
+    "semantic_hash": "1dd83801277d1b6d8f3c0b92fb29231b"
+  },
+  "app/src/main/kotlin/org/example/TrajectoryCalculator.kt": {
+    "mtime": 1793361460.43624,
+    "seen": 1793365157.185913,
+    "ast_hash": "fb344860e856a3c7476162669b7651cd",
+    "semantic_hash": "fb344860e856a3c7476162669b7651cd"
+  },
+  "app/src/test/kotlin/org/example/AppTest.kt": {
+    "mtime": 1793361455.2230294,
+    "seen": 1793365157.1859143,
+    "ast_hash": "836e32f9c59a87a16eac861c34087d35",
+    "semantic_hash": "836e32f9c59a87a16eac861c34087d35"
+  },
+  "gradlew": {
+    "mtime": 1793361455.2674344,
+    "seen": 1793365157.1859155,
+    "ast_hash": "65578da0358a01f31a6a78dfcf47e2bf",
+    "semantic_hash": "65578da0358a01f31a6a78dfcf47e2bf"
+  },
+  "settings.gradle.kts": {
+    "mtime": 1793361455.2676616,
+    "seen": 1793365157.1859167,
+    "ast_hash": "9a2a229e3e3841c6439d0e3f56ae2ecb",
+    "semantic_hash": "9a2a229e3e3841c6439d0e3f56ae2ecb"
+  },
+  "AGENTS.md": {
+    "mtime": 1793365301.190305,
+    "seen": 1793365326.1594958,
+    "ast_hash": "f36539ecc9af68f33ebd72770ce4a19e",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793361513.605981,
+    "seen": 1793365326.159499,
+    "ast_hash": "916f4c31aaa35d6b867dae9a7f54270d",
+    "semantic_hash": ""
+  },
+  "elementos graficos/A rank.png": {
+    "mtime": 1793361455.2241578,
+    "seen": 1793365326.1595008,
+    "ast_hash": "b7edf3e4743f6a4c128d62a9a53264d8",
+    "semantic_hash": ""
+  },
+  "elementos graficos/B rank.png": {
+    "mtime": 1793361455.22451,
+    "seen": 1793365326.1595023,
+    "ast_hash": "cc5152eef7125a8cf163cf44282862b8",
+    "semantic_hash": ""
+  },
+  "elementos graficos/C rank.png": {
+    "mtime": 1793361455.2250743,
+    "seen": 1793365326.1595037,
+    "ast_hash": "852ed80b2e5e4bfb828fbd0dc8bd8220",
+    "semantic_hash": ""
+  },
+  "elementos graficos/D rank.png": {
+    "mtime": 1793361455.2254775,
+    "seen": 1793365326.159505,
+    "ast_hash": "72d0d6c4b7ec7f218e3cd16a6a8e3d5b",
+    "semantic_hash": ""
+  },
+  "elementos graficos/E rank.png": {
+    "mtime": 1793361455.2260125,
+    "seen": 1793365326.1595058,
+    "ast_hash": "4380e75135230a7e6ce57c104b00be7f",
+    "semantic_hash": ""
+  },
+  "elementos graficos/Red.png": {
+    "mtime": 1793361455.226609,
+    "seen": 1793365326.1595073,
+    "ast_hash": "d3ceec9393825279b4a56691d5a92ab8",
+    "semantic_hash": ""
+  },
+  "elementos graficos/S rank.png": {
+    "mtime": 1793361455.2270386,
+    "seen": 1793365326.1595085,
+    "ast_hash": "92a902dd97c8cde33abc615d94ee3d5c",
+    "semantic_hash": ""
+  },
+  "elementos graficos/aro_de_basket.png": {
+    "mtime": 1793361455.2275696,
+    "seen": 1793365326.1595097,
+    "ast_hash": "eec224ffdbfd9e915d286e120a8097d2",
+    "semantic_hash": ""
+  },
+  "elementos graficos/barrote_de_hierro.png": {
+    "mtime": 1793361455.2297294,
+    "seen": 1793365326.1595109,
+    "ast_hash": "b6ee2cdb76adb89e97a38bf9cdc21ee0",
+    "semantic_hash": ""
+  },
+  "elementos graficos/barrote_de_hierro_con_diana.png": {
+    "mtime": 1793361455.2302048,
+    "seen": 1793365326.159512,
+    "ast_hash": "ab858991bf9728029a8839e962518c0d",
+    "semantic_hash": ""
+  },
+  "elementos graficos/bg.jpg": {
+    "mtime": 1793361455.2307363,
+    "seen": 1793365326.1595132,
+    "ast_hash": "39a3266baeae197b7090c618ea94df62",
+    "semantic_hash": ""
+  },
+  "elementos graficos/bomb.png": {
+    "mtime": 1793361455.2312348,
+    "seen": 1793365326.1595147,
+    "ast_hash": "4db0d685f9577ecf0076c0edf9a2e891",
+    "semantic_hash": ""
+  },
+  "elementos graficos/chuck .png": {
+    "mtime": 1793361455.2315505,
+    "seen": 1793365326.1595156,
+    "ast_hash": "49c5ffdff2bafbd3465c49caae9b529e",
+    "semantic_hash": ""
+  },
+  "elementos graficos/diana potente.png": {
+    "mtime": 1793361476.3561578,
+    "seen": 1793365326.1595168,
+    "ast_hash": "4e58e7aedc79c2557c9cd764b1378552",
+    "semantic_hash": ""
+  },
+  "elementos graficos/diana.png": {
+    "mtime": 1793361455.2327642,
+    "seen": 1793365326.1595182,
+    "ast_hash": "697b7fa6b19adfe2200f5e42c0a48e0c",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_00.png": {
+    "mtime": 1793361455.2335348,
+    "seen": 1793365326.1595194,
+    "ast_hash": "4c801a138811123c2873ec90de9d878a",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_01.png": {
+    "mtime": 1793361455.2343326,
+    "seen": 1793365326.1595209,
+    "ast_hash": "0d8883e62e41737efb5e0783d3e51454",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_02.png": {
+    "mtime": 1793361455.2349825,
+    "seen": 1793365326.1595218,
+    "ast_hash": "da1d46d62c4ea7c294ddd21f4e3c52e9",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_03.png": {
+    "mtime": 1793361455.235855,
+    "seen": 1793365326.159523,
+    "ast_hash": "7a50783896a244a805503813bb15b557",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_04.png": {
+    "mtime": 1793361455.2366912,
+    "seen": 1793365326.1595244,
+    "ast_hash": "634926df354d458bfd2421f561ce8372",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_05.png": {
+    "mtime": 1793361455.2373657,
+    "seen": 1793365326.1595259,
+    "ast_hash": "df9d1c0593760382b3d7b0e53f8decae",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_06.png": {
+    "mtime": 1793361455.238283,
+    "seen": 1793365326.1595268,
+    "ast_hash": "ac5cbc954070eb1b0f95c2ca4b9ce781",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_07.png": {
+    "mtime": 1793361455.239134,
+    "seen": 1793365326.1595283,
+    "ast_hash": "e49cfd21a011da1e231e1104735b9a89",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_08.png": {
+    "mtime": 1793361455.2398374,
+    "seen": 1793365326.1595294,
+    "ast_hash": "a93d582ce9505fd2d737e7248b1422ff",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_09.png": {
+    "mtime": 1793361455.240716,
+    "seen": 1793365326.1595304,
+    "ast_hash": "d9d42e2d8cfede5c4281c2b044841240",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_10.png": {
+    "mtime": 1793361455.241588,
+    "seen": 1793365326.159532,
+    "ast_hash": "7ef1fdece13f53f148dc66e36b2f57c0",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_11.png": {
+    "mtime": 1793361455.2424166,
+    "seen": 1793365326.1595333,
+    "ast_hash": "52ff6b9c9980a5068f8cd0e602091bc5",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_12.png": {
+    "mtime": 1793361455.243304,
+    "seen": 1793365326.1595345,
+    "ast_hash": "6f9d4f05032d02f6578d750771fccbf8",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_13.png": {
+    "mtime": 1793361455.244216,
+    "seen": 1793365326.159536,
+    "ast_hash": "227728bdce0153138008aeebdb1a9d81",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_14.png": {
+    "mtime": 1793361455.2450776,
+    "seen": 1793365326.159537,
+    "ast_hash": "41232430cf419b6bbb9970b856100df7",
+    "semantic_hash": ""
+  },
+  "elementos graficos/explosion_15.png": {
+    "mtime": 1793361455.2456899,
+    "seen": 1793365326.1595385,
+    "ast_hash": "cc0ec616ebd7ae766426154214b4dc97",
+    "semantic_hash": ""
+  },
+  "elementos graficos/palo.png": {
+    "mtime": 1793361455.250004,
+    "seen": 1793365326.1595397,
+    "ast_hash": "4caa32d1b8d3f07120ac8bc0e7a7485c",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_00.png": {
+    "mtime": 1793361455.2508504,
+    "seen": 1793365326.159541,
+    "ast_hash": "88d12e4a06215321fcecf5af0d4e9adb",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_01.png": {
+    "mtime": 1793361455.25173,
+    "seen": 1793365326.1595423,
+    "ast_hash": "61a7a717d20208d73bfd2792c6fae1d9",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_02.png": {
+    "mtime": 1793361455.2527168,
+    "seen": 1793365326.1595435,
+    "ast_hash": "5d11152b6e3161723ff37bb94c859d3a",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_03.png": {
+    "mtime": 1793361455.253553,
+    "seen": 1793365326.1595452,
+    "ast_hash": "713543dbac7e3c8e20307d20a2bdf96e",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_04.png": {
+    "mtime": 1793361455.2541814,
+    "seen": 1793365326.1595464,
+    "ast_hash": "d94a3a4a387455343c52a02eac40700a",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_05.png": {
+    "mtime": 1793361455.2550979,
+    "seen": 1793365326.1595476,
+    "ast_hash": "a7bfbad0f0e80e58ef8b86d77381316e",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_06.png": {
+    "mtime": 1793361455.256004,
+    "seen": 1793365326.159549,
+    "ast_hash": "e4d07ba872db59644a621d8f2e24d1a1",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_07.png": {
+    "mtime": 1793361455.2568803,
+    "seen": 1793365326.1595502,
+    "ast_hash": "d8ea58e015f71fcc8cdd0357746a0344",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_08.png": {
+    "mtime": 1793361455.257745,
+    "seen": 1793365326.1595514,
+    "ast_hash": "ae1e23af6f41c6e54ed1fdc85506e331",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_09.png": {
+    "mtime": 1793361455.2584407,
+    "seen": 1793365326.1595528,
+    "ast_hash": "1e431dc86ccef50ee949c67cb572395b",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_10.png": {
+    "mtime": 1793361455.2593205,
+    "seen": 1793365326.159555,
+    "ast_hash": "413626d083b6533bf4247d5a681e11b3",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_11.png": {
+    "mtime": 1793361455.2602024,
+    "seen": 1793365326.1595564,
+    "ast_hash": "cca029602176578ae725bfd6abedd3cd",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_12.png": {
+    "mtime": 1793361455.2610438,
+    "seen": 1793365326.1595576,
+    "ast_hash": "2920e07e1fdc8cdeecb0b0ffda66c701",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_13.png": {
+    "mtime": 1793361455.261956,
+    "seen": 1793365326.159559,
+    "ast_hash": "06811b9dc1d2d9b1817951749fe53640",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_14.png": {
+    "mtime": 1793361455.2627707,
+    "seen": 1793365326.1595602,
+    "ast_hash": "a45e3971fb79cc19fd72e1d878102450",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_15.png": {
+    "mtime": 1793361455.2637532,
+    "seen": 1793365326.1595733,
+    "ast_hash": "97a01087e536e3f2928167000aa28c41",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_16.png": {
+    "mtime": 1793361455.2644105,
+    "seen": 1793365326.1595745,
+    "ast_hash": "ed0b171cef5df04ee26e01ad2e2de285",
+    "semantic_hash": ""
+  },
+  "elementos graficos/sprite_17.png": {
+    "mtime": 1793361455.2650626,
+    "seen": 1793365326.1595757,
+    "ast_hash": "364704b330edbc70ccf0523aa0aedd34",
+    "semantic_hash": ""
+  }
+}
