@@ -37,7 +37,7 @@ class GameController(spriteSource: SpriteSource, config: GameConfig, onExitToMen
         scoreBoard = ScoreBoard(config).also {
             it.placeIn(pane)
             // Al agotar el tiempo se muestra la pantalla final con el rango.
-            it.onTimeOver = { rankScreen.show(pane, scoreBoard.score) }
+            it.onTimeOver = { rankScreen.show(pane, scoreBoard.score()) }
         }
         dianaManager = DianaManager(spriteSource, config, pane).also {
             it.onTargetHit = { points -> scoreBoard.addPoints(points) }

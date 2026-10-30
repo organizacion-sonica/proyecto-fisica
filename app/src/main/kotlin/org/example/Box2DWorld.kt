@@ -18,9 +18,9 @@ import kotlin.math.sqrt
  */
 class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
+    private val mapper = ScreenMapper(config)
     private val world: World<Body> = World()
 
-    private val ppm: Float = config.ppm
     private val bodies = mutableMapOf<GameEntity, Body>()
     private val namedBodies = mutableMapOf<String, Body>()
 
@@ -29,21 +29,13 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         createGround()
     }
 
-    // ── Conversiones de coordenadas ────────────────────────────────────
+    // ── Conversiones de coordenadas (delegadas a ScreenMapper) ─────────
 
-    /** Pantalla (px, Y-down) → dyn4j (m, Y-up) */
-    fun screenToWorld(sx: Double, sy: Double): Vector2 {
-        val wx = sx / ppm
-        val wy = (config.windowHeight - sy) / ppm
-        return Vector2(wx, wy)
-    }
+    /** Pantalla (px, Y-down) → dyn4j (m, Y-up). */
+    fun screenToWorld(sx: Double, sy: Double): Vector2 = mapper.toWorld(sx, sy)
 
-    /** dyn4j (m, Y-up) → Pantalla (px, Y-down) */
-    fun worldToScreen(wx: Double, wy: Double): Pair<Double, Double> {
-        val sx = wx * ppm
-        val sy = config.windowHeight - wy * ppm
-        return sx to sy
-    }
+    /** dyn4j (m, Y-up) → Pantalla (px, Y-down). */
+    fun worldToScreen(wx: Double, wy: Double): Pair<Double, Double> = mapper.toScreen(wx, wy)
 
     // ── Cuerpos ────────────────────────────────────────────────────────
 
@@ -52,11 +44,11 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         val ground = Body()
         ground.setMass(MassType.INFINITE) // estático
 
-        val groundWidth = config.windowWidth / ppm * 2
+        val groundWidth = config.windowWidth / mapper.pixelsPerMeter * 2
         val groundShape = Rectangle(groundWidth, 1.0)
         ground.addFixture(groundShape, 0.0, 0.0, 0.0)
         // La superficie del piso queda a 'floorMargin' px del borde inferior.
-        ground.translate(config.windowWidth / 2.0 / ppm, config.floorMargin / ppm - 0.5)
+        ground.translate(config.windowWidth / 2.0 / mapper.pixelsPerMeter, config.floorMargin / mapper.pixelsPerMeter - 0.5)
 
         world.addBody(ground)
     }
@@ -67,10 +59,10 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         val pos = screenToWorld(bx, by)
 
         val body = Body()
-        val shape = Circle(radius / ppm)
+        val shape = Circle(radius / mapper.pixelsPerMeter)
         // Calcular densidad para que la masa coincida: masa = densidad * área
         // Área del círculo = π * r²
-        val density = mass / (Math.PI * (radius / ppm) * (radius / ppm))
+        val density = mass / (Math.PI * (radius / mapper.pixelsPerMeter) * (radius / mapper.pixelsPerMeter))
         body.addFixture(shape, density, 0.4, 0.3) // densidad, fricción, rebote
         // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
         body.setMass(MassType.NORMAL) // dinámico
@@ -91,7 +83,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         restitution: Double
     ) {
         val body = Body()
-        val shape = Rectangle(widthPx / ppm, heightPx / ppm)
+        val shape = Rectangle(widthPx / mapper.pixelsPerMeter, heightPx / mapper.pixelsPerMeter)
         body.addFixture(shape, 0.0, friction, restitution)
         // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
         body.setMass(MassType.INFINITE)
@@ -111,7 +103,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         restitution: Double
     ) {
         val body = Body()
-        val shape = Rectangle(widthPx / ppm, heightPx / ppm)
+        val shape = Rectangle(widthPx / mapper.pixelsPerMeter, heightPx / mapper.pixelsPerMeter)
         body.addFixture(shape, 0.0, friction, restitution)
         body.setMass(MassType.INFINITE)
         val pos = screenToWorld(centerXPx, centerYPx)
@@ -135,7 +127,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         // Impulso = masa * velocidad deseada (dyn4j usa kg·m/s).
         // dyn4j usa Y-up, JavaFX usa Y-down → invertir vy.
         val mass = body.mass.mass
-        val impulse = Vector2(mass * vx / ppm, mass * -vy / ppm)
+        val impulse = Vector2(mass * vx / mapper.pixelsPerMeter, mass * -vy / mapper.pixelsPerMeter)
         body.applyImpulse(impulse)
     }
 
@@ -193,7 +185,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         }
         val cx = centerWorld.x
         val cy = centerWorld.y
-        val radiusM = radiusPx / ppm
+        val radiusM = radiusPx / mapper.pixelsPerMeter
 
         // Aplicar fuerza radial a todos los cuerpos dinámicos cercanos
         for ((entity, otherBody) in bodies) {
@@ -209,8 +201,8 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
             if (dist > 0 && dist < radiusM) {
                 // Fuerza inversamente proporcional a la distancia
                 val falloff = 1.0 - dist / radiusM
-                val fx = (dx / dist) * force * falloff / ppm
-                val fy = (dy / dist) * force * falloff / ppm
+                val fx = (dx / dist) * force * falloff / mapper.pixelsPerMeter
+                val fy = (dy / dist) * force * falloff / mapper.pixelsPerMeter
                 otherBody.applyImpulse(Vector2(fx, fy))
             }
         }

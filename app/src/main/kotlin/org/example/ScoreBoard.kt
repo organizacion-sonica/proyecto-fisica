@@ -21,7 +21,10 @@ class ScoreBoard(private val config: GameConfig) {
         textFill = javafx.scene.paint.Color.WHITE
     }
 
-    var score: Int = 0
+    private var score: Int = 0
+
+    /** Puntaje actual (solo lectura desde fuera). */
+    fun score(): Int = score
 
     private var timeLeft = config.timeLimitSeconds.toDouble() // segundos restantes
     private var timeOver = false
