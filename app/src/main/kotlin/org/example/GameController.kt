@@ -24,6 +24,8 @@ class GameController(spriteSource: SpriteSource, config: GameConfig, onExitToMen
     private lateinit var explosionPlayer: ExplosionPlayer
     private lateinit var rankScreen: RankScreen
 
+    private var timerStarted = false
+
     override fun setupLevel() {
         angleIndicator = AngleIndicator(config).also { it.placeIn(pane) }
         trajectoryLayer = Pane()
@@ -45,7 +47,7 @@ class GameController(spriteSource: SpriteSource, config: GameConfig, onExitToMen
     }
 
     override fun onPhysicsStep(dt: Double) {
-        scoreBoard.tick(dt)
+        if (timerStarted) scoreBoard.tick(dt)
         dianaManager.update(dt, inFlight)
     }
 
@@ -57,6 +59,22 @@ class GameController(spriteSource: SpriteSource, config: GameConfig, onExitToMen
     override fun clearAimLayer() {
         angleIndicator.reset()
         trajectoryLayer.children.clear()
+    }
+
+    /**
+     * Habilidad del pájaro lanzado (G). El pájaro decide su efecto por
+     * polimorfismo y pide los visuales vía [explosionAt]; el controlador
+     * nunca pregunta el tipo del pájaro (OCP).
+     */
+    override fun onBirdLoadedOntoSlingshot() {
+        if (!timerStarted) {
+            scoreBoard.reset()
+            timerStarted = true
+        }
+    }
+
+    override fun onLevelReset() {
+        timerStarted = false
     }
 
     /**

@@ -22,6 +22,9 @@ interface Bird : GameEntity {
      */
     fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean
 
+    /** Indica si la habilidad especial aún está disponible para este vuelo. */
+    fun canUseAbility(): Boolean = !abilityUsed
+
     /** Posición del centro del pájaro (efectos visuales, explosión, etc.). */
     val centerX: Double
     val centerY: Double

@@ -64,7 +64,7 @@ class MenuController(
 
     /** Crea el menú principal. */
     private fun createMainMenu(): VBox {
-        val title = Label("ANGRY BIRDS CLONE").apply {
+        val title = Label("MINIJUEGOS DE FÍSICA").apply {
             font = Font.font("Arial", FontWeight.BOLD, 72.0 * s)
             textFill = Color.WHITE
             style = "-fx-effect: dropshadow(gaussian, black, 10, 0.5, 2, 2);"
@@ -191,7 +191,8 @@ class MenuController(
                     Label(name).apply {
                         font = Font.font("Arial", FontWeight.BOLD, 22.0 * s)
                         textFill = Color.WHITE
-                        maxWidth = 200.0 * s
+                        maxWidth = 300.0 * s
+                        prefHeight = 60.0 * s
                         isWrapText = true
                         alignment = Pos.CENTER
                     },

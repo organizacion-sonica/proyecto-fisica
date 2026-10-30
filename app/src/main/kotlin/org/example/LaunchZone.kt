@@ -20,4 +20,7 @@ class LaunchZone(
     /** Devuelve true si el punto (px, py) está dentro de la zona. */
     fun contains(px: Double, py: Double): Boolean =
         px in x..(x + size) && py in y..(y + size)
+
+    /** Área (px²) de la zona de lanzamiento (comportamiento del concepto). */
+    fun area(): Double = size * size
 }

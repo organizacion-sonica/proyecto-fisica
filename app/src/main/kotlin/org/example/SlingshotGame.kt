@@ -42,9 +42,16 @@ abstract class SlingshotGame(
     // Pájaros ya lanzados que siguen en vuelo
     protected val inFlight = mutableListOf<Bird>()
 
+    // Hitbox al raz del piso: el pájaro se desvanece al tocarla.
+    private lateinit var floorHitbox: BoxHitbox
+    private lateinit var floorVisual: javafx.scene.shape.Rectangle
+
+    protected val inFlightTime = mutableMapOf<Bird, Double>()
+
     // Pájaros que quedaron en el piso y cuánto tiempo llevan ahí
-    // (desaparecen tras SETTLE_DISAPPEAR_SECONDS).
-    private val settledBirds = mutableMapOf<Bird, Double>()
+    // (se desvanecen tras SETTLE_FADE_START segundos).
+    protected val settledBirds = mutableMapOf<Bird, Double>()
+    protected val fadingBirds = mutableSetOf<Bird>()
 
     // Último pájaro lanzado; la habilidad especial solo aplica a él.
     protected var lastLaunched: Bird? = null
@@ -84,6 +91,8 @@ abstract class SlingshotGame(
         inFlight.clear()
         lastLaunched = null
         settledBirds.clear()
+        fadingBirds.clear()
+        inFlightTime.clear()
 
         pane.children.clear()
         setupWorld()
@@ -100,6 +109,22 @@ abstract class SlingshotGame(
 
         launchZone = LaunchZone(config, slingshot.anchor.x, slingshot.anchor.y)
 
+        // Hitbox al raz del piso (unos píxeles), con borde rojo para verla.
+        floorHitbox = BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0)
+        floorHitbox.recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
+        val fv = javafx.scene.shape.Rectangle(
+            0.0,
+            config.windowHeight - 10.0,
+            config.windowWidth,
+            10.0
+        ).apply {
+            fill = javafx.scene.paint.Color.TRANSPARENT
+            stroke = javafx.scene.paint.Color.RED
+            strokeWidth = 1.0
+        }
+        pane.children.add(fv)
+        floorVisual = fv
+
         setupLevel()
 
         pile = BirdPile(pane, entityFactory, config)
@@ -110,25 +135,31 @@ abstract class SlingshotGame(
     protected abstract fun setupLevel()
 
     /** Ajustes al reiniciar el nivel (puntaje a cero, cronómetro...). */
-    protected open fun onLevelReset() {}
+    protected open fun onLevelReset() { Unit }
 
     /** Lógica propia del nivel en cada paso fijo de física. */
     protected abstract fun onPhysicsStep(dt: Double)
 
     /** Se sigue estirando: efectos de ayuda de tiro (ángulo, trayectoria...). */
-    protected open fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {}
+    protected open fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) { Unit }
 
     /** Se suelta la resortera (antes de decidir si el tiro es válido). */
-    protected open fun clearAimLayer() {}
+    protected open fun clearAimLayer() { Unit }
 
     /** Tecla G: habilidad especial del último pájaro lanzado, si la hay. */
-    protected open fun onAbilityKey() {}
+    protected open fun onAbilityKey() { Unit }
 
     /** Tras lanzar un pájaro (para que cada nivel limpie su estado). */
-    protected open fun onLaunch() {}
+    protected open fun onLaunch() { Unit }
 
     /** Un pájaro lanzado quedó en reposo (puntos de basket, etc.). */
-    protected open fun onBirdSettled(bird: Bird) {}
+    protected open fun onBirdSettled(bird: Bird) { Unit }
+
+    /** Se acaba de agarrar un pájaro (de la pila o para la resortera). */
+    protected open fun onBirdGrabbed() { Unit }
+
+    /** Un pájaro quedó fijado en la resortera (momento en que arranca el timer). */
+    protected open fun onBirdLoadedOntoSlingshot() { Unit }
 
     // ── Carga de pájaros ──────────────────────────────────────────────
 
@@ -156,6 +187,9 @@ abstract class SlingshotGame(
         // BLOQUEO: el pájaro fijado no se puede sacar de la resortera;
         // solo se puede estirar y lanzar.
         dragBird = null
+
+        onBirdGrabbed()
+        onBirdLoadedOntoSlingshot()
     }
 
     /**
@@ -166,6 +200,7 @@ abstract class SlingshotGame(
         slingshotBird = null
         inFlight += bird
         lastLaunched = bird
+        inFlightTime[bird] = 0.0
 
         val (vx, vy) = launchVelocity(pull)
         physics.setDynamic(bird)
@@ -198,6 +233,7 @@ abstract class SlingshotGame(
         if (bird != null) {
             dragBird = bird
             bird.placeAt(pane, mx - bird.width / 2, my - bird.height / 2)
+            onBirdGrabbed()
         }
     }
 
@@ -307,10 +343,14 @@ abstract class SlingshotGame(
      * ya haya caído al piso (solo se reemplaza al lanzar otro pájaro).
      */
     private fun removeSettledBirds() {
-        val resting = inFlight.filter { physics.isResting(it) }
+        val resting = inFlight.filter {
+            CollisionDetector.collides(it.hitbox, floorHitbox) ||
+                (inFlightTime[it] ?: 0.0) > 6.0
+        }
         for (bird in resting) {
             physics.remove(bird)
             inFlight.remove(bird)
+            inFlightTime.remove(bird)
             onBirdSettled(bird)
             settledBirds[bird] = 0.0
         }
@@ -318,18 +358,29 @@ abstract class SlingshotGame(
 
     /** Hace desaparecer los pájaros que llevan ≥ 3 s en el piso. */
     private fun tickSettled(dt: Double) {
-        val toRemove = mutableListOf<Bird>()
+        // Acumular tiempo de vuelo de los pájaros aún en vuelo
+        for (bird in inFlight) {
+            inFlightTime[bird] = (inFlightTime[bird] ?: 0.0) + dt
+        }
+
+        val toFade = mutableListOf<Bird>()
         for ((bird, elapsed) in settledBirds) {
+            if (bird in fadingBirds) continue
             val next = elapsed + dt
-            if (next >= SETTLE_DISAPPEAR_SECONDS) {
-                toRemove += bird
+            if (next >= SETTLE_FADE_START) {
+                toFade += bird
+                settledBirds[bird] = next
             } else {
                 settledBirds[bird] = next
             }
         }
-        for (bird in toRemove) {
-            bird.view.removeFrom(pane)
-            settledBirds.remove(bird)
+        for (bird in toFade) {
+            fadingBirds += bird
+            bird.view.setHitboxVisible(false)
+            bird.view.fadeOutAndRemove(pane) {
+                settledBirds.remove(bird)
+                fadingBirds.remove(bird)
+            }
         }
     }
 
@@ -337,7 +388,7 @@ abstract class SlingshotGame(
         /** Estiramiento mínimo para considerarlo un tiro válido. */
         const val MIN_STRETCH = 10.0
 
-        /** Segundos que un pájaro queda en el piso antes de desaparecer. */
-        const val SETTLE_DISAPPEAR_SECONDS = 3.0
+        /** Segundos que un pájaro queda en el piso antes de desvanecerse. */
+        const val SETTLE_FADE_START = 0.0
     }
 }

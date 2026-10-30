@@ -81,7 +81,7 @@ class Target private constructor(
         private const val RESPAWN_DELAY = 2.0
 
         /** Tamaño (base) de la diana grande fija y de las móviles. */
-        private const val FIXED_SIZE = 130.0
+        private const val FIXED_SIZE = 80.0
         private const val MOBILE_SIZE = 90.0
 
         /** Diana grande en una coordenada fija (columna de la diana). */
@@ -92,11 +92,13 @@ class Target private constructor(
             baseY: Double,
             amp: Double = 0.0,
             speed: Double = 0.0,
-            points: Int = 3
+            points: Int = 3,
+            hitboxOffsetX: Double = 0.0,
+            assetName: String = "diana.png"
         ): Target {
             val size = FIXED_SIZE * config.scale
             return Target(
-                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true),
+                EntityView(spriteSource, assetName, size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true, hitboxOffsetX = hitboxOffsetX),
                 cx = cx,
                 baseY = baseY,
                 amp = amp * config.scale,
@@ -113,11 +115,12 @@ class Target private constructor(
             baseY: Double,
             amp: Double,
             speed: Double,
-            points: Int = 1
+            points: Int = 1,
+            hitboxOffsetX: Double = 0.0
         ): Target {
             val size = MOBILE_SIZE * config.scale
             return Target(
-                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true),
+                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true, hitboxOffsetX = hitboxOffsetX),
                 cx = cx,
                 baseY = baseY,
                 amp = amp * config.scale,

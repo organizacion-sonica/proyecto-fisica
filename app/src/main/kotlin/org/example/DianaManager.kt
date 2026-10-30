@@ -70,13 +70,15 @@ class DianaManager(
     // ── Creación de las dianas ───────────────────────────────────────
 
     private fun createFixedDiana() {
-        val x = config.windowWidth * 0.85
+        val x = config.windowWidth * 0.90
         val y = config.windowHeight * 0.52
         val fixed = Target.fixed(
             spriteSource, config,
             cx = x, baseY = y,
-            amp = 40.0, speed = 0.7,
-            points = 3
+            amp = 40.0, speed = 1.5,
+            points = 3,
+            hitboxOffsetX = -6.0 * config.scale,
+            assetName = "diana potente.png"
         )
         fixed.placeIn(pane)
         targets += fixed
@@ -96,7 +98,8 @@ class DianaManager(
             val target = Target.mobile(
                 spriteSource, config,
                 cx = cx, baseY = baseY,
-                amp = amp, speed = speeds[i]
+                amp = amp, speed = speeds[i],
+                hitboxOffsetX = -6.0 * config.scale
             )
             target.placeIn(pane)
             targets += target
