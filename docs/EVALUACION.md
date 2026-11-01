@@ -3,21 +3,20 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación II (RepoSense + análisis de calidad POO/SOLID). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-10-30.
+> Generado: 2026-11-01.
 
 ## 1. Veredicto
 
 | Aspecto | Resultado |
 |---|---|
-| Índice de calidad POO/SOLID | **3/100** |
-| Código (LOC) | 2,977 |
-| Archivos de código | 42 |
+| Índice de calidad POO/SOLID | **8/100** |
+| Código (LOC) | 2,923 |
+| Archivos de código | 41 |
 | Clases (bien usadas) | 39 (17 OK) |
-| Código dentro de clases (%POO) | 51% |
-| Funciones fuera de clases | 73 |
-| Duplicación lógica | 0.8% |
-| Señales S/O/L/I/D | 6/0/1/0/5 |
-| Tope duro aplicado | `SUELTAS>=10` → índice ≤ 20 |
+| Código dentro de clases (%POO) | 97% |
+| Funciones fuera de clases | 0 |
+| Duplicación lógica | 0.9% |
+| Señales S/O/L/I/D | 10/0/1/0/9 |
 
 > Este informe **describe** lo que el análisis midió con los criterios ya establecidos de la materia. No es una nota.
 
@@ -27,27 +26,35 @@ Criterios de `CRITERIOS-CALIDAD.md`. **Aprobar** se juega con el perfil `estanda
 
 | Semáforo | Resultado |
 |---|---|
-| Aprobar (`estandar`) | **no cumple** — 1/4 |
-| Destacar (`exigente`) | **no cumple** — 1/5 |
+| Aprobar (`estandar`) | **no cumple** — 3/4 |
+| Destacar (`exigente`) | **no cumple** — 3/5 |
 
 **Criterios para aprobar**
 
 | Criterio | Requisito | Tu resultado | Cumple |
 |---|---|---|---|
-| Código dentro de clases (%POO) | ≥ 85% | 51% | no |
-| Duplicación lógica | ≤ 10% | 0.8% | sí |
-| Funciones fuera de clases | ≤ 1 | 73 | no |
-| Señales POO/SOLID críticas | ninguna | Acoplamiento alto (CBO), Override vacío / 'no implementado' (LSP) | no |
+| Código dentro de clases (%POO) | ≥ 85% | 97% | sí |
+| Duplicación lógica | ≤ 10% | 0.9% | sí |
+| Funciones fuera de clases | ≤ 1 | 0 | sí |
+| Señales POO/SOLID críticas | ninguna | Clase demasiado grande (SRP), Baja cohesión (LCOM), Acoplamiento alto (CBO), Override vacío / 'no implementado' (LSP) | no |
 
 **Criterios para destacar**
 
 | Criterio | Requisito | Tu resultado | Cumple |
 |---|---|---|---|
-| Código dentro de clases (%POO) | ≥ 95% | 51% | no |
-| Duplicación lógica | ≤ 5% | 0.8% | sí |
-| Funciones fuera de clases | ≤ 1 | 73 | no |
-| Señales POO/SOLID críticas | ninguna | Clase demasiado grande (SRP), Acoplamiento alto (CBO), Override vacío / 'no implementado' (LSP) | no |
-| Índice de calidad POO/SOLID | ≥ 60 | 3/100 | no |
+| Código dentro de clases (%POO) | ≥ 95% | 97% | sí |
+| Duplicación lógica | ≤ 5% | 0.9% | sí |
+| Funciones fuera de clases | ≤ 1 | 0 | sí |
+| Señales POO/SOLID críticas | ninguna | Clase demasiado grande (SRP), Baja cohesión (LCOM), Acoplamiento alto (CBO), Override vacío / 'no implementado' (LSP) | no |
+| Índice de calidad POO/SOLID | ≥ 60 | 8/100 | no |
+
+### Cómo se calcula el %POO (y por qué no sube solo)
+
+`%POO = líneas de lógica dentro de clases ÷ líneas de lógica totales`.
+
+Se cuentan las líneas de **lógica y campos**; no cuentan `package`/`import`/`using`/anotaciones ni comentarios, Javadoc o docstrings. Es una **proporción**: si agregás código nuevo dentro de una clase, el numerador y el denominador crecen juntos y el porcentaje casi no cambia.
+
+Sube cuando el código que hoy está **fuera** de clases pasa a ser método de una clase (o desaparece): funciones sueltas, `main`, constantes de módulo, scripts y lógica de archivos sueltos. También importa que ese trabajo esté **integrado en `main`**: la evaluación siempre mide `main`, así que lo que sigue en otra rama no se refleja todavía.
 
 ## 2. Autoría (RepoSense)
 
@@ -57,7 +64,20 @@ Criterios de `CRITERIOS-CALIDAD.md`. **Aprobar** se juega con el perfil `estanda
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
-## 3. Aspectos evaluados
+## 3. Fallas detectadas
+
+Reúne lo que el análisis marcó y lo que todavía falta para cada semáforo. Cuando la señal se puede asociar a archivos, se indican para orientar la revisión. No es una nota.
+
+| Falla | Tu resultado | Requisito | Archivos |
+|---|---|---|---|
+| Señales POO/SOLID críticas | Clase demasiado grande (SRP), Baja cohesión (LCOM), Acoplamiento alto (CBO), Override vacío / 'no implementado' (LSP) | Aprobar: ninguna<br>Destacar: ninguna | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/Box2DWorld.kt`, `app/src/main/kotlin/org/example/EntityView.kt`, `app/src/main/kotlin/org/example/ExplosionPlayer.kt`, `app/src/main/kotlin/org/example/GameController.kt`, `app/src/main/kotlin/org/example/Hitbox.kt` (+4 más) |
+| Índice de calidad POO/SOLID | 8/100 | Destacar: ≥ 60 | — |
+| Métodos/funciones largos o con muchos parámetros | **4** método(s)/función(es) largos o con muchos parámetros | Sin señales | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/Box2DWorld.kt`, `app/src/main/kotlin/org/example/MenuController.kt` |
+| Dependencia de concretos y falta de abstracciones (DIP) | **9** dependencia(s) de concretos sin abstracciones | Sin señales | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/Box2DWorld.kt`, `app/src/main/kotlin/org/example/EntityView.kt`, `app/src/main/kotlin/org/example/ExplosionPlayer.kt`, `app/src/main/kotlin/org/example/GameController.kt`, `app/src/main/kotlin/org/example/MenuController.kt` (+3 más) |
+| Clase sin métodos (solo datos) | **5** clase(s) sin métodos (solo datos) | Sin señales | `app/src/main/kotlin/org/example/Bird.kt`, `app/src/main/kotlin/org/example/GameEntity.kt`, `app/src/main/kotlin/org/example/LaunchZone.kt`, `app/src/main/kotlin/org/example/Red.kt`, `app/src/test/kotlin/org/example/AppTest.kt` |
+| Campos públicos (encapsulación) | **11** clase(s) con campos públicos | Sin señales | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/Bird.kt`, `app/src/main/kotlin/org/example/Bomb.kt`, `app/src/main/kotlin/org/example/Box2DWorld.kt`, `app/src/main/kotlin/org/example/Chuck.kt`, `app/src/main/kotlin/org/example/EntityView.kt` (+5 más) |
+
+## 4. Aspectos evaluados
 
 Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuando el análisis reportó una señal, se agregan preguntas para **investigar la causa** (no hay recetas: entender el porqué es parte de la evaluación).
 
@@ -65,45 +85,46 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Un resumen numérico (0-100) que combina la riqueza de clases bien usadas con la penalización por señales POO/SOLID y duplicación, y luego aplica topes duros.
 - **Por qué importa:** Ordena y prioriza la revisión: un índice bajo indica varias señales que conviene mirar juntas.
-- **Tu resultado:** índice **3/100**
+- **Tu resultado:** índice **8/100**
 
 ### 2. Duplicación lógica (DRY) (duplicacion) — sin señales
 
 - **Qué mide:** Porcentaje de bloques de LÓGICA repetidos. Quedan fuera imports/includes, anotaciones, declaraciones de campos y comentarios/Javadoc/docstrings: esos bloques son boilerplate, no lógica.
 - **Por qué importa:** Cada copia de lógica se mantiene por separado: un arreglo hay que repetirlo y los defectos se multiplican.
-- **Tu resultado:** **0.8%** de duplicación lógica
+- **Tu resultado:** **0.9%** de duplicación lógica
 
 ### 3. Adopción de POO (% de código en clases) (poo) — sin señales
 
-- **Qué mide:** Qué porción del código vive dentro de clases (no de funciones sueltas).
+- **Qué mide:** Proporción de las **líneas de lógica** que viven dentro de una clase. Quedan fuera `package`/`import`/`using`/anotaciones y comentarios/Javadoc/docstrings: no son código que pueda estar dentro de una clase y, si contaran, el porcentaje quedaría topado por el boilerplate de cada archivo.
 - **Por qué importa:** El diseño orientado a objetos es el eje de la materia: el comportamiento debería vivir como método de una clase.
-- **Tu resultado:** **50.8%** del código dentro de clases
+- **Tu resultado:** **97.2%** del código dentro de clases
+- **Cómo leerlo:** Es una **proporción**, no un acumulado: agregar código dentro de una clase no la sube por sí solo (numerador y denominador crecen juntos). Sube cuando el código que está **fuera** de clases (funciones sueltas, `main`, constantes de módulo, scripts) pasa a ser método de una clase o deja de existir. La medición se hace sobre `main`: el trabajo que todavía vive en otra rama no se refleja hasta que se integra.
 
-### 4. Funciones fuera de clases (sueltas) — con señales
+### 4. Funciones fuera de clases (sueltas) — sin señales
 
 - **Qué mide:** Funciones de nivel de módulo que no pertenecen a ninguna clase (en esta materia el comportamiento debe ser método de una clase).
 - **Por qué importa:** Son la forma más directa de código procedural en un proyecto que debería ser orientado a objetos.
-- **Tu resultado:** **73** función(es) fuera de clases
-- **Para investigar la causa:**
-    - ¿Esa función se dejó suelta por urgencia o por desconocer dónde ubicarla?
-    - ¿Qué clase debería ser responsable de ese comportamiento?
-    - ¿Había una convención sobre dónde poner cada cosa?
+- **Tu resultado:** **0** función(es) fuera de clases
 
 ### 5. Clase demasiado grande (SRP) (god) — con señales
 
 - **Qué mide:** Clases con demasiadas líneas o métodos de LÓGICA. No cuentan los getters/setters triviales ni la cantidad de campos por sí sola.
 - **Por qué importa:** Una clase que hace de todo cambia por muchos motivos y cuesta entenderla y probarla.
-- **Tu resultado:** **1** clase(s) demasiado grande(s)
+- **Tu resultado:** **4** clase(s) demasiado grande(s)
 - **Para investigar la causa:**
     - ¿La clase creció por acumulación de responsabilidades?
     - ¿Qué partes de la clase se usan siempre juntas y cuáles no?
     - ¿Se podría describir su responsabilidad en una sola frase?
 
-### 6. Baja cohesión (LCOM) (cohesion) — sin señales
+### 6. Baja cohesión (LCOM) (cohesion) — con señales
 
 - **Qué mide:** Métodos y campos de una clase que casi no se relacionan entre sí.
 - **Por qué importa:** Una unidad que cambia por motivos distintos y comparte poca información suele esconder más de una responsabilidad.
-- **Tu resultado:** **0** clase(s) con baja cohesión
+- **Tu resultado:** **2** clase(s) con baja cohesión
+- **Para investigar la causa:**
+    - ¿Qué métodos de la clase no comparten estado con el resto?
+    - ¿Cambian por motivos distintos según la tarea?
+    - ¿Se pensó su responsabilidad antes de escribirla, o se fue agregando?
 
 ### 7. Complejidad alta (complejidad) — sin señales
 
@@ -125,7 +146,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Cuánto depende una clase de otros tipos del proyecto.
 - **Por qué importa:** Piezas muy enlazadas hacen que un cambio se propague y que sea difícil reemplazar partes.
-- **Tu resultado:** **5** clase(s) muy acoplada(s)
+- **Tu resultado:** **9** clase(s) muy acoplada(s)
 - **Para investigar la causa:**
     - ¿La clase conoce detalles internos de muchas otras?
     - ¿Se puede cambiar una parte sin tocar las demás?
@@ -163,7 +184,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Instanciación directa de clases concretas y ausencia de interfaces o clases abstractas pese al acoplamiento.
 - **Por qué importa:** Depender de implementaciones concretas dificulta cambiar o probar una parte sin arrastrar las demás.
-- **Tu resultado:** **5** dependencia(s) de concretos sin abstracciones
+- **Tu resultado:** **9** dependencia(s) de concretos sin abstracciones
 - **Para investigar la causa:**
     - ¿La clase crea por dentro a sus colaboradores en vez de recibirlos?
     - ¿Hay puntos de variación que convendría expresar como abstracción?
@@ -183,7 +204,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Clases que exponen campos sin control de acceso.
 - **Por qué importa:** Expone el estado interno y hace que cualquier cambio dependa de quién lo modifica desde afuera.
-- **Tu resultado:** **6** clase(s) con campos públicos
+- **Tu resultado:** **11** clase(s) con campos públicos
 - **Para investigar la causa:**
     - ¿Se accede al campo desde otras clases para evitar un método?
     - ¿Qué reglas deberían respetarse al modificar ese estado?
@@ -195,50 +216,6 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 - **Por qué importa:** Es comportamiento procedural disfrazado de clase: no se instancia ni participa del modelo de objetos.
 - **Tu resultado:** **0** clase(s) solo con métodos estáticos
 
-## 4. Anexo: dónde mirar
-
-Archivos donde el análisis encontró cada señal (sin número de línea, a propósito):
-
-**Clase demasiado grande (SRP) (god)** — 1 archivo(s):
-- `app/src/main/kotlin/org/example/Box2DWorld.kt`
-
-**Métodos/funciones largos o con muchos parámetros (tamano)** — 3 archivo(s):
-- `app/src/main/kotlin/org/example/BasketGameController.kt`
-- `app/src/main/kotlin/org/example/Box2DWorld.kt`
-- `app/src/main/kotlin/org/example/MenuController.kt`
-
-**Acoplamiento alto (CBO) (acoplamiento)** — 5 archivo(s):
-- `app/src/main/kotlin/org/example/Box2DWorld.kt`
-- `app/src/main/kotlin/org/example/EntityView.kt`
-- `app/src/main/kotlin/org/example/ExplosionPlayer.kt`
-- `app/src/main/kotlin/org/example/MenuController.kt`
-- `app/src/main/kotlin/org/example/SlingshotApp.kt`
-
-**Override vacío o 'no implementado' (LSP) (lsp)** — 1 archivo(s):
-- `app/src/main/kotlin/org/example/Hitbox.kt`
-
-**Dependencia de concretos y falta de abstracciones (DIP) (dip)** — 5 archivo(s):
-- `app/src/main/kotlin/org/example/Box2DWorld.kt`
-- `app/src/main/kotlin/org/example/EntityView.kt`
-- `app/src/main/kotlin/org/example/ExplosionPlayer.kt`
-- `app/src/main/kotlin/org/example/MenuController.kt`
-- `app/src/main/kotlin/org/example/SlingshotApp.kt`
-
-**Clase sin métodos (solo datos) (data)** — 5 archivo(s):
-- `app/src/main/kotlin/org/example/Bird.kt`
-- `app/src/main/kotlin/org/example/GameEntity.kt`
-- `app/src/main/kotlin/org/example/LaunchZone.kt`
-- `app/src/main/kotlin/org/example/SlingshotGame.kt`
-- `app/src/test/kotlin/org/example/AppTest.kt`
-
-**Campos públicos (encapsulación) (encapsulacion)** — 6 archivo(s):
-- `app/src/main/kotlin/org/example/Bird.kt`
-- `app/src/main/kotlin/org/example/Box2DWorld.kt`
-- `app/src/main/kotlin/org/example/EntityView.kt`
-- `app/src/main/kotlin/org/example/GameEntity.kt`
-- `app/src/main/kotlin/org/example/Target.kt`
-- `app/src/test/kotlin/org/example/AppTest.kt`
-
 ## 5. Evolución por commit
 
 Métricas calculadas sobre el estado de `main` en **cada commit** (12 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
@@ -248,7 +225,7 @@ xychart-beta
     title "Índice POO/SOLID a lo largo de los commits"
     x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af"]
     y-axis "Índice" 0 --> 100
-    line [0, 0, 0, 0, 6, 5, 4, 4, 4, 4, 3, 3]
+    line [0, 0, 0, 0, 8, 6, 5, 5, 5, 7, 8, 8]
 ```
 
 | # | Fecha | Commit | Autor | LOC | Índice | %POO | Duplic. | Sueltas |
@@ -257,14 +234,14 @@ xychart-beta
 | 2 | 2026-08-24 | `6011506` | dqmdz-etec | 0 | 0 | 0% | 0.0% | 0 |
 | 3 | 2026-09-28 | `4cafe61` | simonK2010 | 0 | 0 | 0% | 0.0% | 0 |
 | 4 | 2026-09-28 | `82041cc` | simonK2010 | 0 | 0 | 0% | 0.0% | 0 |
-| 5 | 2026-09-28 | `b371234` | simonK2010 | 1,539 | 6 | 64% | 4.3% | 15 |
-| 6 | 2026-10-09 | `d5a0e6c` | simonK2010 | 2,087 | 5 | 69% | 4.7% | 16 |
-| 7 | 2026-10-23 | `577df69` | simonK2010 | 2,512 | 4 | 73% | 16.5% | 19 |
-| 8 | 2026-10-23 | `ee78559` | simonK2010 | 2,540 | 4 | 72% | 16.3% | 21 |
-| 9 | 2026-10-26 | `b932959` | simonK2010 | 2,540 | 4 | 72% | 16.3% | 21 |
-| 10 | 2026-10-26 | `656642a` | simonK2010 | 2,572 | 4 | 62% | 2.4% | 38 |
-| 11 | 2026-10-30 | `9c6db33` | simonK2010 | 2,905 | 3 | 52% | 0.8% | 71 |
-| 12 | 2026-10-30 | `d7f64af` | simonK2010 | 2,977 | 3 | 51% | 0.8% | 73 |
+| 5 | 2026-09-28 | `b371234` | simonK2010 | 1,539 | 8 | 89% | 4.4% | 1 |
+| 6 | 2026-10-09 | `d5a0e6c` | simonK2010 | 2,087 | 6 | 95% | 4.3% | 1 |
+| 7 | 2026-10-23 | `577df69` | simonK2010 | 2,512 | 5 | 96% | 16.4% | 1 |
+| 8 | 2026-10-23 | `ee78559` | simonK2010 | 2,540 | 5 | 97% | 16.2% | 1 |
+| 9 | 2026-10-26 | `b932959` | simonK2010 | 2,540 | 5 | 97% | 16.2% | 1 |
+| 10 | 2026-10-26 | `656642a` | simonK2010 | 2,572 | 7 | 97% | 2.0% | 0 |
+| 11 | 2026-10-30 | `9c6db33` | simonK2010 | 2,905 | 8 | 97% | 0.9% | 0 |
+| 12 | 2026-10-30 | `d7f64af` | simonK2010 | 2,923 | 8 | 97% | 0.9% | 0 |
 
 ---
 _Informe generado por la cátedra. Los criterios y umbrales de medición corresponden al perfil `exigente` de `calidad.py`; el semáforo de aprobación, a `CRITERIOS-CALIDAD.md` (ver `README.md`). Ante dudas, revisá el archivo señalado._
