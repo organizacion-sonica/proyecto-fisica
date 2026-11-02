@@ -101,7 +101,7 @@ class EntityView(
     }
 
     /** Desvanece el sprite y lo quita del panel tras completar el fade. */
-    fun fadeOutAndRemove(pane: Pane, durationMs: Double = 500.0, onDone: () -> Unit = {}) {
+    fun fadeOutAndRemove(pane: Pane, durationMs: Double = 500.0, onDone: () -> Unit = { Unit }) {
         val fade = javafx.animation.FadeTransition(javafx.util.Duration.millis(durationMs), imageView)
         fade.fromValue = 1.0
         fade.toValue = 0.0

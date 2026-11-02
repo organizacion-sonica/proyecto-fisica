@@ -1,17 +1,17 @@
-# Graph Report - proyecto-fisica  (2026-10-30)
+# Graph Report - proyecto-fisica  (2026-11-02)
 
 ## Corpus Check
-- 44 files · ~16,080 words
+- 55 files · ~16,139 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 3, .properties 2, .toml 1)
 
 ## Summary
-- 411 nodes · 757 edges · 24 communities (6 shown, 18 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.85)
+- 488 nodes · 895 edges · 29 communities (7 shown, 22 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 35 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e10561a3`
+- Built from commit: `213bdb09`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,91 +21,100 @@
 - SlingshotGame
 - BasketGameController
 - GameController
-- ScoreBoard
+- BackgroundView
 - MenuController
 - EntityView
-- SlingshotApp
+- ScoreBoard
 - OvalHitbox
 - BoxHitbox
 - SlingshotView
 - CircularHitbox
 - Hitbox
 - .collides
-- AbstractEntity
 - AngleIndicator
-- BackgroundView
+- SpriteSource
 - AGENTS.md
+- Box2DWorld
+- ScreenMapper
+- BodyFactory
+- ExplosionForce.kt
+- InstructionsContent.kt
+- MenuStyles.kt
 
 ## God Nodes (most connected - your core abstractions)
 1. `SlingshotGame` - 39 edges
-2. `BasketGameController` - 32 edges
-3. `GameEntity` - 28 edges
-4. `Box2DWorld` - 24 edges
-5. `BoxHitbox` - 24 edges
-6. `Bird` - 23 edges
-7. `CircularHitbox` - 23 edges
-8. `Hitbox` - 23 edges
-9. `GameConfig` - 22 edges
-10. `OvalHitbox` - 22 edges
+2. `GameEntity` - 32 edges
+3. `BasketGameController` - 27 edges
+4. `Box2DWorld` - 27 edges
+5. `Bird` - 25 edges
+6. `GameConfig` - 25 edges
+7. `BoxHitbox` - 24 edges
+8. `CircularHitbox` - 23 edges
+9. `Hitbox` - 23 edges
+10. `PhysicsWorld` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Box2DWorld` --calls--> `BodyFactory`  [INFERRED]
+  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/BodyFactory.kt
+- `Box2DWorld` --calls--> `EntitySynchronizer`  [INFERRED]
+  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/EntitySynchronizer.kt
+- `Box2DWorld` --calls--> `ExplosionForce`  [INFERRED]
+  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/ExplosionForce.kt
+- `Box2DWorld` --calls--> `ScreenMapper`  [INFERRED]
+  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/ScreenMapper.kt
 - `SlingshotGame` --calls--> `EntityFactory`  [INFERRED]
   app/src/main/kotlin/org/example/SlingshotGame.kt → app/src/main/kotlin/org/example/EntityFactory.kt
-- `GameController` --implements--> `AbilityEffects`  [EXTRACTED]
-  app/src/main/kotlin/org/example/GameController.kt → app/src/main/kotlin/org/example/AbilityEffects.kt
-- `AbstractEntity` --references--> `EntityView`  [EXTRACTED]
-  app/src/main/kotlin/org/example/AbstractEntity.kt → app/src/main/kotlin/org/example/EntityView.kt
-- `AbstractEntity` --implements--> `GameEntity`  [EXTRACTED]
-  app/src/main/kotlin/org/example/AbstractEntity.kt → app/src/main/kotlin/org/example/GameEntity.kt
-- `AbstractEntity` --references--> `Hitbox`  [EXTRACTED]
-  app/src/main/kotlin/org/example/AbstractEntity.kt → app/src/main/kotlin/org/example/Hitbox.kt
 
 ## Import Cycles
 - None detected.
 
-## Communities (24 total, 18 thin omitted)
+## Communities (29 total, 22 thin omitted)
 
 ### Community 0 - "Bird"
-Cohesion: 0.08
-Nodes (10): AbilityEffects, Bird, BirdPile, Bomb, Chuck, DianaManager, EntityFactory, GameConfig (+2 more)
-
-### Community 1 - "GameEntity"
-Cohesion: 0.06
-Nodes (4): Box2DWorld, GameEntity, PhysicsWorld, ScreenMapper
+Cohesion: 0.09
+Nodes (8): AbilityEffects, Bird, BirdPile, Bomb, Chuck, EntityFactory, GameConfig, Red
 
 ### Community 2 - "SlingshotGame"
 Cohesion: 0.10
 Nodes (3): LaunchZone, SlingshotGame, AnimationTimer
 
 ### Community 3 - "BasketGameController"
-Cohesion: 0.09
-Nodes (3): BasketGameController, RankEvaluator, RankScreen
+Cohesion: 0.07
+Nodes (5): BasketGameCollaborators, BasketGameController, BasketHoop, Hoop, RankEvaluator
 
 ### Community 4 - "GameController"
-Cohesion: 0.11
-Nodes (3): ExplosionPlayer, GameController, TrajectoryCalculator
+Cohesion: 0.07
+Nodes (9): AngleDisplay, ExplosionVisuals, GameCollaborators, RankDisplay, ScoreKeeper, TargetScene, TrajectoryPredictor, GameController (+1 more)
 
-### Community 8 - "SlingshotApp"
-Cohesion: 0.15
-Nodes (3): FileSpriteSource, Resoltera, SlingshotApp
+### Community 6 - "MenuController"
+Cohesion: 0.10
+Nodes (3): MenuController, MenuFactory, MenuNavigator
+
+### Community 8 - "ScoreBoard"
+Cohesion: 0.07
+Nodes (6): FileSpriteSource, RankScreen, Resoltera, ScoreBoard, SlingshotApp, TrajectoryCalculator
+
+### Community 17 - "SpriteSource"
+Cohesion: 0.10
+Nodes (4): DianaManager, ExplosionPlayer, SpriteSource, Target
 
 ## Knowledge Gaps
-- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SlingshotGame` connect `SlingshotGame` to `Bird`, `GameEntity`, `BasketGameController`, `GameController`, `BoxHitbox`, `SlingshotView`?**
-  _High betweenness centrality (0.337) - this node is a cross-community bridge._
-- **Are the 3 inferred relationships involving `BoxHitbox` (e.g. with `.`caja contiene su interior y no un punto fuera`()` and `.`colision caja-caja`()`) actually correct?**
-  _`BoxHitbox` has 3 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `GameConfig` connect `Bird` to `SlingshotGame`, `BasketGameController`, `BackgroundView`, `MenuController`, `ScoreBoard`, `SlingshotView`, `AngleIndicator`, `SpriteSource`, `Box2DWorld`, `ScreenMapper`, `BodyFactory`?**
+  _High betweenness centrality (0.324) - this node is a cross-community bridge._
+- **Are the 4 inferred relationships involving `Box2DWorld` (e.g. with `BodyFactory` and `EntitySynchronizer`) actually correct?**
+  _`Box2DWorld` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Bird` be split into smaller, more focused modules?**
-  _Cohesion score 0.07632850241545894 - nodes in this community are weakly interconnected._
-- **Why does `GameConfig` connect `Bird` to `GameEntity`, `SlingshotGame`, `BasketGameController`, `GameController`, `ScoreBoard`, `MenuController`, `SlingshotApp`, `SlingshotView`, `AngleIndicator`, `BackgroundView`?**
-  _High betweenness centrality (0.285) - this node is a cross-community bridge._
+  _Cohesion score 0.09243697478991597 - nodes in this community are weakly interconnected._
+- **Why does `SlingshotGame` connect `SlingshotGame` to `Bird`, `GameEntity`, `BasketGameController`, `GameController`, `BoxHitbox`, `SlingshotView`, `SpriteSource`?**
+  _High betweenness centrality (0.322) - this node is a cross-community bridge._
 - **Should `GameEntity` be split into smaller, more focused modules?**
-  _Cohesion score 0.059506531204644414 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09113300492610837 - nodes in this community are weakly interconnected._
 - **Why does `BoxHitbox` connect `BoxHitbox` to `BoxHitbox.kt`, `SlingshotGame`, `Hitbox`, `.collides`?**
-  _High betweenness centrality (0.158) - this node is a cross-community bridge._
+  _High betweenness centrality (0.136) - this node is a cross-community bridge._
 - **Should `SlingshotGame` be split into smaller, more focused modules?**
-  _Cohesion score 0.09743589743589744 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10121457489878542 - nodes in this community are weakly interconnected._

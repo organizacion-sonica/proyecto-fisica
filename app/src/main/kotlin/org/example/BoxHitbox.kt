@@ -7,7 +7,7 @@ import javafx.scene.shape.Shape
  * Hitbox rectangular (AABB, alineada a los ejes), centrada en (centerX, centerY).
  * Implementa su colisión con cada forma concreta (doble dispatch).
  */
-class BoxHitbox(var halfWidth: Double, var halfHeight: Double) : Hitbox() {
+class BoxHitbox(var halfWidth: Double, var halfHeight: Double) : Hitbox {
 
     private var _cx = 0.0
     private var _cy = 0.0

@@ -10,7 +10,7 @@ class ExplosionPlayer(
     private val pane: Pane,
     private val spriteSource: SpriteSource,
     private val config: GameConfig
-) {
+) : ExplosionVisuals {
     /** Frames de explosión pre-cargados (se cargan una sola vez para que el
      * toque de la habilidad no congele el hilo de UI). */
     private val explosionFrames: List<javafx.scene.image.Image> =
@@ -23,7 +23,7 @@ class ExplosionPlayer(
         }
 
     /** Reproduce los sprites de explosión (`explosion_XX.png`) en la posición. */
-    fun playAt(cx: Double, cy: Double) {
+    override fun playAt(cx: Double, cy: Double) {
         val frames = explosionFrames
         val size = 160.0 * config.scale
         val iv = javafx.scene.image.ImageView(frames.first()).apply {

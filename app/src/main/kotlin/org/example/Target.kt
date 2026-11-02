@@ -16,10 +16,13 @@ class Target private constructor(
     private val baseY: Double,
     private val amp: Double,
     private val speed: Double,
-    val points: Int = 1
+    private val points: Int = 1
 ) {
     /** Hitbox de la diana, centrada donde se encuentra el sprite. */
     val hitbox: Hitbox get() = view.hitbox
+
+    /** Puntos que vale golpear esta diana. */
+    fun pointValue(): Int = points
 
     /** True si puede ser golpeada (está viva y no fue derribada hace nada). */
     val isHittable: Boolean get() = alive && !hit

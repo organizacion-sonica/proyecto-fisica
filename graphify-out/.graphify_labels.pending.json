@@ -1,6 +1,16 @@
 {
-  "5": "ScoreBoard",
-  "18": "BackgroundView",
+  "4": "GameController",
+  "5": "BackgroundView",
+  "6": "MenuController",
+  "8": "ScoreBoard",
+  "17": "SpriteSource",
+  "18": "BoxHitbox.kt",
   "22": "AGENTS.md",
-  "23": "README.md"
+  "23": "README.md",
+  "24": "Box2DWorld",
+  "25": "ScreenMapper",
+  "26": "BodyFactory",
+  "27": "ExplosionForce.kt",
+  "28": "InstructionsContent.kt",
+  "29": "MenuStyles.kt"
 }

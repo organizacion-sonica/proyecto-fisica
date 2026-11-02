@@ -25,6 +25,9 @@ interface Bird : GameEntity {
     /** Indica si la habilidad especial aún está disponible para este vuelo. */
     fun canUseAbility(): Boolean = !abilityUsed
 
+    /** Nombre legible del pájaro (comportamiento del concepto). */
+    override fun displayName(): String = this::class.simpleName ?: "Bird"
+
     /** Posición del centro del pájaro (efectos visuales, explosión, etc.). */
     val centerX: Double
     val centerY: Double

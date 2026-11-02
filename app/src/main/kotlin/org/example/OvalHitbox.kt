@@ -9,7 +9,7 @@ import kotlin.math.sqrt
  * y [radiusY]. Permite hitboxes un poco más "ovaladas" que el círculo,
  * por ejemplo para dianas cuyo sprite no es perfectamente circular.
  */
-class OvalHitbox(var radiusX: Double, var radiusY: Double) : Hitbox() {
+class OvalHitbox(var radiusX: Double, var radiusY: Double) : Hitbox {
 
     private var _cx = 0.0
     private var _cy = 0.0

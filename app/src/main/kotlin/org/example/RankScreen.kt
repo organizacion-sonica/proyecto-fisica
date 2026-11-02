@@ -11,12 +11,12 @@ import javafx.scene.layout.Pane
 class RankScreen(
     private val spriteSource: SpriteSource,
     private val config: GameConfig
-) {
+) : RankDisplay {
     /** Sprites de la fila inferior, en el orden del nivel. */
     private val birdSpriteFiles = listOf("Red.png", "chuck .png", "bomb.png")
 
     /** Dibuja la pantalla final sobre [pane] con el [score] obtenido. */
-    fun show(pane: Pane, score: Int, rankLetter: String? = null) {
+    override fun show(pane: Pane, score: Int, rankLetter: String?) {
         pane.children.clear()
         BackgroundView(spriteSource, config).placeIn(pane)
 

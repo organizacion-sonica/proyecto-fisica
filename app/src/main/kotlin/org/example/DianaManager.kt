@@ -13,25 +13,25 @@ class DianaManager(
     private val spriteSource: SpriteSource,
     private val config: GameConfig,
     private val pane: Pane
-) {
+) : TargetScene {
     private val targets = mutableListOf<Target>()
 
     /** Segundos que lleva el mundo (para movimientos y reapariciones). */
     private var globalTime = 0.0
 
     /** Notifica cada vez que una diana pasa a "golpeada", con los puntos que vale. */
-    var onTargetHit: ((Int) -> Unit)? = null
+    override var onTargetHit: ((Int) -> Unit)? = null
 
     /** Crea las dianas del nivel. */
-    fun setup() {
+    override fun setup() {
         targets.clear()
         createFixedDiana()
         createMobileDianas()
     }
 
     /** Avanza el mundo (posiciones + reapariciones) y comprueba impactos. */
-    fun update(dtStep: Double, inFlight: List<Bird>) {
-        globalTime += dtStep
+    override fun update(dt: Double, inFlight: List<Bird>) {
+        globalTime += dt
         for (target in targets) target.update(globalTime)
         checkBirdCollisions(inFlight)
     }
@@ -46,7 +46,7 @@ class DianaManager(
                 if (CollisionDetector.collides(bird.hitbox, target.hitbox)) {
                     // Target.strike devuelve false si ya no cuenta (por la
                     // primera diana alcanzada por este mismo pájaro).
-                    if (target.strike(globalTime)) onTargetHit?.invoke(target.points)
+                    if (target.strike(globalTime)) onTargetHit?.invoke(target.pointValue())
                 }
             }
         }
@@ -56,13 +56,13 @@ class DianaManager(
      * Derriba todas las dianas dentro del radio y notifica el golpeo
      * (onda expansiva de la Bomba).
      */
-    fun breakTargetsWithin(cx: Double, cy: Double, radius: Double) {
+    override fun breakTargetsWithin(cx: Double, cy: Double, radius: Double) {
         for (target in targets) {
             if (!target.isHittable) continue
             val dx = target.centerX - cx
             val dy = target.yAt(globalTime) - cy
             if (kotlin.math.sqrt(dx * dx + dy * dy) <= radius) {
-                if (target.strike(globalTime)) onTargetHit?.invoke(target.points)
+                if (target.strike(globalTime)) onTargetHit?.invoke(target.pointValue())
             }
         }
     }
