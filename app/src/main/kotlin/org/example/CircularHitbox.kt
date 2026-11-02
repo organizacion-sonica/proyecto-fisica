@@ -7,7 +7,7 @@ import javafx.scene.shape.Shape
  * Hitbox circular. Implementa su colisión con cada forma concreta
  * (doble dispatch, sin más `when`s a la vista ni checks de tipos).
  */
-class CircularHitbox(var radius: Double) : Hitbox() {
+class CircularHitbox(var radius: Double) : Hitbox {
 
     private var _cx = 0.0
     private var _cy = 0.0

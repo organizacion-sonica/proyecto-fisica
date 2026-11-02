@@ -29,6 +29,9 @@ interface GameEntity {
     fun isOnScreen(screenW: Double, screenH: Double): Boolean =
         x in 0.0..screenW && y in 0.0..screenH
 
+    /** Nombre legible de la entidad. */
+    fun displayName(): String = this::class.simpleName ?: "Entity"
+
     /** Establece la rotación visual del sprite, en grados. */
     fun setRotation(degrees: Double)
 }

@@ -23,7 +23,7 @@ abstract class SlingshotGame(
     protected val spriteSource: SpriteSource,
     protected val config: GameConfig,
     /** Callback para volver al menú principal (tecla ESC). */
-    private val onExitToMenu: () -> Unit = {},
+    private val onExitToMenu: () -> Unit = { Unit },
     /** Fábrica del mundo físico (Inversión de Dependencias: un test podría simularlo). */
     private val physicsFactory: () -> PhysicsWorld = { Box2DWorld(config) }
 ) {
@@ -298,7 +298,7 @@ abstract class SlingshotGame(
             }
             KeyCode.G -> onAbilityKey()
             KeyCode.R -> resetLevel()
-            else -> {}
+            else -> Unit
         }
     }
 

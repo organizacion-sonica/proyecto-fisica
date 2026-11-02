@@ -19,6 +19,9 @@ import kotlin.math.sqrt
 class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
     private val mapper = ScreenMapper(config)
+    private val bodyFactory = BodyFactory(config, mapper)
+    private val synchronizer = EntitySynchronizer(mapper)
+    private val explosionForce = ExplosionForce(mapper)
     private val world: World<Body> = World()
 
     private val bodies = mutableMapOf<GameEntity, Body>()
@@ -41,34 +44,13 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
     /** Crea el piso estático en el borde inferior de la pantalla. */
     private fun createGround() {
-        val ground = Body()
-        ground.setMass(MassType.INFINITE) // estático
-
-        val groundWidth = config.windowWidth / mapper.pixelsPerMeter * 2
-        val groundShape = Rectangle(groundWidth, 1.0)
-        ground.addFixture(groundShape, 0.0, 0.0, 0.0)
-        // La superficie del piso queda a 'floorMargin' px del borde inferior.
-        ground.translate(config.windowWidth / 2.0 / mapper.pixelsPerMeter, config.floorMargin / mapper.pixelsPerMeter - 0.5)
-
+        val ground = bodyFactory.createGroundBody()
         world.addBody(ground)
     }
 
     /** Registra un pájaro como cuerpo dinámico con su masa específica. */
     override fun registerBird(bird: GameEntity, mass: Float) {
-        val (bx, by, radius) = bird.hitbox.circleSpec()
-        val pos = screenToWorld(bx, by)
-
-        val body = Body()
-        val shape = Circle(radius / mapper.pixelsPerMeter)
-        // Calcular densidad para que la masa coincida: masa = densidad * área
-        // Área del círculo = π * r²
-        val density = mass / (Math.PI * (radius / mapper.pixelsPerMeter) * (radius / mapper.pixelsPerMeter))
-        body.addFixture(shape, density, 0.4, 0.3) // densidad, fricción, rebote
-        // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
-        body.setMass(MassType.NORMAL) // dinámico
-        body.translate(pos.x, pos.y)
-        body.linearDamping = 0.1
-
+        val body = bodyFactory.createBirdBody(bird, mass)
         world.addBody(body)
         bodies[bird] = body
     }
@@ -82,13 +64,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         friction: Double,
         restitution: Double
     ) {
-        val body = Body()
-        val shape = Rectangle(widthPx / mapper.pixelsPerMeter, heightPx / mapper.pixelsPerMeter)
-        body.addFixture(shape, 0.0, friction, restitution)
-        // Use por sí: setMass tras addFixture (dyn4j 5 se corrompe si se hace antes)
-        body.setMass(MassType.INFINITE)
-        val pos = screenToWorld(centerXPx, centerYPx)
-        body.translate(pos.x, pos.y)
+        val body = bodyFactory.createStaticBoxBody(centerXPx, centerYPx, widthPx, heightPx, friction, restitution)
         world.addBody(body)
     }
 
@@ -102,12 +78,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
         friction: Double,
         restitution: Double
     ) {
-        val body = Body()
-        val shape = Rectangle(widthPx / mapper.pixelsPerMeter, heightPx / mapper.pixelsPerMeter)
-        body.addFixture(shape, 0.0, friction, restitution)
-        body.setMass(MassType.INFINITE)
-        val pos = screenToWorld(centerXPx, centerYPx)
-        body.translate(pos.x, pos.y)
+        val body = bodyFactory.createStaticBoxBody(centerXPx, centerYPx, widthPx, heightPx, friction, restitution)
         world.addBody(body)
         namedBodies[name] = body
     }
@@ -174,38 +145,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
     /** Genera onda expansiva en la posición del pájaro (habilidad de Bomb). */
     override fun explodeAt(bird: GameEntity, radiusPx: Float, force: Float) {
-        // Si el cuerpo del pájaro todavía existe usamos su centro real; si ya
-        // se frenó en el piso y se sacó del mundo, usamos su hitbox visual,
-        // para que igualmente explote en el lugar donde quedó.
-        val body = bodies[bird]
-        val centerWorld = if (body != null) {
-            Vector2(body.transform.translationX, body.transform.translationY)
-        } else {
-            screenToWorld(bird.hitbox.centerX, bird.hitbox.centerY)
-        }
-        val cx = centerWorld.x
-        val cy = centerWorld.y
-        val radiusM = radiusPx / mapper.pixelsPerMeter
-
-        // Aplicar fuerza radial a todos los cuerpos dinámicos cercanos
-        for ((entity, otherBody) in bodies) {
-            if (entity === bird) continue // no afectar al propio pájaro
-            if (otherBody.mass.type != MassType.NORMAL) continue // solo dinámicos
-
-            val otherT = otherBody.transform
-            val dx = otherT.translationX - cx
-            val dy = otherT.translationY - cy
-            val distSq = dx * dx + dy * dy
-            val dist = sqrt(distSq)
-
-            if (dist > 0 && dist < radiusM) {
-                // Fuerza inversamente proporcional a la distancia
-                val falloff = 1.0 - dist / radiusM
-                val fx = (dx / dist) * force * falloff / mapper.pixelsPerMeter
-                val fy = (dy / dist) * force * falloff / mapper.pixelsPerMeter
-                otherBody.applyImpulse(Vector2(fx, fy))
-            }
-        }
+        explosionForce.apply(bird, radiusPx, force, bodies)
     }
 
     /** Elimina un cuerpo del mundo físico. */
@@ -224,23 +164,7 @@ class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
 
     /** Sincroniza la posición y rotación de cada entidad con su Body de dyn4j. */
     private fun syncAll() {
-        for ((entity, body) in bodies) {
-            val t = body.transform
-            val (sx, sy) = worldToScreen(t.translationX, t.translationY)
-            // El centro del cuerpo dinámico coincide con el centro de la hitbox
-            // (puede estar corrido respecto del sprite): mover el sprite para
-            // que la hitbox siga al cuerpo.
-            val dx = sx - entity.hitbox.centerX
-            val dy = sy - entity.hitbox.centerY
-            if (kotlin.math.abs(dx) > 0.01 || kotlin.math.abs(dy) > 0.01) {
-                entity.moveBy(dx, dy)
-            }
-            // Sincronizar rotación
-            val angleDeg = Math.toDegrees(t.rotationAngle)
-            if (kotlin.math.abs(angleDeg) > 0.1) {
-                entity.setRotation(angleDeg)
-            }
-        }
+        synchronizer.sync(bodies)
     }
 
     /** Libera todo el mundo dyn4j. */

@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane
  * Responsabilidad única: llevar el marcador visible y avisar cuando se
  * agota el tiempo (la construcción de la pantalla final es otra responsabilidad).
  */
-class ScoreBoard(private val config: GameConfig) {
+class ScoreBoard(private val config: GameConfig) : ScoreKeeper {
 
     private val scale = config.scale
 
@@ -24,15 +24,15 @@ class ScoreBoard(private val config: GameConfig) {
     private var score: Int = 0
 
     /** Puntaje actual (solo lectura desde fuera). */
-    fun score(): Int = score
+    override fun score(): Int = score
 
     private var timeLeft = config.timeLimitSeconds.toDouble() // segundos restantes
     private var timeOver = false
 
     /** Se invoca una sola vez cuando el tiempo se agota. */
-    var onTimeOver: (() -> Unit)? = null
+    override var onTimeOver: (() -> Unit)? = null
 
-    fun placeIn(pane: Pane) {
+    override fun placeIn(pane: Pane) {
         val rightX = config.windowWidth - 160.0 * scale
         scoreLabel.layoutX = rightX
         scoreLabel.layoutY = 20.0 * scale
@@ -42,7 +42,7 @@ class ScoreBoard(private val config: GameConfig) {
     }
 
     /** Reinicia el marcador y el temporizador (al reiniciar el nivel). */
-    fun reset() {
+    override fun reset() {
         score = 0
         timeLeft = config.timeLimitSeconds.toDouble()
         timeOver = false
@@ -51,18 +51,18 @@ class ScoreBoard(private val config: GameConfig) {
     }
 
     /** Suma [n] puntos y actualiza el marcador visible. */
-    fun addPoints(n: Int) {
+    override fun addPoints(n: Int) {
         score += n
         scoreLabel.text = "Puntos: $score"
     }
 
     /** Suma un punto y actualiza el marcador visible. */
-    fun addPoint() = addPoints(1)
+    override fun addPoint() = addPoints(1)
 
     /** Avanza el tiempo; avisa cuando se agota el límite. */
-    fun tick(dtStep: Double) {
+    override fun tick(dt: Double) {
         if (timeOver) return
-        timeLeft -= dtStep
+        timeLeft -= dt
         if (timeLeft <= 0.0) {
             timeOver = true
             onTimeOver?.invoke()

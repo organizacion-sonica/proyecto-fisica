@@ -12,13 +12,13 @@ import kotlin.math.min
  * mismo amortecimiento) para que la línea dibujada sea una buena
  * aproximación de lo que ocurrirá al soltar.
  */
-class TrajectoryCalculator(private val config: GameConfig) {
+class TrajectoryCalculator(private val config: GameConfig) : TrajectoryPredictor {
 
     /**
      * Devuelve los puntos (esquina superior izquierda) de la trayectoria
      * esperada a partir del estiramiento actual.
      */
-    fun predictedDots(start: Point2D, pull: Point2D): List<Point2D> {
+    override fun predictedDots(start: Point2D, pull: Point2D): List<Point2D> {
         val dots = mutableListOf<Point2D>()
         val mag = min(pull.magnitude(), config.maxStretch)
         if (mag <= 10.0) return dots
