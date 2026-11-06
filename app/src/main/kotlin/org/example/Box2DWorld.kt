@@ -66,7 +66,7 @@ class Box2DWorld(
         friction: Double,
         restitution: Double
     ) {
-        val body = bodyFactory.createStaticBoxBody(centerXPx, centerYPx, widthPx, heightPx, friction, restitution)
+        val body = bodyFactory.createStaticBoxBody(BoxSpec(centerXPx, centerYPx, widthPx, heightPx, friction, restitution))
         world.addBody(body)
     }
 
@@ -80,7 +80,7 @@ class Box2DWorld(
         friction: Double,
         restitution: Double
     ) {
-        val body = bodyFactory.createStaticBoxBody(centerXPx, centerYPx, widthPx, heightPx, friction, restitution)
+        val body = bodyFactory.createStaticBoxBody(BoxSpec(centerXPx, centerYPx, widthPx, heightPx, friction, restitution))
         world.addBody(body)
         namedBodies[name] = body
     }

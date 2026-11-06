@@ -13,7 +13,7 @@ import javafx.scene.input.KeyCode
 class Chuck(
     spriteSource: SpriteSource,
     size: Double = 60.0,
-    showHitbox: Boolean = true,
+    showHitbox: Boolean = false,
     override val mass: Float = 3.0f
 ) : AbstractEntity(
     spriteSource,

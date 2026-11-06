@@ -1,6 +1,5 @@
 {
   "0": "Bird",
-  "1": "GameEntity",
   "2": "SlingshotGame",
   "3": "BasketGameController",
   "7": "EntityView",
@@ -10,7 +9,6 @@
   "12": "CircularHitbox",
   "13": "Hitbox",
   "14": ".collides",
-  "16": "AngleIndicator",
   "19": "gradlew",
   "20": "build.gradle.kts",
   "21": "settings.gradle.kts"

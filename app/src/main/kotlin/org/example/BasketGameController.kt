@@ -21,16 +21,15 @@ class BasketGameController(
 
     private val trajectoryLayer: Pane get() = collaborators.trajectoryLayer
     private val trajectoryCalculator: TrajectoryPredictor get() = collaborators.trajectoryCalculator
+    private val trajectoryRenderer: TrajectoryRenderer get() = collaborators.trajectoryRenderer
     private val scoreLabel: Label get() = collaborators.scoreLabel
     private val rankView: ImageView get() = collaborators.rankView
     private val timerLabel: Label get() = collaborators.timerLabel
     private val hoop: BasketHoop get() = collaborators.hoop
     private val rankScreen: RankDisplay get() = collaborators.rankScreen
 
-    private var score = 0
-    private var timeLeft = BASKET_TIME_LIMIT.toDouble()
-    private var timeOver = false
-    private var timerStarted = false
+    private lateinit var scoreBoard: BasketScoreBoard
+    private lateinit var timer: BasketTimer
     private var rankShown = false
 
     private var globalTime = 0.0
@@ -41,25 +40,20 @@ class BasketGameController(
 
     override fun setupLevel() {
         collaborators = collaboratorFactory(pane, physics)
-        pane.children.add(trajectoryLayer)
-        pane.children.add(scoreLabel)
-        pane.children.add(rankView)
-        pane.children.add(timerLabel)
+        BackgroundView(spriteSource, config).placeIn(pane)
+        scoreBoard = BasketScoreBoard(spriteSource, config, scoreLabel, rankView)
+        timer = BasketTimer(config, timerLabel, BASKET_TIME_LIMIT)
         createPole()
     }
 
     override fun onLevelReset() {
-        score = 0
-        timeLeft = BASKET_TIME_LIMIT.toDouble()
-        timeOver = false
-        timerStarted = false
         globalTime = 0.0
         lastHoopCheckTime = 0.0
         lastScoredBird = null
         trajectoryFramesRemaining = -1
         rankShown = false
-        scoreLabel.text = "Puntos: 0"
-        timerLabel.text = "Tiempo: 01:00"
+        scoreBoard.reset()
+        timer.reset()
         refreshRank()
     }
 
@@ -68,11 +62,7 @@ class BasketGameController(
     }
 
     override fun onBirdLoadedOntoSlingshot() {
-        if (!timerStarted) {
-            timeLeft = BASKET_TIME_LIMIT.toDouble()
-            timeOver = false
-            timerStarted = true
-        }
+        timer.start()
     }
 
     private fun createPole() {
@@ -95,15 +85,7 @@ class BasketGameController(
     override fun onPhysicsStep(dt: Double) {
         globalTime += dt
 
-        if (timerStarted && !timeOver) {
-            timeLeft -= dt
-            if (timeLeft <= 0.0) {
-                timeLeft = 0.0
-                timeOver = true
-            }
-            val remaining = kotlin.math.max(0, timeLeft.toInt())
-            timerLabel.text = "Tiempo: %02d:%02d".format(remaining / 60, remaining % 60)
-        }
+        val timeJustOver = timer.tick(dt)
 
         if (trajectoryFramesRemaining > 0) {
             trajectoryFramesRemaining--
@@ -112,11 +94,11 @@ class BasketGameController(
             }
         }
 
-        if (!timeOver) checkHoops()
+        if (!timer.isOver()) checkHoops()
 
-        if (timeOver && !rankShown) {
+        if (timer.isOver() && !rankShown) {
             rankShown = true
-            rankScreen.show(pane, score, RankEvaluator.rankForBasket(score))
+            rankScreen.show(pane, scoreBoard.score, RankEvaluator.rankForBasket(scoreBoard.score))
         }
     }
 
@@ -131,9 +113,7 @@ class BasketGameController(
         for (bird in fallen) {
             physics.remove(bird)
             inFlight.remove(bird)
-            inFlightTime.remove(bird)
-            applyMiss(bird)
-            settledBirds[bird] = 0.0
+            markBirdSettled(bird)
         }
 
         for (bird in inFlight) {
@@ -154,25 +134,15 @@ class BasketGameController(
     }
 
     private fun scoreBasket(bird: Bird) {
-        if (timeOver) return
-        score += 1
-        scoreLabel.text = "Puntos: $score"
+        if (timer.isOver()) return
+        scoreBoard.addPoint()
         lastScoredBird = bird
         lastHoopCheckTime = globalTime
         hoop.moveToNewPosition()
-        refreshRank()
-    }
-
-    private fun applyMiss(bird: Bird) {
-        if (lastScoredBird === bird) return
-    }
-
-    override fun onBirdSettled(bird: Bird) {
-        applyMiss(bird)
     }
 
     private fun refreshRank() {
-        rankView.image = spriteSource.load("${RankEvaluator.rankForBasket(score)} rank.png")
+        scoreBoard.refreshRank()
     }
 
     override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {
@@ -194,7 +164,7 @@ class BasketGameController(
     }
 
     private fun showTrajectory(start: Point2D, pull: Point2D) {
-        TrajectoryRenderer(trajectoryLayer, trajectoryCalculator).render(start, pull) { dot ->
+        trajectoryRenderer.render(start, pull) { dot ->
             javafx.scene.shape.Circle(dot.x, dot.y, 3.5 * config.scale).apply {
                 fill = javafx.scene.paint.Color.web("#FFFFFF", 0.22)
                 stroke = javafx.scene.paint.Color.web("#222222", 0.12)

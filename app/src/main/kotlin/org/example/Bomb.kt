@@ -8,7 +8,7 @@ package org.example
 class Bomb(
     spriteSource: SpriteSource,
     size: Double = 60.0,
-    showHitbox: Boolean = true,
+    showHitbox: Boolean = false,
     override val mass: Float = 10000.0f
 ) : AbstractEntity(
     spriteSource,

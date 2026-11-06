@@ -6,6 +6,19 @@ import org.dyn4j.geometry.MassType
 import org.dyn4j.geometry.Rectangle
 
 /**
+ * Especificación de una caja estática (SRP: agrupa los 6 parámetros en un
+ * objeto de valor, evitando métodos con demasiados parámetros).
+ */
+data class BoxSpec(
+    val centerXPx: Double,
+    val centerYPx: Double,
+    val widthPx: Double,
+    val heightPx: Double,
+    val friction: Double = 0.4,
+    val restitution: Double = 0.4
+)
+
+/**
  * Crea los cuerpos de dyn4j para pájaros y bloques, separando la
  * construcción física del adaptador [Box2DWorld] (SRP + DIP). El adaptador
  * solo registra y sincroniza; esta fábrica solo construye.
@@ -30,12 +43,12 @@ class BodyFactory(private val config: GameConfig, private val mapper: ScreenMapp
     }
 
     /** Cuerpo estático para rebotes (caja). */
-    fun createStaticBoxBody(centerXPx: Double, centerYPx: Double, widthPx: Double, heightPx: Double, friction: Double, restitution: Double): Body {
+    fun createStaticBoxBody(spec: BoxSpec): Body {
         val body = Body()
-        val shape = Rectangle(widthPx / ppm, heightPx / ppm)
-        body.addFixture(shape, 0.0, friction, restitution)
+        val shape = Rectangle(spec.widthPx / ppm, spec.heightPx / ppm)
+        body.addFixture(shape, 0.0, spec.friction, spec.restitution)
         body.setMass(MassType.INFINITE)
-        val pos = mapper.toWorld(centerXPx, centerYPx)
+        val pos = mapper.toWorld(spec.centerXPx, spec.centerYPx)
         body.translate(pos.x, pos.y)
         return body
     }
