@@ -54,23 +54,17 @@ abstract class SlingshotGame(
 
     // Hitbox al raz del piso (unos píxeles), con borde rojo para verla.
     private lateinit var floorHitbox: BoxHitbox
-    private lateinit var floorVisual: javafx.scene.shape.Rectangle
-
     // Pájaro que se está arrastrando desde la pila hacia la resortera
     private var dragBird: Bird? = null
 
     // Pájaro fijado en la resortera (listo para estirar)
     private var slingshotBird: Bird? = null
 
-    // Pájaros ya lanzados que siguen en vuelo
-    protected val inFlight = mutableListOf<Bird>()
+    // Seguimiento de pájaros en vuelo/asentados (SRP).
+    private lateinit var flightTracker: FlightTracker
 
-    protected val inFlightTime = mutableMapOf<Bird, Double>()
-
-    // Pájaros que quedaron en el piso y cuánto tiempo llevan ahí
-    // (se desvanecen tras SETTLE_FADE_START segundos).
-    protected val settledBirds = mutableMapOf<Bird, Double>()
-    protected val fadingBirds = mutableSetOf<Bird>()
+    // Pájaros ya lanzados que siguen en vuelo (delegado al tracker).
+    protected val inFlight: MutableList<Bird> get() = flightTracker.inFlight
 
     // Último pájaro lanzado; la habilidad especial solo aplica a él.
     protected var lastLaunched: Bird? = null
@@ -104,11 +98,8 @@ abstract class SlingshotGame(
         physics = physicsFactory()
         dragBird = null
         slingshotBird = null
-        inFlight.clear()
         lastLaunched = null
-        settledBirds.clear()
-        fadingBirds.clear()
-        inFlightTime.clear()
+        flightTracker.clear()
 
         pane.children.clear()
         setupWorld()
@@ -124,21 +115,11 @@ abstract class SlingshotGame(
         launchZone = levelComponents.launchZone
         pile = levelComponents.pile
 
-        // Hitbox al raz del piso (unos píxeles), con borde rojo para verla.
+        // Hitbox al raz del piso (invisible).
         floorHitbox = BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0)
         floorHitbox.recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
-        val fv = javafx.scene.shape.Rectangle(
-            0.0,
-            config.windowHeight - 10.0,
-            config.windowWidth,
-            10.0
-        ).apply {
-            fill = javafx.scene.paint.Color.TRANSPARENT
-            stroke = javafx.scene.paint.Color.RED
-            strokeWidth = 1.0
-        }
-        pane.children.add(fv)
-        floorVisual = fv
+
+        flightTracker = FlightTracker(physics, pane, floorHitbox) { onBirdSettled(it) }
 
         setupLevel()
     }
@@ -210,9 +191,8 @@ abstract class SlingshotGame(
      */
     private fun launchBird(bird: Bird, pull: Point2D) {
         slingshotBird = null
-        inFlight += bird
         lastLaunched = bird
-        inFlightTime[bird] = 0.0
+        flightTracker.recordLaunch(bird)
 
         val (vx, vy) = launchVelocity(pull)
         physics.setDynamic(bird)
@@ -327,7 +307,7 @@ abstract class SlingshotGame(
             physics = physics,
             onStep = { dt -> onPhysicsStep(dt) },
             onRemoveSettled = { removeSettledBirds() },
-            onTickSettled = { dt -> tickSettled(dt) }
+            onTickSettled = { dt -> flightTracker.tick(dt) }
         )
         gameLoop?.start()
     }
@@ -343,46 +323,12 @@ abstract class SlingshotGame(
      * ya haya caído al piso (solo se reemplaza al lanzar otro pájaro).
      */
     private fun removeSettledBirds() {
-        val resting = inFlight.filter {
-            CollisionDetector.collides(it.hitbox, floorHitbox) ||
-                (inFlightTime[it] ?: 0.0) > 6.0
-        }
-        for (bird in resting) {
-            physics.remove(bird)
-            inFlight.remove(bird)
-            inFlightTime.remove(bird)
-            onBirdSettled(bird)
-            settledBirds[bird] = 0.0
-        }
+        flightTracker.removeSettled()
     }
 
     /** Hace desaparecer los pájaros que llevan ≥ 3 s en el piso. */
-    private fun tickSettled(dt: Double) {
-        // Acumular tiempo de vuelo de los pájaros aún en vuelo
-        for (bird in inFlight) {
-            inFlightTime[bird] = (inFlightTime[bird] ?: 0.0) + dt
-        }
-
-        val toFade = mutableListOf<Bird>()
-        for ((bird, elapsed) in settledBirds) {
-            if (bird in fadingBirds) continue
-            val next = elapsed + dt
-            if (next >= SETTLE_FADE_START) {
-                toFade += bird
-                settledBirds[bird] = next
-            } else {
-                settledBirds[bird] = next
-            }
-        }
-        for (bird in toFade) {
-            fadingBirds += bird
-            bird.view.setHitboxVisible(false)
-            bird.view.fadeOutAndRemove(pane) {
-                settledBirds.remove(bird)
-                fadingBirds.remove(bird)
-            }
-        }
-    }
+    /** Marca un pájaro como asentado (p. ej. salió de la pantalla) para que se desvanezca. */
+    protected fun markBirdSettled(bird: Bird) = flightTracker.markSettled(bird)
 
     protected companion object {
         /** Estiramiento mínimo para considerarlo un tiro válido. */

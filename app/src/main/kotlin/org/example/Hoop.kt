@@ -39,10 +39,9 @@ class Hoop(
         fitHeight = height
     }
 
-    // Barrita (backboard) invisible, marcada con borde rojo.
+    // Barrita (backboard) invisible.
     private val backboardWidth: Double = 8.0 * config.scale
     private val backboardHeight: Double = 0.3 * 140.0 * config.scale
-    private val backboardVisual: javafx.scene.shape.Rectangle
 
     private val backboardName = "backboard"
 
@@ -57,23 +56,10 @@ class Hoop(
         view.layoutY = centerY - height / 2
 
         pane.children.add(view)
-
-        // Backboard: barrita en el lado derecho del aro.
-        val wallX = hoopX + width * 0.30
-        val wallY = centerY + 15.0 * config.scale
-        backboardVisual = javafx.scene.shape.Rectangle(
-            wallX - backboardWidth / 2.0,
-            wallY - backboardHeight / 2.0,
-            backboardWidth,
-            backboardHeight
-        ).apply {
-            fill = javafx.scene.paint.Color.TRANSPARENT
-            stroke = javafx.scene.paint.Color.RED
-            strokeWidth = 2.0
-        }
-        pane.children.add(backboardVisual)
         view.toFront()
 
+        val wallX = hoopX + width * 0.30
+        val wallY = centerY + 15.0 * config.scale
         physics.addNamedStaticBox(backboardName, wallX, wallY, backboardWidth, backboardHeight)
     }
 
@@ -86,8 +72,6 @@ class Hoop(
         val hoopX = targetRightX - width * (482.0 / 554.0)
         val wallX = hoopX + width * 0.30
         val wallY = centerY + 15.0 * config.scale
-        backboardVisual.x = wallX - backboardWidth / 2.0
-        backboardVisual.y = wallY - backboardHeight / 2.0
         physics.moveNamedStaticBox(backboardName, wallX, wallY)
     }
 }

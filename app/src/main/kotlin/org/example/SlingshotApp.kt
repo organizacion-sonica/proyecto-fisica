@@ -61,16 +61,29 @@ class SlingshotApp : Application() {
         stage.requestFocus()
     }
 
+    /** Muestra una escena en pantalla completa. */
+    private fun showScene(scene: javafx.scene.Scene, title: String) {
+        stage.scene = scene
+        stage.title = title
+        stage.isFullScreen = true
+        stage.show()
+        stage.toFront()
+        stage.requestFocus()
+    }
+
     private fun startGame() {
         val controller = GameController(
             spriteSource,
             config,
             onExitToMenu = { Platform.runLater { showMenu() } },
             collaboratorFactory = { pane, physics ->
+                val trajectoryLayer = Pane()
+                val trajectoryCalculator = TrajectoryCalculator(config)
                 GameCollaborators(
                     angleIndicator = AngleIndicator(config),
-                    trajectoryLayer = Pane(),
-                    trajectoryCalculator = TrajectoryCalculator(config),
+                    trajectoryLayer = trajectoryLayer,
+                    trajectoryCalculator = trajectoryCalculator,
+                    trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
                     explosionPlayer = ExplosionPlayer(pane, spriteSource, config),
                     scoreBoard = ScoreBoard(config),
                     dianaManager = DianaManager(spriteSource, config, pane),
@@ -78,12 +91,7 @@ class SlingshotApp : Application() {
                 )
             }
         )
-        stage.scene = controller.buildScene()
-        stage.title = "Minijuegos de Fisica - Juego"
-        stage.isFullScreen = true
-        stage.show()
-        stage.toFront()
-        stage.requestFocus()
+        showScene(controller.buildScene(), "Minijuegos de Fisica - Juego")
     }
 
     private fun startBasket() {
@@ -92,41 +100,22 @@ class SlingshotApp : Application() {
             config,
             onExitToMenu = { Platform.runLater { showMenu() } },
             collaboratorFactory = { pane, physics ->
-                val scoreLabel = Label("Puntos: 0").apply {
-                    style = "-fx-font-size: ${20 * config.scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
-                    textFill = javafx.scene.paint.Color.WHITE
-                    layoutX = config.windowWidth / 2 - 50.0 * config.scale
-                    layoutY = 40.0 * config.scale
-                }
-                val rankView = ImageView(spriteSource.load("${RankEvaluator.rankForBasket(0)} rank.png")).apply {
-                    isPreserveRatio = true
-                    fitWidth = 40.0 * config.scale
-                    fitHeight = 40.0 * config.scale
-                    layoutX = config.windowWidth / 2 - 110.0 * config.scale
-                    layoutY = 34.0 * config.scale
-                }
-                val timerLabel = Label("Tiempo: 01:00").apply {
-                    style = "-fx-font-size: ${16 * config.scale}px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 0.8, 0, 0);"
-                    textFill = javafx.scene.paint.Color.WHITE
-                    layoutX = config.windowWidth / 2 - 110.0 * config.scale
-                    layoutY = 78.0 * config.scale
-                }
+                val hud = BasketHud(spriteSource, config)
+                hud.addTo(pane)
+                val trajectoryLayer = Pane().also { pane.children.add(it) }
+                val trajectoryCalculator = TrajectoryCalculator(config)
                 BasketGameCollaborators(
-                    trajectoryLayer = Pane(),
-                    trajectoryCalculator = TrajectoryCalculator(config),
-                    scoreLabel = scoreLabel,
-                    rankView = rankView,
-                    timerLabel = timerLabel,
+                    trajectoryLayer = trajectoryLayer,
+                    trajectoryCalculator = trajectoryCalculator,
+                    trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                    scoreLabel = hud.scoreLabel,
+                    rankView = hud.rankView,
+                    timerLabel = hud.timerLabel,
                     hoop = Hoop(spriteSource, config, pane, physics),
                     rankScreen = RankScreen(spriteSource, config)
                 )
             }
         )
-        stage.scene = controller.buildScene()
-        stage.title = "Minijuegos de Fisica - Tiro al Aro"
-        stage.isFullScreen = true
-        stage.show()
-        stage.toFront()
-        stage.requestFocus()
+        showScene(controller.buildScene(), "Minijuegos de Fisica - Tiro al Aro")
     }
 }

@@ -8,7 +8,7 @@ package org.example
 class Red(
     spriteSource: SpriteSource,
     size: Double = 60.0,
-    showHitbox: Boolean = true,
+    showHitbox: Boolean = false,
     override val mass: Float = 5.0f
 ) : AbstractEntity(
     spriteSource,

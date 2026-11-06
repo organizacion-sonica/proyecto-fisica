@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane
 data class BasketGameCollaborators(
     val trajectoryLayer: Pane,
     val trajectoryCalculator: TrajectoryPredictor,
+    val trajectoryRenderer: TrajectoryRenderer,
     val scoreLabel: Label,
     val rankView: ImageView,
     val timerLabel: Label,

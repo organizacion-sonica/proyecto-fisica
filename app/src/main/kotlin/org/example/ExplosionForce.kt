@@ -11,34 +11,42 @@ import kotlin.math.sqrt
  */
 class ExplosionForce(private val mapper: ScreenMapper) {
 
-    /** Aplica la onda expansiva centrada en [bird] (o su hitbox si ya no tiene cuerpo). */
+    /** Aplica la onda expansiva centrada en [bird]. */
     fun apply(bird: GameEntity, radiusPx: Float, force: Float, bodies: Map<GameEntity, Body>) {
-        val body = bodies[bird]
-        val centerWorld = if (body != null) {
-            Vector2(body.transform.translationX, body.transform.translationY)
-        } else {
-            mapper.toWorld(bird.hitbox.centerX, bird.hitbox.centerY)
-        }
-        val cx = centerWorld.x
-        val cy = centerWorld.y
-        val radiusM = radiusPx / mapper.pixelsPerMeter
-        val ppm = mapper.pixelsPerMeter
+        val (cx, cy) = centerOf(bird, bodies)
+        val radiusM = (radiusPx / mapper.pixelsPerMeter).toDouble()
+        applyImpulses(cx, cy, radiusM, force, bird, bodies)
+    }
 
+    /** Centro del pájaro en coordenadas del mundo (cuerpo o hitbox). */
+    private fun centerOf(bird: GameEntity, bodies: Map<GameEntity, Body>): Pair<Double, Double> {
+        val body = bodies[bird]
+        return if (body != null) {
+            body.transform.translationX to body.transform.translationY
+        } else {
+            val v = mapper.toWorld(bird.hitbox.centerX, bird.hitbox.centerY)
+            v.x to v.y
+        }
+    }
+
+    /** Aplica el impulso radial a los cuerpos dinámicos dentro del radio. */
+    private fun applyImpulses(
+        cx: Double, cy: Double, radiusM: Double, force: Float,
+        bird: GameEntity, bodies: Map<GameEntity, Body>
+    ) {
+        val ppm = mapper.pixelsPerMeter
         for ((entity, otherBody) in bodies) {
             if (entity === bird) continue
             if (otherBody.mass.type != MassType.NORMAL) continue
-
             val otherT = otherBody.transform
             val dx = otherT.translationX - cx
             val dy = otherT.translationY - cy
             val dist = sqrt(dx * dx + dy * dy)
-
-            if (dist > 0 && dist < radiusM) {
-                val falloff = 1.0 - dist / radiusM
-                val fx = (dx / dist) * force * falloff / ppm
-                val fy = (dy / dist) * force * falloff / ppm
-                otherBody.applyImpulse(Vector2(fx, fy))
-            }
+            if (dist <= 0 || dist >= radiusM) continue
+            val falloff = 1.0 - dist / radiusM
+            val fx = (dx / dist) * force * falloff / ppm
+            val fy = (dy / dist) * force * falloff / ppm
+            otherBody.applyImpulse(Vector2(fx, fy))
         }
     }
 }

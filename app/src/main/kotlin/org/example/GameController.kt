@@ -27,6 +27,7 @@ class GameController(
     private val angleIndicator: AngleDisplay get() = collaborators.angleIndicator
     private val trajectoryLayer: Pane get() = collaborators.trajectoryLayer
     private val trajectoryCalculator: TrajectoryPredictor get() = collaborators.trajectoryCalculator
+    private val trajectoryRenderer: TrajectoryRenderer get() = collaborators.trajectoryRenderer
     private val explosionPlayer: ExplosionVisuals get() = collaborators.explosionPlayer
     private val scoreBoard: ScoreKeeper get() = collaborators.scoreBoard
     private val dianaManager: TargetScene get() = collaborators.dianaManager
@@ -81,7 +82,7 @@ class GameController(
     }
 
     private fun showTrajectory(start: Point2D, pull: Point2D) {
-        TrajectoryRenderer(trajectoryLayer, trajectoryCalculator).render(start, pull) { dot ->
+        trajectoryRenderer.render(start, pull) { dot ->
             javafx.scene.shape.Circle(dot.x, dot.y, 4.5 * config.scale).apply {
                 fill = javafx.scene.paint.Color.web("#FFFFFF", 0.85)
                 stroke = javafx.scene.paint.Color.web("#222222", 0.6)

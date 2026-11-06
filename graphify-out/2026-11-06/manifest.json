@@ -204,9 +204,9 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotGame.kt": {
-    "mtime": 1793963420.6585634,
-    "seen": 1793963478.5898733,
-    "ast_hash": "16b4de3023096b25f4f42e25517e2f38",
+    "mtime": 1793963522.7667224,
+    "seen": 1793963543.6020238,
+    "ast_hash": "fa931d8ca4dd92b9ab5a0abd8281eeb3",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotView.kt": {
@@ -633,6 +633,12 @@
     "mtime": 1793963295.7058568,
     "seen": 1793963478.5898762,
     "ast_hash": "7a3578d60c1aba9bb0b04dafd5e2bc43",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/GameLoop.kt": {
+    "mtime": 1793963489.5779207,
+    "seen": 1793963543.6019888,
+    "ast_hash": "aef06ddc12f60b9f60582409272eb385",
     "semantic_hash": ""
   }
 }

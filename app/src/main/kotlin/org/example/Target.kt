@@ -101,7 +101,7 @@ class Target private constructor(
         ): Target {
             val size = FIXED_SIZE * config.scale
             return Target(
-                EntityView(spriteSource, assetName, size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true, hitboxOffsetX = hitboxOffsetX),
+                EntityView(spriteSource, assetName, size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), false, hitboxOffsetX = hitboxOffsetX),
                 cx = cx,
                 baseY = baseY,
                 amp = amp * config.scale,
@@ -123,7 +123,7 @@ class Target private constructor(
         ): Target {
             val size = MOBILE_SIZE * config.scale
             return Target(
-                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), true, hitboxOffsetX = hitboxOffsetX),
+                EntityView(spriteSource, "diana.png", size, OvalHitbox(size * RADIUS_X, size * RADIUS_Y), false, hitboxOffsetX = hitboxOffsetX),
                 cx = cx,
                 baseY = baseY,
                 amp = amp * config.scale,
