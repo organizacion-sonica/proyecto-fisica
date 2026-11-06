@@ -1,7 +1,5 @@
 package org.example
 
-import javafx.scene.layout.Pane
-
 /**
  * Colaboradores de un nivel con resortera, creados por una fábrica (DIP).
  */

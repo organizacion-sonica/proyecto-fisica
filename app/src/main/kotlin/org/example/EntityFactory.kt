@@ -8,11 +8,14 @@ package org.example
  */
 class EntityFactory(private val spriteSource: SpriteSource, private val config: GameConfig) {
 
+    /** Fábricas de pájaros por nombre (OCP: agregar un pájaro = agregar una entrada). */
+    private val birdFactories: Map<String, () -> Bird> = mapOf(
+        "red" to { Red(spriteSource, config.birdSize, mass = config.redMass) },
+        "chuck" to { Chuck(spriteSource, config.birdSize, mass = config.chuckMass) },
+        "bomb" to { Bomb(spriteSource, config.birdSize, mass = config.bombMass) }
+    )
+
     /** Crea un pájaro por nombre, con la masa configurada. */
-    fun createBird(name: String): Bird = when (name) {
-        "red" -> Red(spriteSource, config.birdSize, mass = config.redMass)
-        "chuck" -> Chuck(spriteSource, config.birdSize, mass = config.chuckMass)
-        "bomb" -> Bomb(spriteSource, config.birdSize, mass = config.bombMass)
-        else -> throw IllegalArgumentException("Pájaro desconocido: $name")
-    }
+    fun createBird(name: String): Bird =
+        birdFactories[name]?.invoke() ?: throw IllegalArgumentException("Pájaro desconocido: $name")
 }

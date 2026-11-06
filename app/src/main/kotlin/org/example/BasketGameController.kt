@@ -12,7 +12,7 @@ import kotlin.random.Random
 class BasketGameController(
     spriteSource: SpriteSource,
     config: GameConfig,
-    onExitToMenu: () -> Unit = { Unit },
+    onExitToMenu: () -> Unit = {},
     private val collaboratorFactory: (Pane, PhysicsWorld) -> BasketGameCollaborators
 ) :
     SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu) {
@@ -54,7 +54,7 @@ class BasketGameController(
         rankShown = false
         scoreBoard.reset()
         timer.reset()
-        refreshRank()
+        scoreBoard.refreshRank()
     }
 
     override fun onLaunch() {
@@ -85,7 +85,7 @@ class BasketGameController(
     override fun onPhysicsStep(dt: Double) {
         globalTime += dt
 
-        val timeJustOver = timer.tick(dt)
+        timer.tick(dt)
 
         if (trajectoryFramesRemaining > 0) {
             trajectoryFramesRemaining--
@@ -139,10 +139,6 @@ class BasketGameController(
         lastScoredBird = bird
         lastHoopCheckTime = globalTime
         hoop.moveToNewPosition()
-    }
-
-    private fun refreshRank() {
-        scoreBoard.refreshRank()
     }
 
     override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {

@@ -17,7 +17,7 @@ import javafx.scene.layout.Pane
 class GameController(
     spriteSource: SpriteSource,
     config: GameConfig,
-    onExitToMenu: () -> Unit = { Unit },
+    onExitToMenu: () -> Unit = {},
     private val collaboratorFactory: (Pane, PhysicsWorld) -> GameCollaborators
 ) :
     SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu), AbilityEffects {

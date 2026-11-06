@@ -13,4 +13,5 @@ interface BasketHoop {
     val scoreRadius: Double
     val scoreRadiusSq: Double
     fun moveToNewPosition()
+    fun describe(): String = "Hoop"
 }

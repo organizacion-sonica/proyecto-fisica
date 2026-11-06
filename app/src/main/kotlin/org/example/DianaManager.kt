@@ -72,13 +72,15 @@ class DianaManager(
     private fun createFixedDiana() {
         val x = config.windowWidth * 0.90
         val y = config.windowHeight * 0.52
+        val size = Target.FIXED_SIZE * config.scale
+        val view = EntityView(spriteSource, "diana potente.png", size,
+            OvalHitbox(size * Target.RADIUS_X, size * Target.RADIUS_Y), false,
+            hitboxOffsetX = -6.0 * config.scale)
         val fixed = Target.fixed(
-            spriteSource, config,
+            view = view,
             cx = x, baseY = y,
-            amp = 40.0, speed = 1.5,
-            points = 3,
-            hitboxOffsetX = -6.0 * config.scale,
-            assetName = "diana potente.png"
+            amp = 40.0 * config.scale, speed = 1.5,
+            points = 3
         )
         fixed.placeIn(pane)
         targets += fixed
@@ -95,11 +97,14 @@ class DianaManager(
         val speeds = listOf(0.9, 1.2, 1.6, 1.0, 1.3)
         for ((i, spec) in specs.withIndex()) {
             val (cx, baseY, amp) = spec
+            val size = Target.MOBILE_SIZE * config.scale
+            val view = EntityView(spriteSource, "diana.png", size,
+                OvalHitbox(size * Target.RADIUS_X, size * Target.RADIUS_Y), false,
+                hitboxOffsetX = -6.0 * config.scale)
             val target = Target.mobile(
-                spriteSource, config,
+                view = view,
                 cx = cx, baseY = baseY,
-                amp = amp, speed = speeds[i],
-                hitboxOffsetX = -6.0 * config.scale
+                amp = amp * config.scale, speed = speeds[i]
             )
             target.placeIn(pane)
             targets += target
