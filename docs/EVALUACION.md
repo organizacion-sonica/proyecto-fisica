@@ -10,13 +10,13 @@
 | Aspecto | Resultado |
 |---|---|
 | Índice de calidad POO/SOLID | **81/100** |
-| Código (LOC) | 3,198 |
-| Archivos de código | 58 |
-| Clases (bien usadas) | 65 (26 OK) |
+| Código (LOC) | 3,206 |
+| Archivos de código | 59 |
+| Clases (bien usadas) | 66 (25 OK) |
 | Código dentro de clases (%POO) | 96% |
 | Funciones fuera de clases | 0 |
 | Duplicación lógica | 0.0% |
-| Señales S/O/L/I/D | 9/0/1/0/6 |
+| Señales S/O/L/I/D | 9/0/1/0/7 |
 
 > Este informe **describe** lo que el análisis midió con los criterios ya establecidos de la materia. No es una nota.
 
@@ -60,7 +60,7 @@ Sube cuando el código que hoy está **fuera** de clases pasa a ser método de u
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| simonK2010 | 21 | 4,247 | 62 | 497 | 10 | 100% |
+| simonK2010 | 22 | 4,263 | 62 | 496 | 10 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
@@ -72,7 +72,7 @@ Reúne lo que el análisis marcó y lo que todavía falta para cada semáforo. C
 |---|---|---|---|
 | Señales POO/SOLID críticas | Acoplamiento alto (CBO), Override vacío / 'no implementado' (LSP) | Aprobar: ninguna<br>Destacar: ninguna | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/Box2DWorld.kt`, `app/src/main/kotlin/org/example/GameController.kt`, `app/src/main/kotlin/org/example/Hitbox.kt`, `app/src/main/kotlin/org/example/MenuController.kt`, `app/src/main/kotlin/org/example/SlingshotGame.kt` |
 | Métodos/funciones largos o con muchos parámetros | **1** método(s)/función(es) largos o con muchos parámetros | Sin señales | `app/src/main/kotlin/org/example/ExplosionForce.kt` |
-| Dependencia de concretos y falta de abstracciones (DIP) | **6** dependencia(s) de concretos sin abstracciones | Sin señales | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/EntityFactory.kt`, `app/src/main/kotlin/org/example/SlingshotApp.kt`, `app/src/main/kotlin/org/example/SlingshotGame.kt`, `app/src/main/kotlin/org/example/Target.kt`, `app/src/test/kotlin/org/example/AppTest.kt` |
+| Dependencia de concretos y falta de abstracciones (DIP) | **7** dependencia(s) de concretos sin abstracciones | Sin señales | `app/src/main/kotlin/org/example/BasketGameController.kt`, `app/src/main/kotlin/org/example/Box2DWorld.kt`, `app/src/main/kotlin/org/example/DianaManager.kt`, `app/src/main/kotlin/org/example/EntityFactory.kt`, `app/src/main/kotlin/org/example/SlingshotApp.kt`, `app/src/main/kotlin/org/example/SlingshotGame.kt` (+1 más) |
 | Clase sin métodos (solo datos) | **5** clase(s) sin métodos (solo datos) | Sin señales | `app/src/main/kotlin/org/example/LaunchZone.kt`, `app/src/main/kotlin/org/example/MenuStyles.kt`, `app/src/main/kotlin/org/example/Red.kt`, `app/src/main/kotlin/org/example/ScreenMapper.kt`, `app/src/test/kotlin/org/example/AppTest.kt` |
 | Campos públicos (encapsulación) | **16** clase(s) con campos públicos | Sin señales | `app/src/main/kotlin/org/example/BasketHoop.kt`, `app/src/main/kotlin/org/example/Bird.kt`, `app/src/main/kotlin/org/example/BodyFactory.kt`, `app/src/main/kotlin/org/example/Bomb.kt`, `app/src/main/kotlin/org/example/Chuck.kt`, `app/src/main/kotlin/org/example/EntityView.kt` (+10 más) |
 
@@ -183,7 +183,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Instanciación directa de clases **propias** concretas y ausencia de interfaces o clases abstractas pese al acoplamiento. No cuentan los structs ni los nodos/tipos del motor.
 - **Por qué importa:** Depender de implementaciones concretas dificulta cambiar o probar una parte sin arrastrar las demás.
-- **Tu resultado:** **6** dependencia(s) de concretos sin abstracciones
+- **Tu resultado:** **7** dependencia(s) de concretos sin abstracciones
 - **Para investigar la causa:**
     - ¿La clase crea por dentro a sus colaboradores en vez de recibirlos?
     - ¿Hay puntos de variación que convendría expresar como abstracción?
@@ -217,14 +217,14 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 ## 5. Evolución por commit
 
-Métricas calculadas sobre el estado de `main` en **cada commit** (13 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
+Métricas calculadas sobre el estado de `main` en **cada commit** (16 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
 
 ```mermaid
 xychart-beta
     title "Índice POO/SOLID a lo largo de los commits"
-    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af", "9fc92df"]
+    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af", "9fc92df", "031ae05", "144808c", "17760fb"]
     y-axis "Índice" 0 --> 100
-    line [0, 0, 0, 0, 8, 6, 5, 5, 5, 7, 8, 8, 7]
+    line [0, 0, 0, 0, 49, 53, 30, 26, 26, 66, 68, 71, 76, 77, 81, 81]
 ```
 
 | # | Fecha | Commit | Autor | LOC | Índice | %POO | Duplic. | Sueltas |
@@ -233,15 +233,18 @@ xychart-beta
 | 2 | 2026-08-24 | `6011506` | dqmdz-etec | 0 | 0 | 0% | 0.0% | 0 |
 | 3 | 2026-09-28 | `4cafe61` | simonK2010 | 0 | 0 | 0% | 0.0% | 0 |
 | 4 | 2026-09-28 | `82041cc` | simonK2010 | 0 | 0 | 0% | 0.0% | 0 |
-| 5 | 2026-09-28 | `b371234` | simonK2010 | 1,539 | 8 | 89% | 4.4% | 1 |
-| 6 | 2026-10-09 | `d5a0e6c` | simonK2010 | 2,087 | 6 | 95% | 4.3% | 1 |
-| 7 | 2026-10-23 | `577df69` | simonK2010 | 2,512 | 5 | 96% | 16.4% | 1 |
-| 8 | 2026-10-23 | `ee78559` | simonK2010 | 2,540 | 5 | 97% | 16.2% | 1 |
-| 9 | 2026-10-26 | `b932959` | simonK2010 | 2,540 | 5 | 97% | 16.2% | 1 |
-| 10 | 2026-10-26 | `656642a` | simonK2010 | 2,572 | 7 | 97% | 2.0% | 0 |
-| 11 | 2026-10-30 | `9c6db33` | simonK2010 | 2,905 | 8 | 97% | 0.9% | 0 |
-| 12 | 2026-10-30 | `d7f64af` | simonK2010 | 2,923 | 8 | 97% | 0.9% | 0 |
-| 13 | 2026-11-02 | `9fc92df` | simonK2010 | 3,051 | 7 | 97% | 1.0% | 0 |
+| 5 | 2026-09-28 | `b371234` | simonK2010 | 1,539 | 49 | 89% | 4.4% | 1 |
+| 6 | 2026-10-09 | `d5a0e6c` | simonK2010 | 2,087 | 53 | 95% | 4.3% | 1 |
+| 7 | 2026-10-23 | `577df69` | simonK2010 | 2,512 | 30 | 96% | 16.4% | 1 |
+| 8 | 2026-10-23 | `ee78559` | simonK2010 | 2,540 | 26 | 97% | 16.2% | 1 |
+| 9 | 2026-10-26 | `b932959` | simonK2010 | 2,540 | 26 | 97% | 16.2% | 1 |
+| 10 | 2026-10-26 | `656642a` | simonK2010 | 2,572 | 66 | 97% | 2.0% | 0 |
+| 11 | 2026-10-30 | `9c6db33` | simonK2010 | 2,905 | 68 | 97% | 0.9% | 0 |
+| 12 | 2026-10-30 | `d7f64af` | simonK2010 | 2,923 | 71 | 97% | 0.9% | 0 |
+| 13 | 2026-11-02 | `9fc92df` | simonK2010 | 3,051 | 76 | 97% | 1.0% | 0 |
+| 14 | 2026-11-06 | `031ae05` | simonK2010 | 3,115 | 77 | 96% | 1.0% | 0 |
+| 15 | 2026-11-06 | `144808c` | simonK2010 | 3,198 | 81 | 96% | 0.0% | 0 |
+| 16 | 2026-11-06 | `17760fb` | simonK2010 | 3,206 | 81 | 96% | 0.0% | 0 |
 
 ---
 _Informe generado por la cátedra. Los criterios y umbrales de medición corresponden al perfil `exigente` de `calidad.py`; el semáforo de aprobación, a `CRITERIOS-CALIDAD.md` (ver `README.md`). Ante dudas, revisá el archivo señalado._
