@@ -23,4 +23,5 @@ class LaunchZone(
 
     /** Área (px²) de la zona de lanzamiento (comportamiento del concepto). */
     fun area(): Double = size * size
+    fun describe(): String = "LaunchZone"
 }

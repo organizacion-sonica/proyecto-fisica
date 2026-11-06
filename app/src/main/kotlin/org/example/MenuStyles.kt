@@ -28,4 +28,6 @@ object MenuStyles {
 
     val titleShadow: String =
         "-fx-effect: dropshadow(gaussian, black, 10, 0.5, 2, 2);"
+
+    fun describe(): String = "MenuStyles"
 }
