@@ -1,6 +1,5 @@
 package org.example
 
-import javafx.animation.AnimationTimer
 import javafx.geometry.Point2D
 import javafx.scene.Scene
 import javafx.scene.input.KeyCode
@@ -25,13 +24,37 @@ abstract class SlingshotGame(
     /** Callback para volver al menú principal (tecla ESC). */
     private val onExitToMenu: () -> Unit = { Unit },
     /** Fábrica del mundo físico (Inversión de Dependencias: un test podría simularlo). */
-    private val physicsFactory: () -> PhysicsWorld = { Box2DWorld(config) }
+    private val physicsFactory: () -> PhysicsWorld = {
+        val m = DefaultScreenMapper(config)
+        Box2DWorld(config, m, BodyFactory(config, m), EntitySynchronizer(m), ExplosionForce(m))
+    },
+    /** Fábrica de los colaboradores del nivel con resortera (DIP). */
+    private val levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents = { pane, physics ->
+        val bg = BackgroundView(spriteSource, config)
+        val sl = SlingshotView(spriteSource, config)
+        sl.placeIn(pane)
+        val lz = LaunchZone(config, sl.anchor.x, sl.anchor.y)
+        val ef = EntityFactory(spriteSource, config)
+        val pl = BirdPile(pane, ef, config)
+        pl.setup()
+        bg.placeIn(pane)
+        SlingshotLevelComponents(bg, sl, lz, pl, ef)
+    }
 ) {
     protected var physics: PhysicsWorld = physicsFactory()
-    protected val entityFactory = EntityFactory(spriteSource, config)
+    private var gameLoop: GameLoop? = null
 
-    // Pila de pájaros (se crea al armar la escena, junto con la resortera).
+    // Colaboradores del nivel (creados por la fábrica).
+    private lateinit var backgroundView: BackgroundView
+    protected lateinit var slingshot: SlingshotView
+    protected lateinit var launchZone: LaunchZone
     private lateinit var pile: BirdPile
+    protected val entityFactory: EntityFactory get() = levelComponents.entityFactory
+    private lateinit var levelComponents: SlingshotLevelComponents
+
+    // Hitbox al raz del piso (unos píxeles), con borde rojo para verla.
+    private lateinit var floorHitbox: BoxHitbox
+    private lateinit var floorVisual: javafx.scene.shape.Rectangle
 
     // Pájaro que se está arrastrando desde la pila hacia la resortera
     private var dragBird: Bird? = null
@@ -41,10 +64,6 @@ abstract class SlingshotGame(
 
     // Pájaros ya lanzados que siguen en vuelo
     protected val inFlight = mutableListOf<Bird>()
-
-    // Hitbox al raz del piso: el pájaro se desvanece al tocarla.
-    private lateinit var floorHitbox: BoxHitbox
-    private lateinit var floorVisual: javafx.scene.shape.Rectangle
 
     protected val inFlightTime = mutableMapOf<Bird, Double>()
 
@@ -56,11 +75,8 @@ abstract class SlingshotGame(
     // Último pájaro lanzado; la habilidad especial solo aplica a él.
     protected var lastLaunched: Bird? = null
 
-    private lateinit var slingshot: SlingshotView
-    private lateinit var launchZone: LaunchZone
     protected lateinit var pane: Pane
 
-    private var physicsTimer: AnimationTimer? = null
     private val grabRadius = 45.0 * config.scale
 
     // ── Construcción de la escena ─────────────────────────────────────
@@ -83,7 +99,7 @@ abstract class SlingshotGame(
     }
 
     fun resetLevel() {
-        physicsTimer?.stop()
+        stopPhysicsLoop()
         physics.dispose()
         physics = physicsFactory()
         dragBird = null
@@ -102,12 +118,11 @@ abstract class SlingshotGame(
 
     /** Fondo + resortera + zona de lanzamiento, luego lo propio del nivel. */
     private fun setupWorld() {
-        BackgroundView(spriteSource, config).placeIn(pane)
-
-        slingshot = SlingshotView(spriteSource, config)
-        slingshot.placeIn(pane)
-
-        launchZone = LaunchZone(config, slingshot.anchor.x, slingshot.anchor.y)
+        levelComponents = levelFactory(pane, physics)
+        backgroundView = levelComponents.backgroundView
+        slingshot = levelComponents.slingshot
+        launchZone = levelComponents.launchZone
+        pile = levelComponents.pile
 
         // Hitbox al raz del piso (unos píxeles), con borde rojo para verla.
         floorHitbox = BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0)
@@ -126,9 +141,6 @@ abstract class SlingshotGame(
         floorVisual = fv
 
         setupLevel()
-
-        pile = BirdPile(pane, entityFactory, config)
-        pile.setup()
     }
 
     /** Construye lo propio del nivel (dianas, aro, marcadores...). */
@@ -293,7 +305,7 @@ abstract class SlingshotGame(
     private fun handleKeyPressed(e: KeyEvent) {
         when (e.code) {
             KeyCode.ESCAPE -> {
-                physicsTimer?.stop()
+                stopPhysicsLoop()
                 onExitToMenu()
             }
             KeyCode.G -> onAbilityKey()
@@ -311,30 +323,18 @@ abstract class SlingshotGame(
     // ── Game loop (60 fps fijos) ──────────────────────────────────────
 
     private fun startPhysicsLoop() {
-        var lastTime = 0L
-        var accumulator = 0.0
-        val fixedDt = 1.0 / 60.0
+        gameLoop = GameLoop(
+            physics = physics,
+            onStep = { dt -> onPhysicsStep(dt) },
+            onRemoveSettled = { removeSettledBirds() },
+            onTickSettled = { dt -> tickSettled(dt) }
+        )
+        gameLoop?.start()
+    }
 
-        physicsTimer = object : AnimationTimer() {
-            override fun handle(now: Long) {
-                if (lastTime == 0L) {
-                    lastTime = now
-                    return
-                }
-                val elapsed = (now - lastTime) / 1_000_000_000.0
-                lastTime = now
-                accumulator += elapsed.coerceAtMost(0.1)
-
-                while (accumulator >= fixedDt) {
-                    physics.step(fixedDt)
-                    onPhysicsStep(fixedDt)
-                    accumulator -= fixedDt
-                }
-
-                removeSettledBirds()
-                tickSettled(fixedDt)
-            }
-        }.also { it.start() }
+    private fun stopPhysicsLoop() {
+        gameLoop?.stop()
+        gameLoop = null
     }
 
     /**

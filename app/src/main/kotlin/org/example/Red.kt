@@ -22,8 +22,6 @@ class Red(
 
     override var abilityUsed = false
 
-    override fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean = false
-
     override val centerX: Double get() = x + width / 2
     override val centerY: Double get() = y + height / 2
 }

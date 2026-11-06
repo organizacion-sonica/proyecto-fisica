@@ -16,11 +16,9 @@ interface Bird : GameEntity {
 
     /**
      * Ejecuta la habilidad especial. Devuelve true si se usó (y por lo tanto
-     * queda consumida para este vuelo). Si la habilidad genera efectos
-     * visuales, los pide vía [AbilityEffects]: nunca pregunta el tipo de
-     * pájaro hacia afuera (OCP) ni conoce la escena (DIP).
+     * queda consumida para este vuelo). Por defecto (Red) no tiene habilidad.
      */
-    fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean
+    fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean = false
 
     /** Indica si la habilidad especial aún está disponible para este vuelo. */
     fun canUseAbility(): Boolean = !abilityUsed
