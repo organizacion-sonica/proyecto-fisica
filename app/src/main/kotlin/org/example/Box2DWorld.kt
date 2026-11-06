@@ -16,12 +16,14 @@ import kotlin.math.sqrt
  * Implementa la abstracción [PhysicsWorld]: el resto del juego depende de
  * la interfaz, no de este adaptador (Inversión de Dependencias).
  */
-class Box2DWorld(private val config: GameConfig) : PhysicsWorld {
+class Box2DWorld(
+    private val config: GameConfig,
+    private val mapper: ScreenMapper,
+    private val bodyFactory: BodyFactory,
+    private val synchronizer: EntitySynchronizer,
+    private val explosionForce: ExplosionForce
+) : PhysicsWorld {
 
-    private val mapper = ScreenMapper(config)
-    private val bodyFactory = BodyFactory(config, mapper)
-    private val synchronizer = EntitySynchronizer(mapper)
-    private val explosionForce = ExplosionForce(mapper)
     private val world: World<Body> = World()
 
     private val bodies = mutableMapOf<GameEntity, Body>()

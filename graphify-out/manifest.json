@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Bird.kt": {
-    "mtime": 1793618911.3753307,
-    "seen": 1793618920.9942884,
-    "ast_hash": "7f50276bc69c0876f2fbcf88991dacd0",
+    "mtime": 1793963157.055438,
+    "seen": 1793963478.5897896,
+    "ast_hash": "77dfa231d668cbeddf2953becc1a0c39",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/BirdPile.kt": {
@@ -54,9 +54,9 @@
     "semantic_hash": "4102d16f2538d501ea061e38189353c3"
   },
   "app/src/main/kotlin/org/example/Box2DWorld.kt": {
-    "mtime": 1793617815.0246458,
-    "seen": 1793617884.5042264,
-    "ast_hash": "1cd02907ebe2efebcc836ada6ef035d5",
+    "mtime": 1793963268.345037,
+    "seen": 1793963478.5898013,
+    "ast_hash": "8b1af9b24e59c406c8f3c44e104a9931",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/BoxHitbox.kt": {
@@ -174,10 +174,10 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Red.kt": {
-    "mtime": 1793361460.4344184,
-    "seen": 1793365157.1859004,
-    "ast_hash": "35b883f48cd6e548ce42be9793a3a72b",
-    "semantic_hash": "35b883f48cd6e548ce42be9793a3a72b"
+    "mtime": 1793963180.65564,
+    "seen": 1793963478.5898623,
+    "ast_hash": "378f400c2096beba6e5fc2d4b4bb6eea",
+    "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Resoltera.kt": {
     "mtime": 1793361460.4346201,
@@ -192,10 +192,10 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/ScreenMapper.kt": {
-    "mtime": 1793362232.1660366,
-    "seen": 1793365157.185905,
-    "ast_hash": "a3c476d7dddc1a241481d8c2870d6165",
-    "semantic_hash": "a3c476d7dddc1a241481d8c2870d6165"
+    "mtime": 1793963243.1931992,
+    "seen": 1793963478.589869,
+    "ast_hash": "a3d1525791673feba07b559cef583b02",
+    "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotApp.kt": {
     "mtime": 1793618485.7707512,
@@ -204,9 +204,9 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotGame.kt": {
-    "mtime": 1793618633.4645374,
-    "seen": 1793618641.49706,
-    "ast_hash": "b378fd89e931cf3faab757f0cc3dfc0e",
+    "mtime": 1793963522.7667224,
+    "seen": 1793963543.6020238,
+    "ast_hash": "fa931d8ca4dd92b9ab5a0abd8281eeb3",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotView.kt": {
@@ -627,6 +627,18 @@
     "mtime": 1793619121.5652199,
     "seen": 1793619136.4688797,
     "ast_hash": "da603913babbc22813837521b5a8d712",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/SlingshotLevelComponents.kt": {
+    "mtime": 1793963295.7058568,
+    "seen": 1793963478.5898762,
+    "ast_hash": "7a3578d60c1aba9bb0b04dafd5e2bc43",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/GameLoop.kt": {
+    "mtime": 1793963489.5779207,
+    "seen": 1793963543.6019888,
+    "ast_hash": "aef06ddc12f60b9f60582409272eb385",
     "semantic_hash": ""
   }
 }

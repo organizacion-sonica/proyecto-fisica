@@ -1,17 +1,17 @@
-# Graph Report - proyecto-fisica  (2026-11-02)
+# Graph Report - proyecto-fisica  (2026-11-06)
 
 ## Corpus Check
-- 55 files · ~16,139 words
+- 57 files · ~16,356 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 3, .properties 2, .toml 1)
 
 ## Summary
-- 488 nodes · 895 edges · 29 communities (7 shown, 22 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 35 edges (avg confidence: 0.85)
+- 497 nodes · 914 edges · 26 communities (9 shown, 17 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `213bdb09`
+- Built from commit: `d56a347e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -31,90 +31,95 @@
 - CircularHitbox
 - Hitbox
 - .collides
-- AngleIndicator
+- ScoreBoard
 - SpriteSource
 - AGENTS.md
-- Box2DWorld
 - ScreenMapper
-- BodyFactory
-- ExplosionForce.kt
 - InstructionsContent.kt
 - MenuStyles.kt
 
 ## God Nodes (most connected - your core abstractions)
-1. `SlingshotGame` - 39 edges
+1. `SlingshotGame` - 42 edges
 2. `GameEntity` - 32 edges
 3. `BasketGameController` - 27 edges
 4. `Box2DWorld` - 27 edges
 5. `Bird` - 25 edges
-6. `GameConfig` - 25 edges
-7. `BoxHitbox` - 24 edges
+6. `BoxHitbox` - 24 edges
+7. `GameConfig` - 24 edges
 8. `CircularHitbox` - 23 edges
 9. `Hitbox` - 23 edges
 10. `PhysicsWorld` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Box2DWorld` --calls--> `BodyFactory`  [INFERRED]
-  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/BodyFactory.kt
-- `Box2DWorld` --calls--> `EntitySynchronizer`  [INFERRED]
-  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/EntitySynchronizer.kt
-- `Box2DWorld` --calls--> `ExplosionForce`  [INFERRED]
-  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/ExplosionForce.kt
-- `Box2DWorld` --calls--> `ScreenMapper`  [INFERRED]
-  app/src/main/kotlin/org/example/Box2DWorld.kt → app/src/main/kotlin/org/example/ScreenMapper.kt
-- `SlingshotGame` --calls--> `EntityFactory`  [INFERRED]
-  app/src/main/kotlin/org/example/SlingshotGame.kt → app/src/main/kotlin/org/example/EntityFactory.kt
+- `GameController` --implements--> `AbilityEffects`  [EXTRACTED]
+  app/src/main/kotlin/org/example/GameController.kt → app/src/main/kotlin/org/example/AbilityEffects.kt
+- `AbstractEntity` --references--> `EntityView`  [EXTRACTED]
+  app/src/main/kotlin/org/example/AbstractEntity.kt → app/src/main/kotlin/org/example/EntityView.kt
+- `AbstractEntity` --implements--> `GameEntity`  [EXTRACTED]
+  app/src/main/kotlin/org/example/AbstractEntity.kt → app/src/main/kotlin/org/example/GameEntity.kt
+- `AbstractEntity` --references--> `Hitbox`  [EXTRACTED]
+  app/src/main/kotlin/org/example/AbstractEntity.kt → app/src/main/kotlin/org/example/Hitbox.kt
+- `AngleIndicator` --references--> `GameConfig`  [EXTRACTED]
+  app/src/main/kotlin/org/example/AngleIndicator.kt → app/src/main/kotlin/org/example/GameConfig.kt
 
 ## Import Cycles
 - None detected.
 
-## Communities (29 total, 22 thin omitted)
+## Communities (26 total, 17 thin omitted)
 
 ### Community 0 - "Bird"
-Cohesion: 0.09
-Nodes (8): AbilityEffects, Bird, BirdPile, Bomb, Chuck, EntityFactory, GameConfig, Red
+Cohesion: 0.08
+Nodes (7): AbilityEffects, AbstractEntity, Bird, BirdPile, Bomb, Chuck, Red
 
-### Community 2 - "SlingshotGame"
-Cohesion: 0.10
-Nodes (3): LaunchZone, SlingshotGame, AnimationTimer
+### Community 1 - "GameEntity"
+Cohesion: 0.05
+Nodes (6): Box2DWorld, EntitySynchronizer, GameEntity, GameLoop, AnimationTimer, PhysicsWorld
 
 ### Community 3 - "BasketGameController"
-Cohesion: 0.07
-Nodes (5): BasketGameCollaborators, BasketGameController, BasketHoop, Hoop, RankEvaluator
+Cohesion: 0.09
+Nodes (3): BasketGameCollaborators, BasketGameController, BasketHoop
 
 ### Community 4 - "GameController"
-Cohesion: 0.07
-Nodes (9): AngleDisplay, ExplosionVisuals, GameCollaborators, RankDisplay, ScoreKeeper, TargetScene, TrajectoryPredictor, GameController (+1 more)
+Cohesion: 0.06
+Nodes (10): AngleIndicator, AngleDisplay, ExplosionVisuals, GameCollaborators, RankDisplay, ScoreKeeper, TargetScene, TrajectoryPredictor (+2 more)
+
+### Community 5 - "BackgroundView"
+Cohesion: 0.20
+Nodes (3): BackgroundView, LaunchZone, SlingshotLevelComponents
 
 ### Community 6 - "MenuController"
 Cohesion: 0.10
 Nodes (3): MenuController, MenuFactory, MenuNavigator
 
 ### Community 8 - "ScoreBoard"
-Cohesion: 0.07
-Nodes (6): FileSpriteSource, RankScreen, Resoltera, ScoreBoard, SlingshotApp, TrajectoryCalculator
+Cohesion: 0.08
+Nodes (6): FileSpriteSource, RankEvaluator, RankScreen, Resoltera, SlingshotApp, TrajectoryCalculator
 
 ### Community 17 - "SpriteSource"
-Cohesion: 0.10
-Nodes (4): DianaManager, ExplosionPlayer, SpriteSource, Target
+Cohesion: 0.11
+Nodes (6): DianaManager, EntityFactory, ExplosionPlayer, GameConfig, Hoop, SpriteSource
+
+### Community 25 - "ScreenMapper"
+Cohesion: 0.14
+Nodes (4): BodyFactory, ExplosionForce, DefaultScreenMapper, ScreenMapper
 
 ## Knowledge Gaps
-- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `GameConfig` connect `Bird` to `SlingshotGame`, `BasketGameController`, `BackgroundView`, `MenuController`, `ScoreBoard`, `SlingshotView`, `AngleIndicator`, `SpriteSource`, `Box2DWorld`, `ScreenMapper`, `BodyFactory`?**
-  _High betweenness centrality (0.324) - this node is a cross-community bridge._
-- **Are the 4 inferred relationships involving `Box2DWorld` (e.g. with `BodyFactory` and `EntitySynchronizer`) actually correct?**
-  _`Box2DWorld` has 4 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `SlingshotGame` connect `SlingshotGame` to `Bird`, `GameEntity`, `BasketGameController`, `GameController`, `BackgroundView`, `BoxHitbox`, `SlingshotView`, `SpriteSource`?**
+  _High betweenness centrality (0.340) - this node is a cross-community bridge._
 - **Should `Bird` be split into smaller, more focused modules?**
-  _Cohesion score 0.09243697478991597 - nodes in this community are weakly interconnected._
-- **Why does `SlingshotGame` connect `SlingshotGame` to `Bird`, `GameEntity`, `BasketGameController`, `GameController`, `BoxHitbox`, `SlingshotView`, `SpriteSource`?**
-  _High betweenness centrality (0.322) - this node is a cross-community bridge._
+  _Cohesion score 0.07827260458839407 - nodes in this community are weakly interconnected._
+- **Why does `GameConfig` connect `SpriteSource` to `Bird`, `GameEntity`, `SlingshotGame`, `GameController`, `BackgroundView`, `MenuController`, `ScoreBoard`, `SlingshotView`, `ScoreBoard`, `ScreenMapper`?**
+  _High betweenness centrality (0.311) - this node is a cross-community bridge._
 - **Should `GameEntity` be split into smaller, more focused modules?**
-  _Cohesion score 0.09113300492610837 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0514216575922565 - nodes in this community are weakly interconnected._
 - **Why does `BoxHitbox` connect `BoxHitbox` to `BoxHitbox.kt`, `SlingshotGame`, `Hitbox`, `.collides`?**
-  _High betweenness centrality (0.136) - this node is a cross-community bridge._
+  _High betweenness centrality (0.138) - this node is a cross-community bridge._
 - **Should `SlingshotGame` be split into smaller, more focused modules?**
-  _Cohesion score 0.10121457489878542 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12477718360071301 - nodes in this community are weakly interconnected._
+- **Should `BasketGameController` be split into smaller, more focused modules?**
+  _Cohesion score 0.0944741532976827 - nodes in this community are weakly interconnected._
