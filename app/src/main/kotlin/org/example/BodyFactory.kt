@@ -23,12 +23,18 @@ data class BoxSpec(
  * construcción física del adaptador [Box2DWorld] (SRP + DIP). El adaptador
  * solo registra y sincroniza; esta fábrica solo construye.
  */
-class BodyFactory(private val config: GameConfig, private val mapper: ScreenMapper) {
+interface BodyFactory {
+    fun createBirdBody(bird: GameEntity, mass: Float): org.dyn4j.dynamics.Body
+    fun createStaticBoxBody(spec: BoxSpec): org.dyn4j.dynamics.Body
+    fun createGroundBody(): org.dyn4j.dynamics.Body
+}
+
+class DefaultBodyFactory(private val config: GameConfig, private val mapper: ScreenMapper) : BodyFactory {
 
     private val ppm: Float get() = mapper.pixelsPerMeter
 
     /** Cuerpo dinámico para un pájaro (círculo) con la masa indicada. */
-    fun createBirdBody(bird: GameEntity, mass: Float): Body {
+    override fun createBirdBody(bird: GameEntity, mass: Float): Body {
         val (bx, by, radius) = bird.hitbox.circleSpec()
         val pos = mapper.toWorld(bx, by)
 
@@ -43,7 +49,7 @@ class BodyFactory(private val config: GameConfig, private val mapper: ScreenMapp
     }
 
     /** Cuerpo estático para rebotes (caja). */
-    fun createStaticBoxBody(spec: BoxSpec): Body {
+    override fun createStaticBoxBody(spec: BoxSpec): Body {
         val body = Body()
         val shape = Rectangle(spec.widthPx / ppm, spec.heightPx / ppm)
         body.addFixture(shape, 0.0, spec.friction, spec.restitution)
@@ -54,7 +60,7 @@ class BodyFactory(private val config: GameConfig, private val mapper: ScreenMapp
     }
 
     /** Piso estático. */
-    fun createGroundBody(): Body {
+    override fun createGroundBody(): Body {
         val ground = Body()
         ground.setMass(MassType.INFINITE)
         val groundWidth = config.windowWidth / ppm * 2

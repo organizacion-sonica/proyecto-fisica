@@ -6,14 +6,11 @@ package org.example
  * [GameConfig]. Sigue OCP: agregar una entidad nueva implica agregar un
  * método acá, no modificar el controller.
  */
-class EntityFactory(private val spriteSource: SpriteSource, private val config: GameConfig) {
-
-    /** Fábricas de pájaros por nombre (OCP: agregar un pájaro = agregar una entrada). */
-    private val birdFactories: Map<String, () -> Bird> = mapOf(
-        "red" to { Red(spriteSource, config.birdSize, mass = config.redMass) },
-        "chuck" to { Chuck(spriteSource, config.birdSize, mass = config.chuckMass) },
-        "bomb" to { Bomb(spriteSource, config.birdSize, mass = config.bombMass) }
-    )
+class EntityFactory(
+    private val spriteSource: SpriteSource,
+    private val config: GameConfig,
+    private val birdFactories: Map<String, () -> Bird> = BirdSuppliers.default(spriteSource, config)
+) {
 
     /** Crea un pájaro por nombre, con la masa configurada. */
     fun createBird(name: String): Bird =

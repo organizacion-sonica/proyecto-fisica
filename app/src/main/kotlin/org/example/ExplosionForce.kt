@@ -9,13 +9,17 @@ import kotlin.math.sqrt
  * Aplica la onda expansiva de la Bomba sobre los cuerpos dinámicos cercanos.
  * Responsabilidad única: fuerza radial. Separada de [Box2DWorld] (SRP).
  */
-class ExplosionForce(private val mapper: ScreenMapper) {
+interface ExplosionForce {
+    fun apply(bird: GameEntity, radiusPx: Float, force: Float, bodies: Map<GameEntity, org.dyn4j.dynamics.Body>)
+}
+
+class DefaultExplosionForce(private val mapper: ScreenMapper) : ExplosionForce {
 
     /** Aplica la onda expansiva centrada en [bird]. */
-    fun apply(bird: GameEntity, radiusPx: Float, force: Float, bodies: Map<GameEntity, Body>) {
-        val (cx, cy) = centerOf(bird, bodies)
+    override fun apply(bird: GameEntity, radiusPx: Float, force: Float, bodies: Map<GameEntity, Body>) {
+        val center = centerOf(bird, bodies)
         val radiusM = (radiusPx / mapper.pixelsPerMeter).toDouble()
-        applyImpulses(cx, cy, radiusM, force, bird, bodies)
+        applyImpulses(center, radiusM, force, bird, bodies)
     }
 
     /** Centro del pájaro en coordenadas del mundo (cuerpo o hitbox). */
@@ -31,10 +35,11 @@ class ExplosionForce(private val mapper: ScreenMapper) {
 
     /** Aplica el impulso radial a los cuerpos dinámicos dentro del radio. */
     private fun applyImpulses(
-        cx: Double, cy: Double, radiusM: Double, force: Float,
+        center: Pair<Double, Double>, radiusM: Double, force: Float,
         bird: GameEntity, bodies: Map<GameEntity, Body>
     ) {
         val ppm = mapper.pixelsPerMeter
+        val (cx, cy) = center
         for ((entity, otherBody) in bodies) {
             if (entity === bird) continue
             if (otherBody.mass.type != MassType.NORMAL) continue
