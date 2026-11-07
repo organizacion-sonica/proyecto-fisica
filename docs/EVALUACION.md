@@ -283,15 +283,15 @@ xychart-beta
 | 2026-10-23 | **Sí** | proyecto-fisica | 3 / 2 |
 | 2026-10-26 | **Sí** | proyecto-fisica | 8 / 2 |
 
-#### Aportes fuera del calendario de clases
+#### Aportes fuera del calendario de clases — simonK2010
 
-**3 fechas fuera del calendario** · 8 commits · 6 merges
+**simonK2010 — 3 fechas fuera del calendario** · 8 commits · 6 merges
 
-| Fecha | Repositorios | Commits / merges |
-|---|---|--:|
-| 2026-10-30 | proyecto-fisica | 4 / 2 |
-| 2026-11-02 | proyecto-fisica | 1 / 1 |
-| 2026-11-06 | proyecto-fisica | 3 / 3 |
+| Alumno | Fecha | Repositorios | Commits / merges |
+|---|---|---|---|
+| simonK2010 (`simonK2010`) | 2026-10-30 | proyecto-fisica | 4 / 2 |
+| simonK2010 (`simonK2010`) | 2026-11-02 | proyecto-fisica | 1 / 1 |
+| simonK2010 (`simonK2010`) | 2026-11-06 | proyecto-fisica | 3 / 3 |
 
 <!-- actividad-clases:fin -->
 
