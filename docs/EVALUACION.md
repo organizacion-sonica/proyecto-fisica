@@ -249,11 +249,11 @@ xychart-beta
 <!-- actividad-clases:inicio -->
 ## Actividad en días de clase
 
-> Período **2026-08-14 → 2026-10-29** · **17 clases** (lunes, viernes) · calendario oficial de la materia.
+> Período evaluado **2026-08-14 → 2026-11-07** · **20 clases** (lunes, viernes) · días de clase del calendario, extendidos hasta la fecha de corte.
 >
 > `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**. El cuadro principal usa sólo las fechas de clase del calendario oficial.
 >
-> **Aportes fuera del calendario:** cada alumno tiene un cuadro aparte con las fechas no lectivas con actividad, desde **2026-08-14** hasta **2026-11-06** (ventana de aportes). Esas fechas no forman parte del cuadro principal, pero se muestran para no perder trabajo hecho en fines de semana, feriados o después del período.
+> **Aportes fuera del calendario:** cada alumno tiene un cuadro aparte con las fechas no lectivas con actividad, desde **2026-08-14** hasta **2026-11-07** (ventana de aportes). Esas fechas no forman parte del cuadro principal, pero se muestran para no perder trabajo hecho en fines de semana, feriados o después del período.
 >
 > Se recorre `git log --all` sobre un mirror (todas las ramas y `refs/pull/*`), con deduplicación por commit. Fecha = fecha de autor en UTC-3. Los commits locales no pusheados no se ven. Si el trabajo fue en pareja y el commit es de otra persona, figura a nombre del autor del commit; para reflejarlo, usar `Co-authored-by` o una nota manual.
 >
@@ -261,7 +261,7 @@ xychart-beta
 
 ### simonK2010
 
-**7/17 clases con actividad** · 16 commits · 8 merges
+**10/20 clases con actividad** · 24 commits · 14 merges
 
 | Fecha | Marca | Repositorios | Commits / merges |
 |---|:--:|---|--:|
@@ -282,16 +282,13 @@ xychart-beta
 | 2026-10-19 | No | sin actividad | 0 / 0 |
 | 2026-10-23 | **Sí** | proyecto-fisica | 3 / 2 |
 | 2026-10-26 | **Sí** | proyecto-fisica | 8 / 2 |
+| 2026-10-30 | **Sí** | proyecto-fisica | 4 / 2 |
+| 2026-11-02 | **Sí** | proyecto-fisica | 1 / 1 |
+| 2026-11-06 | **Sí** | proyecto-fisica | 3 / 3 |
 
 #### Aportes fuera del calendario de clases — simonK2010
 
-**simonK2010 — 3 fechas fuera del calendario** · 8 commits · 6 merges
-
-| Alumno | Fecha | Repositorios | Commits / merges |
-|---|---|---|---|
-| simonK2010 (`simonK2010`) | 2026-10-30 | proyecto-fisica | 4 / 2 |
-| simonK2010 (`simonK2010`) | 2026-11-02 | proyecto-fisica | 1 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-06 | proyecto-fisica | 3 / 3 |
+_Sin aportes fuera del calendario de clases para simonK2010._
 
 <!-- actividad-clases:fin -->
 
