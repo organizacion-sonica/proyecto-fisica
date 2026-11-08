@@ -18,7 +18,7 @@ import java.io.File
  */
 class SlingshotApp : Application() {
 
-    private val assetsDir = "/home/simonkrasner/proyecto-fisica/elementos graficos/"
+    private val assetsDir = "D:\\downloads\\proyecto-fisica\\elementos graficos"
 
     private lateinit var spriteSource: SpriteSource
     private lateinit var config: GameConfig
@@ -76,20 +76,7 @@ class SlingshotApp : Application() {
             spriteSource,
             config,
             onExitToMenu = { Platform.runLater { showMenu() } },
-            collaboratorFactory = { pane, physics ->
-                val trajectoryLayer = Pane()
-                val trajectoryCalculator = TrajectoryCalculator(config)
-                GameCollaborators(
-                    angleIndicator = AngleIndicator(config),
-                    trajectoryLayer = trajectoryLayer,
-                    trajectoryCalculator = trajectoryCalculator,
-                    trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
-                    explosionPlayer = ExplosionPlayer(pane, spriteSource, config),
-                    scoreBoard = ScoreBoard(config),
-                    dianaManager = DianaManager(spriteSource, config, pane),
-                    rankScreen = RankScreen(spriteSource, config)
-                )
-            }
+            collaboratorFactory = SlingshotDefaults.gameCollaboratorFactory(spriteSource, config)
         )
         showScene(controller.buildScene(), "Minijuegos de Fisica - Juego")
     }
@@ -99,22 +86,7 @@ class SlingshotApp : Application() {
             spriteSource,
             config,
             onExitToMenu = { Platform.runLater { showMenu() } },
-            collaboratorFactory = { pane, physics ->
-                val hud = BasketHud(spriteSource, config)
-                hud.addTo(pane)
-                val trajectoryLayer = Pane().also { pane.children.add(it) }
-                val trajectoryCalculator = TrajectoryCalculator(config)
-                BasketGameCollaborators(
-                    trajectoryLayer = trajectoryLayer,
-                    trajectoryCalculator = trajectoryCalculator,
-                    trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
-                    scoreLabel = hud.scoreLabel,
-                    rankView = hud.rankView,
-                    timerLabel = hud.timerLabel,
-                    hoop = Hoop(spriteSource, config, pane, physics),
-                    rankScreen = RankScreen(spriteSource, config)
-                )
-            }
+            collaboratorFactory = SlingshotDefaults.basketCollaboratorFactory(spriteSource, config)
         )
         showScene(controller.buildScene(), "Minijuegos de Fisica - Tiro al Aro")
     }

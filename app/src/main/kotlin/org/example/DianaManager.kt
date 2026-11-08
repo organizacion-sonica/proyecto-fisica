@@ -73,9 +73,7 @@ class DianaManager(
         val x = config.windowWidth * 0.90
         val y = config.windowHeight * 0.52
         val size = Target.FIXED_SIZE * config.scale
-        val view = EntityView(spriteSource, "diana potente.png", size,
-            OvalHitbox(size * Target.RADIUS_X, size * Target.RADIUS_Y), false,
-            hitboxOffsetX = -6.0 * config.scale)
+        val view = TargetFactory.createFixedView(spriteSource, config, size)
         val fixed = Target.fixed(
             view = view,
             cx = x, baseY = y,
@@ -98,9 +96,7 @@ class DianaManager(
         for ((i, spec) in specs.withIndex()) {
             val (cx, baseY, amp) = spec
             val size = Target.MOBILE_SIZE * config.scale
-            val view = EntityView(spriteSource, "diana.png", size,
-                OvalHitbox(size * Target.RADIUS_X, size * Target.RADIUS_Y), false,
-                hitboxOffsetX = -6.0 * config.scale)
+            val view = TargetFactory.createMobileView(spriteSource, config, size)
             val target = Target.mobile(
                 view = view,
                 cx = cx, baseY = baseY,

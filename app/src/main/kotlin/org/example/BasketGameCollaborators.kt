@@ -16,5 +16,7 @@ data class BasketGameCollaborators(
     val rankView: ImageView,
     val timerLabel: Label,
     val hoop: BasketHoop,
-    val rankScreen: RankDisplay
+    val rankScreen: RankDisplay,
+    val scoreBoard: BasketScoreBoard,
+    val timer: BasketTimer
 )

@@ -17,7 +17,7 @@ class EntityView(
     assetName: String,
     size: Double,
     val hitbox: Hitbox,
-    showHitbox: Boolean,
+    private val showHitbox: Boolean,
     private val hitboxOffsetX: Double = 0.0,
     private val hitboxOffsetY: Double = 0.0
 ) {
@@ -73,7 +73,7 @@ class EntityView(
     /** Muestra u oculta sprite + contorno (p. ej. dianas al reaparecer). */
     fun setVisible(visible: Boolean) {
         imageView.isVisible = visible
-        overlay.isVisible = visible
+        overlay.isVisible = visible && showHitbox
     }
 
     /** Muestra u oculta solo el contorno de depuración. */

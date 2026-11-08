@@ -27,9 +27,9 @@ class BasketGameController(
     private val timerLabel: Label get() = collaborators.timerLabel
     private val hoop: BasketHoop get() = collaborators.hoop
     private val rankScreen: RankDisplay get() = collaborators.rankScreen
+    private val scoreBoard: BasketScoreBoard get() = collaborators.scoreBoard
+    private val timer: BasketTimer get() = collaborators.timer
 
-    private lateinit var scoreBoard: BasketScoreBoard
-    private lateinit var timer: BasketTimer
     private var rankShown = false
 
     private var globalTime = 0.0
@@ -40,9 +40,6 @@ class BasketGameController(
 
     override fun setupLevel() {
         collaborators = collaboratorFactory(pane, physics)
-        BackgroundView(spriteSource, config).placeIn(pane)
-        scoreBoard = BasketScoreBoard(spriteSource, config, scoreLabel, rankView)
-        timer = BasketTimer(config, timerLabel, BASKET_TIME_LIMIT)
         createPole()
     }
 
@@ -169,7 +166,7 @@ class BasketGameController(
         }
     }
 
-    protected companion object {
+    companion object {
         const val BASKET_TIME_LIMIT = 90
         const val TRAJECTORY_FRAMES = 60
         const val CHECK_COOLDOWN = 0.5

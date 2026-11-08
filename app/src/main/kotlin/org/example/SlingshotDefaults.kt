@@ -1,0 +1,69 @@
+package org.example
+
+import javafx.scene.layout.Pane
+
+/**
+ * Valores por defecto de las fábricas de [SlingshotGame]: concentran la
+ * composición de concretos en un único lugar (composition root), de modo
+ * que [SlingshotGame] depende de abstracciones y no de implementaciones.
+ */
+object SlingshotDefaults {
+
+    fun physicsFactory(config: GameConfig): () -> PhysicsWorld = {
+        val m = DefaultScreenMapper(config)
+        Box2DWorld(config, m, DefaultBodyFactory(config, m), DefaultEntitySynchronizer(m), DefaultExplosionForce(m))
+    }
+
+    fun levelFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> SlingshotLevelComponents =
+        { pane, _ ->
+            val bg = BackgroundView(spriteSource, config)
+            val sl = SlingshotView(spriteSource, config)
+            sl.placeIn(pane)
+            val lz = LaunchZone(config, sl.anchor.x, sl.anchor.y)
+            val ef = EntityFactory(spriteSource, config)
+            val pl = BirdPile(pane, ef, config)
+            pl.setup()
+            bg.placeIn(pane)
+            SlingshotLevelComponents(bg, sl, lz, pl, ef)
+        }
+
+    fun gameCollaboratorFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> GameCollaborators =
+        { pane, _ ->
+            val trajectoryLayer = Pane()
+            val trajectoryCalculator = TrajectoryCalculator(config)
+            GameCollaborators(
+                angleIndicator = AngleIndicator(config),
+                trajectoryLayer = trajectoryLayer,
+                trajectoryCalculator = trajectoryCalculator,
+                trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                explosionPlayer = ExplosionPlayer(pane, spriteSource, config),
+                scoreBoard = ScoreBoard(config),
+                dianaManager = DianaManager(spriteSource, config, pane),
+                rankScreen = RankScreen(spriteSource, config)
+            )
+        }
+
+    fun basketCollaboratorFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> BasketGameCollaborators =
+        { pane, physics ->
+            val hud = BasketHud(spriteSource, config)
+            hud.addTo(pane)
+            BackgroundView(spriteSource, config).placeIn(pane)
+            val trajectoryLayer = Pane().also { pane.children.add(it) }
+            val trajectoryCalculator = TrajectoryCalculator(config)
+            val scoreBoard = BasketScoreBoard(spriteSource, config, hud.scoreLabel, hud.rankView)
+            val timer = BasketTimer(config, hud.timerLabel, BasketGameController.BASKET_TIME_LIMIT)
+            BasketGameCollaborators(
+                trajectoryLayer = trajectoryLayer,
+                trajectoryCalculator = trajectoryCalculator,
+                trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                scoreLabel = hud.scoreLabel,
+                rankView = hud.rankView,
+                timerLabel = hud.timerLabel,
+                hoop = Hoop(spriteSource, config, pane, physics),
+                rankScreen = RankScreen(spriteSource, config),
+                scoreBoard = scoreBoard,
+                timer = timer
+            )
+        }
+}
+

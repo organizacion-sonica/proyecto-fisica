@@ -22,24 +22,11 @@ abstract class SlingshotGame(
     protected val spriteSource: SpriteSource,
     protected val config: GameConfig,
     /** Callback para volver al menú principal (tecla ESC). */
-    private val onExitToMenu: () -> Unit = {},
+    private val onExitToMenu: () -> Unit = { Unit },
     /** Fábrica del mundo físico (Inversión de Dependencias: un test podría simularlo). */
-    private val physicsFactory: () -> PhysicsWorld = {
-        val m = DefaultScreenMapper(config)
-        Box2DWorld(config, m, BodyFactory(config, m), EntitySynchronizer(m), ExplosionForce(m))
-    },
+    private val physicsFactory: () -> PhysicsWorld = SlingshotDefaults.physicsFactory(config),
     /** Fábrica de los colaboradores del nivel con resortera (DIP). */
-    private val levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents = { pane, physics ->
-        val bg = BackgroundView(spriteSource, config)
-        val sl = SlingshotView(spriteSource, config)
-        sl.placeIn(pane)
-        val lz = LaunchZone(config, sl.anchor.x, sl.anchor.y)
-        val ef = EntityFactory(spriteSource, config)
-        val pl = BirdPile(pane, ef, config)
-        pl.setup()
-        bg.placeIn(pane)
-        SlingshotLevelComponents(bg, sl, lz, pl, ef)
-    }
+    private val levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents = SlingshotDefaults.levelFactory(spriteSource, config)
 ) {
     protected var physics: PhysicsWorld = physicsFactory()
     private var gameLoop: GameLoop? = null
@@ -126,31 +113,31 @@ abstract class SlingshotGame(
     protected abstract fun setupLevel()
 
     /** Ajustes al reiniciar el nivel (puntaje a cero, cronómetro...). */
-    protected open fun onLevelReset() {}
+    protected open fun onLevelReset() { Unit }
 
     /** Lógica propia del nivel en cada paso fijo de física. */
     protected abstract fun onPhysicsStep(dt: Double)
 
     /** Se sigue estirando: efectos de ayuda de tiro (ángulo, trayectoria...). */
-    protected open fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {}
+    protected open fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) { Unit }
 
     /** Se suelta la resortera (antes de decidir si el tiro es válido). */
-    protected open fun clearAimLayer() {}
+    protected open fun clearAimLayer() { Unit }
 
     /** Tecla G: habilidad especial del último pájaro lanzado, si la hay. */
-    protected open fun onAbilityKey() {}
+    protected open fun onAbilityKey() { Unit }
 
     /** Tras lanzar un pájaro (para que cada nivel limpie su estado). */
-    protected open fun onLaunch() {}
+    protected open fun onLaunch() { Unit }
 
     /** Un pájaro lanzado quedó en reposo (puntos de basket, etc.). */
-    protected open fun onBirdSettled(bird: Bird) {}
+    protected open fun onBirdSettled(bird: Bird) { Unit }
 
     /** Se acaba de agarrar un pájaro (de la pila o para la resortera). */
-    protected open fun onBirdGrabbed() {}
+    protected open fun onBirdGrabbed() { Unit }
 
     /** Un pájaro quedó fijado en la resortera (momento en que arranca el timer). */
-    protected open fun onBirdLoadedOntoSlingshot() {}
+    protected open fun onBirdLoadedOntoSlingshot() { Unit }
 
     // ── Carga de pájaros ──────────────────────────────────────────────
 
