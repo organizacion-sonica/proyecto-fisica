@@ -18,7 +18,7 @@ class RankScreen(
     /** Dibuja la pantalla final sobre [pane] con el [score] obtenido. */
     override fun show(pane: Pane, score: Int, rankLetter: String?) {
         pane.children.clear()
-        BackgroundView(spriteSource, config).placeIn(pane)
+        SlingshotDefaults.backgroundView(spriteSource, config).placeIn(pane)
 
         val s = config.scale
         val rankSize = 200.0 * s

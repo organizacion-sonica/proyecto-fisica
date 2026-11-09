@@ -16,8 +16,8 @@ class Hoop(
     private val pane: Pane,
     private val physics: PhysicsWorld
 ) : BasketHoop {
-    val width: Double = 140.0 * config.scale
-    val height: Double = 140.0 * config.scale
+    private val width: Double = 140.0 * config.scale
+    private val height: Double = 140.0 * config.scale
 
     /** Centro X del aro (fijo, no cambia al moverse). */
     override val centerX: Double

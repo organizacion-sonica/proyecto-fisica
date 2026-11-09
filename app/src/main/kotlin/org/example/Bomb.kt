@@ -15,7 +15,7 @@ class Bomb(
     assetName = "bomb.png",
     entitySize = size,
     showHitbox = showHitbox,
-    hitboxFactory = { s -> CircularHitbox(radius = s * 0.33) },
+    hitboxFactory = { s -> HitboxFactory.circular(s * 0.33) },
     hitboxOffsetX = size * (-0.02),
     hitboxOffsetY = size * 0.04
 ), Bird {

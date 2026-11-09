@@ -15,7 +15,7 @@ class Red(
     assetName = "Red.png",
     entitySize = size,
     showHitbox = showHitbox,
-    hitboxFactory = { s -> CircularHitbox(radius = s * 0.34) },
+    hitboxFactory = { s -> HitboxFactory.circular(s * 0.34) },
     hitboxOffsetX = size * 0.01,
     hitboxOffsetY = size * 0.08
 ), Bird {

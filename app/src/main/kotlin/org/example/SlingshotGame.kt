@@ -57,6 +57,9 @@ abstract class SlingshotGame(
 
     protected lateinit var pane: Pane
 
+    /** Maneja la entrada de mouse/teclado, separado para reducir el tamaño de esta clase (SRP). */
+    private val input = InputHandler()
+
     private val grabRadius = 45.0 * config.scale
 
     // ── Construcción de la escena ─────────────────────────────────────
@@ -71,10 +74,10 @@ abstract class SlingshotGame(
         startPhysicsLoop()
 
         val scene = Scene(pane, config.windowWidth, config.windowHeight)
-        scene.setOnKeyPressed { e -> handleKeyPressed(e) }
-        scene.setOnMousePressed { e -> handlePressed(e) }
-        scene.setOnMouseDragged { e -> handleDragged(e) }
-        scene.setOnMouseReleased { e -> handleReleased(e) }
+        scene.setOnKeyPressed { e -> input.handleKeyPressed(e) }
+        scene.setOnMousePressed { e -> input.handlePressed(e) }
+        scene.setOnMouseDragged { e -> input.handleDragged(e) }
+        scene.setOnMouseReleased { e -> input.handleReleased(e) }
         return scene
     }
 
@@ -101,8 +104,7 @@ abstract class SlingshotGame(
         pile = levelComponents.pile
 
         // Hitbox al raz del piso (invisible).
-        floorHitbox = BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0)
-        floorHitbox.recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
+        floorHitbox = SlingshotDefaults.floorHitbox(config)
 
         flightTracker = FlightTracker(physics, pane, floorHitbox) { onBirdSettled(it) }
 
@@ -192,98 +194,7 @@ abstract class SlingshotGame(
         return pull.x / mag * speed to pull.y / mag * speed
     }
 
-    // ── Input ─────────────────────────────────────────────────────────
-
-    private fun handlePressed(e: MouseEvent) {
-        val mx = e.sceneX
-        val my = e.sceneY
-
-        // 1) Si hay un pájaro fijado en la resortera → activar estiramiento
-        //    (sin verificar distancia: cualquier clic activa la resortera).
-        if (slingshotBird != null) {
-            slingshot.forceStartDrag(mx, my)
-            return
-        }
-
-        // 2) Agarrar un pájaro de la pila → empezar arrastre directo.
-        val bird = pile.available().firstOrNull { isNearBird(it, mx, my) }
-        if (bird != null) {
-            dragBird = bird
-            bird.placeAt(pane, mx - bird.width / 2, my - bird.height / 2)
-            onBirdGrabbed()
-        }
-    }
-
-    private fun handleDragged(e: MouseEvent) {
-        val mx = e.sceneX
-        val my = e.sceneY
-
-        // Estiramiento de la resortera: el pájaro va con el pull.
-        if (slingshot.isDragging) {
-            val loaded = slingshotBird ?: return
-            slingshot.drag(mx, my)
-            val pos = slingshot.birdStretchPos
-            loaded.placeAt(pane, pos.x - loaded.width / 2, pos.y - loaded.height / 2)
-            physics.setTransform(loaded, pos.x, pos.y)
-            onStretchUpdate(slingshot.pull, pos)
-            return
-        }
-
-        // Arrastre directo del pájaro desde la pila (si no hay pájaro fijado).
-        if (slingshotBird != null) return
-        val bird = dragBird ?: return
-        bird.placeAt(pane, mx - bird.width / 2, my - bird.height / 2)
-    }
-
-    private fun handleReleased(e: MouseEvent) {
-        val mx = e.sceneX
-        val my = e.sceneY
-
-        // Soltar la resortera → lanzar si hay estiramiento suficiente.
-        if (slingshot.isDragging) {
-            val loaded = slingshotBird ?: return
-            clearAimLayer()
-            val pull = slingshot.release() ?: return
-            if (pull.magnitude() > MIN_STRETCH) {
-                launchBird(loaded, pull)
-            } else {
-                // Estiramiento insuficiente: devolver el pájaro a la resortera.
-                loaded.placeAt(pane, slingshot.anchor.x - loaded.width / 2, slingshot.anchor.y - loaded.height / 2)
-                physics.setTransform(loaded, slingshot.anchor.x, slingshot.anchor.y)
-            }
-            return
-        }
-
-        // Soltar pájaro arrastrado desde la pila.
-        if (slingshotBird != null) return
-        val bird = dragBird ?: return
-        dragBird = null
-        if (launchZone.contains(mx, my)) {
-            // Soltado sobre la zona → cargar en la resortera.
-            loadBirdOntoSlingshot(bird)
-        } else {
-            // Soltado fuera → volver a la pila.
-            pile.putBack(bird)
-        }
-    }
-
-    private fun handleKeyPressed(e: KeyEvent) {
-        when (e.code) {
-            KeyCode.ESCAPE -> {
-                stopPhysicsLoop()
-                onExitToMenu()
-            }
-            KeyCode.G -> onAbilityKey()
-            KeyCode.R -> resetLevel()
-            else -> Unit
-        }
-    }
-
-    private fun isNearBird(bird: Bird, x: Double, y: Double): Boolean {
-        val cx = bird.x + bird.width / 2
-        val cy = bird.y + bird.height / 2
-        return Point2D(x, y).distance(cx, cy) < grabRadius
-    }
+    // ── Input delegado a InputHandler ─────────────────────────────────────
 
     // ── Game loop (60 fps fijos) ──────────────────────────────────────
 
@@ -314,6 +225,90 @@ abstract class SlingshotGame(
     /** Hace desaparecer los pájaros que llevan ≥ 3 s en el piso. */
     /** Marca un pájaro como asentado (p. ej. salió de la pantalla) para que se desvanezca. */
     protected fun markBirdSettled(bird: Bird) = flightTracker.markSettled(bird)
+
+    /** Manejador de entrada (mouse/teclado), extraído para reducir el tamaño de esta clase (SRP). */
+    inner class InputHandler {
+        fun handlePressed(e: MouseEvent) {
+            val mx = e.sceneX
+            val my = e.sceneY
+
+            if (this@SlingshotGame.slingshotBird != null) {
+                this@SlingshotGame.slingshot.forceStartDrag(mx, my)
+                return
+            }
+
+            val bird = this@SlingshotGame.pile.available().firstOrNull { isNearBird(it, mx, my) }
+            if (bird != null) {
+                this@SlingshotGame.dragBird = bird
+                bird.placeAt(this@SlingshotGame.pane, mx - bird.width / 2, my - bird.height / 2)
+                this@SlingshotGame.onBirdGrabbed()
+            }
+        }
+
+        fun handleDragged(e: MouseEvent) {
+            val mx = e.sceneX
+            val my = e.sceneY
+
+            if (this@SlingshotGame.slingshot.isDragging) {
+                val loaded = this@SlingshotGame.slingshotBird ?: return
+                this@SlingshotGame.slingshot.drag(mx, my)
+                val pos = this@SlingshotGame.slingshot.birdStretchPos
+                loaded.placeAt(this@SlingshotGame.pane, pos.x - loaded.width / 2, pos.y - loaded.height / 2)
+                this@SlingshotGame.physics.setTransform(loaded, pos.x, pos.y)
+                this@SlingshotGame.onStretchUpdate(this@SlingshotGame.slingshot.pull, pos)
+                return
+            }
+
+            if (this@SlingshotGame.slingshotBird != null) return
+            val bird = this@SlingshotGame.dragBird ?: return
+            bird.placeAt(this@SlingshotGame.pane, mx - bird.width / 2, my - bird.height / 2)
+        }
+
+        fun handleReleased(e: MouseEvent) {
+            val mx = e.sceneX
+            val my = e.sceneY
+
+            if (this@SlingshotGame.slingshot.isDragging) {
+                val loaded = this@SlingshotGame.slingshotBird ?: return
+                this@SlingshotGame.clearAimLayer()
+                val pull = this@SlingshotGame.slingshot.release() ?: return
+                if (pull.magnitude() > MIN_STRETCH) {
+                    this@SlingshotGame.launchBird(loaded, pull)
+                } else {
+                    loaded.placeAt(this@SlingshotGame.pane, this@SlingshotGame.slingshot.anchor.x - loaded.width / 2, this@SlingshotGame.slingshot.anchor.y - loaded.height / 2)
+                    this@SlingshotGame.physics.setTransform(loaded, this@SlingshotGame.slingshot.anchor.x, this@SlingshotGame.slingshot.anchor.y)
+                }
+                return
+            }
+
+            if (this@SlingshotGame.slingshotBird != null) return
+            val bird = this@SlingshotGame.dragBird ?: return
+            this@SlingshotGame.dragBird = null
+            if (this@SlingshotGame.launchZone.contains(mx, my)) {
+                this@SlingshotGame.loadBirdOntoSlingshot(bird)
+            } else {
+                this@SlingshotGame.pile.putBack(bird)
+            }
+        }
+
+        fun handleKeyPressed(e: KeyEvent) {
+            when (e.code) {
+                KeyCode.ESCAPE -> {
+                    this@SlingshotGame.stopPhysicsLoop()
+                    this@SlingshotGame.onExitToMenu()
+                }
+                KeyCode.G -> this@SlingshotGame.onAbilityKey()
+                KeyCode.R -> this@SlingshotGame.resetLevel()
+                else -> Unit
+            }
+        }
+
+        private fun isNearBird(bird: Bird, x: Double, y: Double): Boolean {
+            val cx = bird.x + bird.width / 2
+            val cy = bird.y + bird.height / 2
+            return Point2D(x, y).distance(cx, cy) < this@SlingshotGame.grabRadius
+        }
+    }
 
     protected companion object {
         /** Estiramiento mínimo para considerarlo un tiro válido. */

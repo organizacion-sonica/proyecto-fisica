@@ -41,17 +41,23 @@ class DefaultExplosionForce(private val mapper: ScreenMapper) : ExplosionForce {
         val ppm = mapper.pixelsPerMeter
         val (cx, cy) = center
         for ((entity, otherBody) in bodies) {
-            if (entity === bird) continue
-            if (otherBody.mass.type != MassType.NORMAL) continue
-            val otherT = otherBody.transform
-            val dx = otherT.translationX - cx
-            val dy = otherT.translationY - cy
-            val dist = sqrt(dx * dx + dy * dy)
-            if (dist <= 0 || dist >= radiusM) continue
-            val falloff = 1.0 - dist / radiusM
-            val fx = (dx / dist) * force * falloff / ppm
-            val fy = (dy / dist) * force * falloff / ppm
-            otherBody.applyImpulse(Vector2(fx, fy))
+            if (entity === bird || otherBody.mass.type != MassType.NORMAL) continue
+            applyImpulseTo(otherBody, cx, cy, radiusM, force, ppm)
         }
+    }
+
+    /** Aplica el impulso a un cuerpo si está dentro del radio. */
+    private fun applyImpulseTo(
+        body: Body, cx: Double, cy: Double, radiusM: Double, force: Float, ppm: Float
+    ) {
+        val t = body.transform
+        val dx = t.translationX - cx
+        val dy = t.translationY - cy
+        val dist = sqrt(dx * dx + dy * dy)
+        if (dist <= 0 || dist >= radiusM) return
+        val falloff = 1.0 - dist / radiusM
+        val fx = (dx / dist) * force * falloff / ppm
+        val fy = (dy / dist) * force * falloff / ppm
+        body.applyImpulse(Vector2(fx, fy))
     }
 }
