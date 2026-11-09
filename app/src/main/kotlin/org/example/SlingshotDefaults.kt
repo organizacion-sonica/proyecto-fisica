@@ -43,6 +43,14 @@ object SlingshotDefaults {
             )
         }
 
+    fun floorHitbox(config: GameConfig): BoxHitbox =
+        BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0).apply {
+            recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
+        }
+
+    fun backgroundView(spriteSource: SpriteSource, config: GameConfig): BackgroundView =
+        BackgroundView(spriteSource, config)
+
     fun basketCollaboratorFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> BasketGameCollaborators =
         { pane, physics ->
             val hud = BasketHud(spriteSource, config)

@@ -20,7 +20,7 @@ class Chuck(
     assetName = "chuck .png",
     entitySize = size,
     showHitbox = showHitbox,
-    hitboxFactory = { s -> CircularHitbox(radius = s * 0.42) }
+    hitboxFactory = { s -> HitboxFactory.circular(s * 0.42) }
 ), Bird {
 
     override var abilityUsed = false
