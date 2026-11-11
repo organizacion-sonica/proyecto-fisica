@@ -23,17 +23,20 @@ class Chuck(
     hitboxFactory = { s -> HitboxFactory.circular(s * 0.42) }
 ), Bird {
 
-    override var abilityUsed = false
+    private var used = false
+
+    /** El estado de la habilidad es interno: solo se consulta (encapsulación). */
+    override val abilityUsed: Boolean get() = used
 
     /** Aumenta la velocidad actual del pájaro (boost de Chuck). */
     private fun boostSpeed(multiplier: Float, physics: PhysicsWorld) {
-        if (abilityUsed) return
-        abilityUsed = true
+        if (used) return
+        used = true
         physics.boostBirdSpeed(this, multiplier)
     }
 
     override fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean {
-        if (abilityUsed) return false
+        if (used) return false
         boostSpeed(config.chuckSpeedBoost, physics)
         return true
     }

@@ -44,11 +44,12 @@ class SlingshotApp : Application() {
 
     /** Muestra (o re-muestra) el menú principal con una instancia fresca. */
     private fun showMenu() {
+        val menuBuilder = SlingshotDefaults.menuBuilder(spriteSource, config) { menuController }
         menuController = MenuController(
-            spriteSource,
             config,
             onStartGame = { startGame() },
-            onStartBasketGame = { startBasket() }
+            onStartBasketGame = { startBasket() },
+            menuBuilder = menuBuilder
         )
         stage.scene = menuController.menuScene
         stage.title = "Minijuegos de Fisica"
@@ -72,21 +73,19 @@ class SlingshotApp : Application() {
     }
 
     private fun startGame() {
-        val controller = GameController(
+        val controller = SlingshotDefaults.gameController(
             spriteSource,
             config,
-            onExitToMenu = { Platform.runLater { showMenu() } },
-            collaboratorFactory = SlingshotDefaults.gameCollaboratorFactory(spriteSource, config)
+            onExitToMenu = { Platform.runLater { showMenu() } }
         )
         showScene(controller.buildScene(), "Minijuegos de Fisica - Juego")
     }
 
     private fun startBasket() {
-        val controller = BasketGameController(
+        val controller = SlingshotDefaults.basketController(
             spriteSource,
             config,
-            onExitToMenu = { Platform.runLater { showMenu() } },
-            collaboratorFactory = SlingshotDefaults.basketCollaboratorFactory(spriteSource, config)
+            onExitToMenu = { Platform.runLater { showMenu() } }
         )
         showScene(controller.buildScene(), "Minijuegos de Fisica - Tiro al Aro")
     }

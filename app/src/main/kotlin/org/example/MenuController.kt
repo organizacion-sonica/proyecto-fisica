@@ -15,17 +15,15 @@ import javafx.util.Duration
  * de los paneles vive en [MenuFactory] (SRP).
  */
 class MenuController(
-    private val spriteSource: SpriteSource,
     private val config: GameConfig,
     private val onStartGame: () -> Unit,
-    private val onStartBasketGame: () -> Unit
+    private val onStartBasketGame: () -> Unit,
+    private val menuBuilder: MenuBuilder
 ) : MenuNavigator {
 
-    private val factory = MenuFactory(spriteSource, config, this)
-
-    private val mainMenu = factory.mainMenu()
-    private val instructionsMenu = factory.instructionsMenu()
-    private val gamesMenu = factory.gamesMenu()
+    private val mainMenu = menuBuilder.mainMenu()
+    private val instructionsMenu = menuBuilder.instructionsMenu()
+    private val gamesMenu = menuBuilder.gamesMenu()
     private val root = StackPane(mainMenu)
 
     private var currentMenu: VBox = mainMenu

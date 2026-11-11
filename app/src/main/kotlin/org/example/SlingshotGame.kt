@@ -199,7 +199,7 @@ abstract class SlingshotGame(
     // ── Game loop (60 fps fijos) ──────────────────────────────────────
 
     private fun startPhysicsLoop() {
-        gameLoop = GameLoop(
+        gameLoop = SlingshotDefaults.gameLoop(
             physics = physics,
             onStep = { dt -> onPhysicsStep(dt) },
             onRemoveSettled = { removeSettledBirds() },

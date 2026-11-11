@@ -10,6 +10,20 @@ import kotlin.test.assertTrue
  */
 class AppTest {
 
+    /** Hitbox circular centrada en el origen (helper de los tests). */
+    private fun circleAt(radius: Double): CircularHitbox {
+        val circle = CircularHitbox(radius)
+        circle.recenter(0.0, 0.0)
+        return circle
+    }
+
+    /** Hitbox rectangular centrada en el origen (helper de los tests). */
+    private fun boxAt(halfWidth: Double, halfHeight: Double): BoxHitbox {
+        val box = BoxHitbox(halfWidth, halfHeight)
+        box.recenter(0.0, 0.0)
+        return box
+    }
+
     // ---- Hitbox.contains ----
 
     @Test
@@ -32,7 +46,7 @@ class AppTest {
 
     @Test
     fun `colision circulo-circulo`() {
-        val a = CircularHitbox(1.0).apply { recenter(0.0, 0.0) }
+        val a = circleAt(1.0)
         val b = CircularHitbox(1.0).apply { recenter(1.5, 0.0) } // dist 1.5 < 2 -> chocan
         assertTrue(CollisionDetector.collides(a, b))
 
@@ -42,7 +56,7 @@ class AppTest {
 
     @Test
     fun `colision caja-caja`() {
-        val a = BoxHitbox(2.0, 1.0).apply { recenter(0.0, 0.0) }
+        val a = boxAt(2.0, 1.0)
         val b = BoxHitbox(2.0, 1.0).apply { recenter(3.0, 0.0) } // separación 3 < 4 -> chocan
         assertTrue(CollisionDetector.collides(a, b))
 
@@ -52,7 +66,7 @@ class AppTest {
 
     @Test
     fun `colision circulo-caja`() {
-        val box = BoxHitbox(4.0, 4.0).apply { recenter(0.0, 0.0) }
+        val box = boxAt(4.0, 4.0)
         val within = CircularHitbox(1.0).apply { recenter(3.0, 3.0) } // toca la esquina
         assertTrue(CollisionDetector.collides(box, within))
 

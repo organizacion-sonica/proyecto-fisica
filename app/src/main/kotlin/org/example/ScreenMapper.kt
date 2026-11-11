@@ -16,6 +16,11 @@ interface ScreenMapper {
 
     /** Píxeles por metro (escala física). */
     val pixelsPerMeter: Float
+
+    /** Convierte una distancia en metros a píxeles de pantalla. */
+    fun metersToPixels(meters: Double): Double {
+        return meters * pixelsPerMeter
+    }
 }
 
 /**
@@ -38,4 +43,9 @@ class DefaultScreenMapper(private val config: GameConfig) : ScreenMapper {
     }
 
     override val pixelsPerMeter: Float get() = ppm
+
+    /** Convierte una distancia en metros a píxeles de pantalla. */
+    override fun metersToPixels(meters: Double): Double {
+        return meters * ppm
+    }
 }

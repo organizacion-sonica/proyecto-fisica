@@ -20,7 +20,10 @@ class Bomb(
     hitboxOffsetY = size * 0.04
 ), Bird {
 
-    override var abilityUsed = false
+    private var used = false
+
+    /** El estado de la habilidad es interno: solo se consulta (encapsulación). */
+    override val abilityUsed: Boolean get() = used
 
     /**
      * Habilidad: onda expansiva (física) + pedido de efectos visuales.
@@ -29,8 +32,8 @@ class Bomb(
      * pregunta el tipo: puro polimorfismo (OCP).
      */
     override fun useAbility(physics: PhysicsWorld, config: GameConfig, fx: AbilityEffects): Boolean {
-        if (abilityUsed) return false
-        abilityUsed = true
+        if (used) return false
+        used = true
         val radiusPx = config.bombExplosionRadius
         physics.explodeAt(this, radiusPx, config.bombExplosionForce)
         fx.explosionAt(centerX, centerY, radiusPx.toDouble())

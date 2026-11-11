@@ -11,8 +11,8 @@ interface Bird : GameEntity {
     /** Masa (kg) del pájaro: la física la usa para que colisione como real. */
     val mass: Float
 
-    /** Indica si la habilidad especial ya fue usada en este vuelo. */
-    var abilityUsed: Boolean
+    /** Indica si la habilidad especial ya fue usada en este vuelo (solo lectura). */
+    val abilityUsed: Boolean
 
     /**
      * Ejecuta la habilidad especial. Devuelve true si se usó (y por lo tanto
