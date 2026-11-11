@@ -23,9 +23,9 @@ class SlingshotView(
     private val frames: List<Image> = frameNames.map { spriteSource.load(it) }
 
     private val fitHeight: Double = config.slingshotHeight
-    val grabRadius: Double = config.slingshotGrabRadius
+    private val grabRadius: Double = config.slingshotGrabRadius
 
-    val imageView: ImageView = ImageView(frames.first()).apply {
+    private val imageView: ImageView = ImageView(frames.first()).apply {
         isPreserveRatio = true
         this.fitHeight = this@SlingshotView.fitHeight
     }
@@ -33,13 +33,13 @@ class SlingshotView(
     private val drawWidth: Double = frames.first().width / frames.first().height * fitHeight
 
     /** Factor de escala respecto del lienzo base (960x640 → scale). */
-    val uiScale: Double = config.scale
+    private val uiScale: Double = config.scale
 
     /** Punto donde reposa la badana sin estirar (ancla de la resortera). */
     val anchor: Point2D
 
     /** Distancia máxima de estiramiento en píxeles. */
-    val maxStretch: Double = config.maxStretch
+    private val maxStretch: Double = config.maxStretch
 
     private var dragging = false
 

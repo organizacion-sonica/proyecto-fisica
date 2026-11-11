@@ -29,5 +29,12 @@ object MenuStyles {
     val titleShadow: String =
         "-fx-effect: dropshadow(gaussian, black, 10, 0.5, 2, 2);"
 
-    fun describe(): String = "MenuStyles"
+    /** Estilo del botón según el estado del puntero (comportamiento del concepto). */
+    fun buttonStyle(hover: Boolean): String {
+        return if (hover) buttonHover else buttonNormal
+    }
+
+    fun describe(): String {
+        return "MenuStyles"
+    }
 }

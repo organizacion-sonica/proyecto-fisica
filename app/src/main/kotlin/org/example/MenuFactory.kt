@@ -14,6 +14,16 @@ import javafx.scene.text.FontWeight
 import javafx.util.Duration
 
 /**
+ * Abstracción de la construcción de los paneles del menú (DIP): el
+ * [MenuController] depende de esta interfaz, no de [MenuFactory].
+ */
+interface MenuBuilder {
+    fun mainMenu(): VBox
+    fun instructionsMenu(): VBox
+    fun gamesMenu(): VBox
+}
+
+/**
  * Construye los paneles del menú. Separado del [MenuController] (SRP): el
  * controlador navega y transiciona; la fábrica solo arma los nodos.
  */
@@ -21,7 +31,7 @@ class MenuFactory(
     private val spriteSource: SpriteSource,
     private val config: GameConfig,
     private val navigator: MenuNavigator
-) {
+) : MenuBuilder {
     private val s = config.scale
 
     private fun button(text: String, onClick: () -> Unit): Button = Button(text).apply {
@@ -62,7 +72,7 @@ class MenuFactory(
         }
     ).apply { alignment = Pos.CENTER }
 
-    fun mainMenu(): VBox {
+    override fun mainMenu(): VBox {
         val title = titleLabel("MINIJUEGOS DE FÍSICA", 72.0).apply { style = MenuStyles.titleShadow }
         return VBox(30.0 * s, title,
             button("JUGAR") { navigator.toGames() },
@@ -75,7 +85,7 @@ class MenuFactory(
         }
     }
 
-    fun instructionsMenu(): VBox {
+    override fun instructionsMenu(): VBox {
         val title = titleLabel("INSTRUCCIONES", 48.0)
         val instructionsText = Label(InstructionsContent.text).apply {
             font = Font.font("Arial", 20.0 * s)
@@ -99,7 +109,7 @@ class MenuFactory(
         }
     }
 
-    fun gamesMenu(): VBox {
+    override fun gamesMenu(): VBox {
         val title = titleLabel("SELECCIONÁ UN MINIJUEGO", 48.0)
         val minigames = listOf(
             Pair("Acertar en las dianas", { navigator.startGame() }),
@@ -125,4 +135,16 @@ interface MenuNavigator {
     fun toGames()
     fun startGame()
     fun startBasket()
+}
+
+/**
+ * Navegador que resuelve el destino recién cuando se usa: permite construir
+ * los paneles del menú antes de que exista el [MenuController].
+ */
+class DeferredMenuNavigator(private val target: () -> MenuNavigator) : MenuNavigator {
+    override fun toMain() { target().toMain() }
+    override fun toInstructions() { target().toInstructions() }
+    override fun toGames() { target().toGames() }
+    override fun startGame() { target().startGame() }
+    override fun startBasket() { target().startBasket() }
 }

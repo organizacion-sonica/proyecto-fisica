@@ -20,9 +20,15 @@ class Red(
     hitboxOffsetY = size * 0.08
 ), Bird {
 
-    override var abilityUsed = false
+    private var used = false
 
-    fun describe(): String = "Red"
+    /** Red no tiene habilidad especial: el estado nunca cambia (encapsulación). */
+    override val abilityUsed: Boolean get() = used
+
+    /** Descripción del pájaro con su masa (comportamiento del concepto). */
+    fun describe(): String {
+        return "Red (ave roja, masa ${mass} kg)"
+    }
 
     override val centerX: Double get() = x + width / 2
     override val centerY: Double get() = y + height / 2

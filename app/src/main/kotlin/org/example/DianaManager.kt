@@ -70,18 +70,7 @@ class DianaManager(
     // ── Creación de las dianas ───────────────────────────────────────
 
     private fun createFixedDiana() {
-        val x = config.windowWidth * 0.90
-        val y = config.windowHeight * 0.52
-        val size = Target.FIXED_SIZE * config.scale
-        val view = TargetFactory.createFixedView(spriteSource, config, size)
-        val fixed = Target.fixed(
-            view = view,
-            cx = x, baseY = y,
-            amp = 40.0 * config.scale, speed = 1.5,
-            points = 3
-        )
-        fixed.placeIn(pane)
-        targets += fixed
+        targets += TargetFactory.createFixed(spriteSource, config, pane)
     }
 
     private fun createMobileDianas() {
@@ -95,15 +84,7 @@ class DianaManager(
         val speeds = listOf(0.9, 1.2, 1.6, 1.0, 1.3)
         for ((i, spec) in specs.withIndex()) {
             val (cx, baseY, amp) = spec
-            val size = Target.MOBILE_SIZE * config.scale
-            val view = TargetFactory.createMobileView(spriteSource, config, size)
-            val target = Target.mobile(
-                view = view,
-                cx = cx, baseY = baseY,
-                amp = amp * config.scale, speed = speeds[i]
-            )
-            target.placeIn(pane)
-            targets += target
+            targets += TargetFactory.createMobile(spriteSource, config, pane, cx, baseY, amp, speeds[i])
         }
     }
 }

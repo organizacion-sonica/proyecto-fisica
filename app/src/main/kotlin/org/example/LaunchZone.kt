@@ -18,10 +18,18 @@ class LaunchZone(
     private val y: Double get() = anchorY - size / 2
 
     /** Devuelve true si el punto (px, py) está dentro de la zona. */
-    fun contains(px: Double, py: Double): Boolean =
-        px in x..(x + size) && py in y..(y + size)
+    fun contains(px: Double, py: Double): Boolean {
+        val insideX = px in x..(x + size)
+        val insideY = py in y..(y + size)
+        return insideX && insideY
+    }
 
     /** Área (px²) de la zona de lanzamiento (comportamiento del concepto). */
-    fun area(): Double = size * size
-    fun describe(): String = "LaunchZone"
+    fun area(): Double {
+        return size * size
+    }
+
+    fun describe(): String {
+        return "LaunchZone"
+    }
 }
