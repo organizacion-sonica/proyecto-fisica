@@ -58,7 +58,7 @@ class GameController(
         aimAssist.clear()
     }
 
-    override fun onBirdLoaded() {
+    override fun onBirdLoadedOntoSlingshot() {
         if (!timerStarted) {
             scoreBoard.reset()
             timerStarted = true
