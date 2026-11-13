@@ -61,7 +61,7 @@ class GameController(
         trajectoryLayer.children.clear()
     }
 
-    override fun onBirdLoadedOntoSlingshot() {
+    override fun onBirdLoaded() {
         if (!timerStarted) {
             scoreBoard.reset()
             timerStarted = true

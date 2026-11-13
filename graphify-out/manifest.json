@@ -30,15 +30,15 @@
     "semantic_hash": "0cff38a5a67ee1ec316fba1e1704d7c1"
   },
   "app/src/main/kotlin/org/example/BasketGameController.kt": {
-    "mtime": 1793969345.9220502,
-    "seen": 1793969463.9430616,
-    "ast_hash": "4eee0888e45e4a50f48e785fbe5025d0",
+    "mtime": 1794569618.10985,
+    "seen": 1794569652.806337,
+    "ast_hash": "d4ad79e5f7f6a62189603e30577ab923",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Bird.kt": {
-    "mtime": 1793963157.055438,
-    "seen": 1793963478.5897896,
-    "ast_hash": "77dfa231d668cbeddf2953becc1a0c39",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.8063483,
+    "ast_hash": "104ad236759c3e22f7d5045e463fd858",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/BirdPile.kt": {
@@ -48,9 +48,9 @@
     "semantic_hash": "ff08e474946edb9a545e4be34e022475"
   },
   "app/src/main/kotlin/org/example/Bomb.kt": {
-    "mtime": 1793966509.2354245,
-    "seen": 1793969463.9431038,
-    "ast_hash": "0dd0a45aa0e83150f81777ac27b20816",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.806358,
+    "ast_hash": "e4d545da8e25399134dab950d38accf0",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Box2DWorld.kt": {
@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Chuck.kt": {
-    "mtime": 1793966509.234999,
-    "seen": 1793969463.9431145,
-    "ast_hash": "0bc5d51ce12163563a10ebb04b9cb776",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.806363,
+    "ast_hash": "99fcfbbb811daad10280aa1e46c5d9fc",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/CircularHitbox.kt": {
@@ -84,21 +84,21 @@
     "semantic_hash": "8835e14c3e6d89ddf24ba3b228e75610"
   },
   "app/src/main/kotlin/org/example/DianaManager.kt": {
-    "mtime": 1793969397.4770389,
-    "seen": 1793969463.9431243,
-    "ast_hash": "e5ae1c8cd016b1f391616f6f768180d1",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.8063684,
+    "ast_hash": "397da1ad59d2b7801aacecc9f06f10ff",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/EntityFactory.kt": {
-    "mtime": 1793969360.464266,
-    "seen": 1793969463.9431267,
-    "ast_hash": "f58f8367fd46dd8b3477204b35bf8ec3",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.80637,
+    "ast_hash": "30243300d469daed5033013137d5968b",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/EntityView.kt": {
-    "mtime": 1793969278.4787464,
-    "seen": 1793969463.9431345,
-    "ast_hash": "c4bf8a10dca0b1b4d9cb21c28d7ecec2",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8063731,
+    "ast_hash": "e481019482cd6e0d262fe535b7301806",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/ExplosionPlayer.kt": {
@@ -120,9 +120,9 @@
     "semantic_hash": "f742b94abf9c374283cf1c168e84cb5c"
   },
   "app/src/main/kotlin/org/example/GameController.kt": {
-    "mtime": 1793969278.47759,
-    "seen": 1793969463.9431584,
-    "ast_hash": "77cd30c2cec90ac3b019bff5e5b51cf9",
+    "mtime": 1794569355.3350883,
+    "seen": 1794569652.8063862,
+    "ast_hash": "4b58fb83f0d771fc0eb1be48de6fda94",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/GameEntity.kt": {
@@ -138,15 +138,15 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/LaunchZone.kt": {
-    "mtime": 1793969441.024584,
-    "seen": 1793969463.9431763,
-    "ast_hash": "561b8d6f5451a7468e0dded646578e48",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8063998,
+    "ast_hash": "586db5f6a3363f7f8cfffc42268ed6d6",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/MenuController.kt": {
-    "mtime": 1793618779.3442788,
-    "seen": 1793618794.9253013,
-    "ast_hash": "b06a7cd8cd10ba4ac84f841c5a5be7e3",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8064015,
+    "ast_hash": "676b68b6546f98ef7c4fb6601090f98e",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/OvalHitbox.kt": {
@@ -168,15 +168,15 @@
     "semantic_hash": "5c70a1d21f969e2d495cf11c79c4ab49"
   },
   "app/src/main/kotlin/org/example/RankScreen.kt": {
-    "mtime": 1793618298.650805,
-    "seen": 1793618502.463272,
-    "ast_hash": "d0c7a8e2a678b7814ba507b96ba77538",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8064117,
+    "ast_hash": "667be9aaf0fb272eaa1ce5b88e597d85",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Red.kt": {
-    "mtime": 1793969453.313611,
-    "seen": 1793969463.9432023,
-    "ast_hash": "1acb9961b22de1b0ba9fe7b1b5e833f6",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8064137,
+    "ast_hash": "6b43b82e8f0ec197a835b9af0e036e0e",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Resoltera.kt": {
@@ -192,28 +192,28 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/ScreenMapper.kt": {
-    "mtime": 1793963243.1931992,
-    "seen": 1793963478.589869,
-    "ast_hash": "a3d1525791673feba07b559cef583b02",
+    "mtime": 1794567275.766401,
+    "seen": 1794569652.8064191,
+    "ast_hash": "906bd8821e031af1ea2a815de483a18b",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotApp.kt": {
-    "mtime": 1793966149.318849,
-    "seen": 1793966304.8240225,
-    "ast_hash": "1324e15447acd68ccf2ed341ad70c6ac",
+    "mtime": 1794567275.766401,
+    "seen": 1794569652.806421,
+    "ast_hash": "01e9acfb3fc7d8328bbb3d3ea0446986",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotGame.kt": {
-    "mtime": 1793969315.2325904,
-    "seen": 1793969463.9432175,
-    "ast_hash": "5e9c1ca8c07bab75d9887c6f49eca678",
+    "mtime": 1794569639.2426057,
+    "seen": 1794569652.8064246,
+    "ast_hash": "1efd4304aa081232f6a9186b209ad471",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SlingshotView.kt": {
-    "mtime": 1793361455.2215714,
-    "seen": 1793365157.185909,
-    "ast_hash": "d97320df277ee2c2185feb79566d2323",
-    "semantic_hash": "d97320df277ee2c2185feb79566d2323"
+    "mtime": 1794567275.766401,
+    "seen": 1794569652.8064318,
+    "ast_hash": "69da5385da741619fdb5ae5bf74b2a5f",
+    "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/SpriteSource.kt": {
     "mtime": 1793361460.4354546,
@@ -234,10 +234,10 @@
     "semantic_hash": ""
   },
   "app/src/test/kotlin/org/example/AppTest.kt": {
-    "mtime": 1793361455.2230294,
-    "seen": 1793365157.1859143,
-    "ast_hash": "836e32f9c59a87a16eac861c34087d35",
-    "semantic_hash": "836e32f9c59a87a16eac861c34087d35"
+    "mtime": 1794567275.766401,
+    "seen": 1794569652.806443,
+    "ast_hash": "b1437f742224f67c696385e84958c5d3",
+    "semantic_hash": ""
   },
   "gradlew": {
     "mtime": 1793361455.2674344,
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793361513.605981,
-    "seen": 1793365326.159499,
-    "ast_hash": "916f4c31aaa35d6b867dae9a7f54270d",
+    "mtime": 1794567275.763401,
+    "seen": 1794569652.8064504,
+    "ast_hash": "afe2d9557bdaf7dbecf7ca828740dd96",
     "semantic_hash": ""
   },
   "elementos graficos/A rank.png": {
@@ -564,27 +564,27 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/BodyFactory.kt": {
-    "mtime": 1793965933.56066,
-    "seen": 1793966304.823955,
-    "ast_hash": "037aafa76779af5ed44ff7edfbd6ab32",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.8063545,
+    "ast_hash": "3d3351f527e3ca6078276b118331d02b",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/EntitySynchronizer.kt": {
-    "mtime": 1793617796.3002248,
-    "seen": 1793617884.5042408,
-    "ast_hash": "4b4b2362188bb86816cfcf01c8bdc9cc",
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.8063717,
+    "ast_hash": "699d6c65db9be7dca71551dec6e29933",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/ExplosionForce.kt": {
-    "mtime": 1793965978.1289976,
-    "seen": 1793966304.8239772,
-    "ast_hash": "b949623bc91c09577b51fd48cbc40e89",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.806375,
+    "ast_hash": "cc19f4feaee33024a7ddfade4ce37c0c",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/Hoop.kt": {
-    "mtime": 1793966524.380889,
-    "seen": 1793969463.9431696,
-    "ast_hash": "889e74b158ca243c77d6122f6c069605",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8063948,
+    "ast_hash": "d1284fe16db2c10356c535239487c7db",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/InstructionsContent.kt": {
@@ -594,15 +594,15 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/MenuStyles.kt": {
-    "mtime": 1793969441.0247338,
-    "seen": 1793969463.9431841,
-    "ast_hash": "df1fc811e47ec7f02187acdb6bcd207b",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8064046,
+    "ast_hash": "a7c2f1ef7447b77c621e03dd5fc0bb5e",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/BasketGameCollaborators.kt": {
-    "mtime": 1793966106.7700005,
-    "seen": 1793966304.823936,
-    "ast_hash": "673922feddcacd28345cf81493b88afb",
+    "mtime": 1794567275.763401,
+    "seen": 1794569652.8063345,
+    "ast_hash": "c7e45ca57d8e3193f9779490ddf89780",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/BasketHoop.kt": {
@@ -618,9 +618,9 @@
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/MenuFactory.kt": {
-    "mtime": 1793965962.7636585,
-    "seen": 1793966304.8240037,
-    "ast_hash": "5a8a2824e55b64bce2d1725b99e4e6c7",
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8064032,
+    "ast_hash": "ce0eb0e6eb0c42f0626c6932ced306ba",
     "semantic_hash": ""
   },
   "app/src/main/kotlin/org/example/TrajectoryRenderer.kt": {
@@ -669,6 +669,54 @@
     "mtime": 1793969413.231037,
     "seen": 1793969463.943099,
     "ast_hash": "9464994ebbc3aad67202a1cfa8d26962",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/BirdSuppliers.kt": {
+    "mtime": 1794567275.764401,
+    "seen": 1794569652.8063521,
+    "ast_hash": "5a8d59d86258cc8c3858ac4f44bb0091",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/HitboxFactory.kt": {
+    "mtime": 1794567275.765401,
+    "seen": 1794569652.8063931,
+    "ast_hash": "9f7bb42fc844f29e16845cdb575b3ddc",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/HoopScorer.kt": {
+    "mtime": 1794569547.903691,
+    "seen": 1794569652.8063965,
+    "ast_hash": "8c11996b6ba6f583422d758785ab35b8",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/SlingshotDefaults.kt": {
+    "mtime": 1794567275.766401,
+    "seen": 1794569652.8064225,
+    "ast_hash": "2a93728112b669b2a351748d1fc2f986",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/SlingshotGameCallbacks.kt": {
+    "mtime": 1794569438.9594738,
+    "seen": 1794569652.806426,
+    "ast_hash": "cb11e26ba41b1b4d4917b45aec285060",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/SlingshotInput.kt": {
+    "mtime": 1794569438.9609437,
+    "seen": 1794569652.806428,
+    "ast_hash": "72e842b143ea8212920017e55c1525c9",
+    "semantic_hash": ""
+  },
+  "app/src/main/kotlin/org/example/TargetFactory.kt": {
+    "mtime": 1794567275.766401,
+    "seen": 1794569652.8064375,
+    "ast_hash": "42363a148ee7c4d3638611d7fd7fc8ec",
+    "semantic_hash": ""
+  },
+  "docs/EVALUACION.md": {
+    "mtime": 1794567275.767401,
+    "seen": 1794569652.8064518,
+    "ast_hash": "5476f2920a29359de6b10bb05a8db0cb",
     "semantic_hash": ""
   }
 }

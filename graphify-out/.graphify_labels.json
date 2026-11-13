@@ -4,7 +4,6 @@
   "9": "OvalHitbox",
   "10": "BoxHitbox",
   "11": "SlingshotView",
-  "12": "CircularHitbox",
   "13": "Hitbox",
   "14": ".collides",
   "19": "gradlew",

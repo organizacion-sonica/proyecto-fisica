@@ -38,8 +38,11 @@ class BasketGameController(
 
     private var trajectoryFramesRemaining = -1
 
+    private lateinit var hoopScorer: HoopScorer
+
     override fun setupLevel() {
         collaborators = collaboratorFactory(pane, physics)
+        hoopScorer = HoopScorer(config, hoop, scoreBoard, timer, physics, inFlight) { markBirdSettled(it) }
         createPole()
     }
 
@@ -51,6 +54,7 @@ class BasketGameController(
         rankShown = false
         scoreBoard.reset()
         timer.reset()
+        hoopScorer.reset()
         scoreBoard.refreshRank()
     }
 
@@ -58,7 +62,7 @@ class BasketGameController(
         lastScoredBird = null
     }
 
-    override fun onBirdLoadedOntoSlingshot() {
+    override fun onBirdLoaded() {
         timer.start()
     }
 
@@ -91,7 +95,7 @@ class BasketGameController(
             }
         }
 
-        if (!timer.isOver()) checkHoops()
+        if (!timer.isOver()) { hoopScorer.tick(dt); hoopScorer.check() }
 
         if (timer.isOver() && !rankShown) {
             rankShown = true
@@ -99,44 +103,7 @@ class BasketGameController(
         }
     }
 
-    private fun checkHoops() {
-        if (globalTime - lastHoopCheckTime < CHECK_COOLDOWN) return
 
-        val hoopCenterX = hoop.centerX
-        val hoopCenterY = hoop.centerY
-        val hoopRadiusSq = hoop.scoreRadiusSq
-
-        val fallen = inFlight.filter { isOutsideScreen(it) }
-        for (bird in fallen) {
-            physics.remove(bird)
-            inFlight.remove(bird)
-            markBirdSettled(bird)
-        }
-
-        for (bird in inFlight) {
-            val dx = bird.hitbox.centerX - hoopCenterX
-            val dy = bird.hitbox.centerY - hoopCenterY
-            val entered = dx * dx + dy * dy < hoopRadiusSq
-            if (entered && lastScoredBird !== bird) {
-                scoreBasket(bird)
-            }
-        }
-    }
-
-    private fun isOutsideScreen(bird: Bird): Boolean {
-        val h = bird.hitbox
-        return h.centerX < -100 ||
-            h.centerX > config.windowWidth + 200 ||
-            h.centerY > config.windowHeight + 100
-    }
-
-    private fun scoreBasket(bird: Bird) {
-        if (timer.isOver()) return
-        scoreBoard.addPoint()
-        lastScoredBird = bird
-        lastHoopCheckTime = globalTime
-        hoop.moveToNewPosition()
-    }
 
     override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {
         if (trajectoryFramesRemaining == -1) {
