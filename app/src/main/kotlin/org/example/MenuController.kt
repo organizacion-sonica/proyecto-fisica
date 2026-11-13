@@ -28,7 +28,7 @@ class MenuController(
 
     private var currentMenu: VBox = mainMenu
 
-    val menuScene: Scene = Scene(root, config.windowWidth, config.windowHeight)
+    fun menuScene(): Scene = Scene(root, config.windowWidth, config.windowHeight)
 
     fun rebuildScene(): Scene = Scene(root, config.windowWidth, config.windowHeight)
 

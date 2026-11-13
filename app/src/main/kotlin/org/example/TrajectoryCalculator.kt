@@ -21,7 +21,7 @@ class TrajectoryCalculator(private val config: GameConfig) : TrajectoryPredictor
     override fun predictedDots(start: Point2D, pull: Point2D): List<Point2D> {
         val dots = mutableListOf<Point2D>()
         val mag = min(pull.magnitude(), config.maxStretch)
-        if (mag <= 10.0) return dots
+        if (mag <= SlingshotGame.MIN_STRETCH) return dots
 
         var (vx, vy) = initialVelocity(pull, mag)
         val gPx = config.gravity * config.ppm // px/s² hacia abajo en pantalla

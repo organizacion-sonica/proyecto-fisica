@@ -84,7 +84,10 @@ class DianaManager(
         val speeds = listOf(0.9, 1.2, 1.6, 1.0, 1.3)
         for ((i, spec) in specs.withIndex()) {
             val (cx, baseY, amp) = spec
-            targets += TargetFactory.createMobile(spriteSource, config, pane, cx, baseY, amp, speeds[i])
+            targets += TargetFactory.createMobile(
+                spriteSource, config, pane,
+                TargetSpec(cx, baseY, amp, speeds[i])
+            )
         }
     }
 }

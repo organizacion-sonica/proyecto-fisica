@@ -12,25 +12,10 @@ interface PhysicsWorld {
     fun registerBird(bird: GameEntity, mass: Float)
 
     /** Caja estática (centro y tamaño en px de pantalla) para rebotes. */
-    fun addStaticBox(
-        centerXPx: Double,
-        centerYPx: Double,
-        widthPx: Double,
-        heightPx: Double,
-        friction: Double = 0.4,
-        restitution: Double = 0.4
-    )
+    fun addStaticBox(spec: BoxSpec)
 
     /** Caja estática con nombre, para poder moverla después (p. ej. backboard del aro). */
-    fun addNamedStaticBox(
-        name: String,
-        centerXPx: Double,
-        centerYPx: Double,
-        widthPx: Double,
-        heightPx: Double,
-        friction: Double = 0.4,
-        restitution: Double = 0.4
-    )
+    fun addNamedStaticBox(name: String, spec: BoxSpec)
 
     /** Mueve una caja estática nombrada a una nueva posición. */
     fun moveNamedStaticBox(name: String, centerXPx: Double, centerYPx: Double)
