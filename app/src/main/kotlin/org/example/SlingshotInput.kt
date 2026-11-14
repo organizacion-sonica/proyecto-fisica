@@ -80,7 +80,7 @@ class SlingshotInput(
             val loaded = slingshotBird ?: return
             callbacks.clearAimLayer()
             val pull = slingshot.release() ?: return
-            if (pull.magnitude() > 10.0) {
+            if (pull.magnitude() > MIN_STRETCH) {
                 launch(loaded, pull)
             } else {
                 loaded.placeAt(pane, slingshot.anchor.x - loaded.width / 2, slingshot.anchor.y - loaded.height / 2)
@@ -151,5 +151,10 @@ class SlingshotInput(
     fun clear() {
         dragBird = null
         slingshotBird = null
+    }
+
+    companion object {
+        /** Estiramiento mínimo para considerarlo un tiro válido. */
+        const val MIN_STRETCH = 10.0
     }
 }

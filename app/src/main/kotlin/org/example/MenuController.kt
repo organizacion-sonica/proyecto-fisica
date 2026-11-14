@@ -30,8 +30,6 @@ class MenuController(
 
     fun menuScene(): Scene = Scene(root, config.windowWidth, config.windowHeight)
 
-    fun rebuildScene(): Scene = Scene(root, config.windowWidth, config.windowHeight)
-
     override fun toMain() { crossFade(currentMenu, mainMenu) }
     override fun toInstructions() { crossFade(currentMenu, instructionsMenu) }
     override fun toGames() { crossFade(currentMenu, gamesMenu) }
