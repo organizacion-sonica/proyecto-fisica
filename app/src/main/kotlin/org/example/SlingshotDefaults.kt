@@ -2,11 +2,6 @@ package org.example
 
 import javafx.scene.layout.Pane
 
-/**
- * Valores por defecto de las fábricas de [SlingshotGame]: concentran la
- * composición de concretos en un único lugar (composition root), de modo
- * que [SlingshotGame] depende de abstracciones y no de implementaciones.
- */
 object SlingshotDefaults {
 
     fun physicsFactory(config: GameConfig): () -> PhysicsWorld = {
@@ -54,7 +49,6 @@ object SlingshotDefaults {
             recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
         }
 
-    /** Fábrica de menús con navegación diferida (permite inyectar el controlador después). */
     fun menuBuilder(spriteSource: SpriteSource, config: GameConfig, navigator: () -> MenuNavigator): MenuBuilder =
         MenuFactory(spriteSource, config, DeferredMenuNavigator { navigator() })
 
@@ -109,4 +103,3 @@ object SlingshotDefaults {
             )
         }
 }
-

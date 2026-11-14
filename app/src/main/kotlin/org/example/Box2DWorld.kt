@@ -127,7 +127,7 @@ class Box2DWorld(
 
     /** Genera onda expansiva en la posición del pájaro (habilidad de Bomb). */
     override fun explodeAt(bird: GameEntity, radiusPx: Float, force: Float) {
-        explosionForce.apply(bird, radiusPx, force, registry.birdBodies())
+        explosionForce.apply(bird, ExplosionSpec(radiusPx, force), registry.birdBodies())
     }
 
     /** Elimina un cuerpo del mundo físico. */

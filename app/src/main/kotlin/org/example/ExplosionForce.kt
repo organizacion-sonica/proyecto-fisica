@@ -10,16 +10,32 @@ import kotlin.math.sqrt
  * Responsabilidad única: fuerza radial. Separada de [Box2DWorld] (SRP).
  */
 interface ExplosionForce {
-    fun apply(bird: GameEntity, radiusPx: Float, force: Float, bodies: Map<GameEntity, org.dyn4j.dynamics.Body>)
+    fun apply(bird: GameEntity, spec: ExplosionSpec, bodies: Map<GameEntity, Body>)
 }
+
+/** Especificación de la onda expansiva: radio y fuerza. */
+data class ExplosionSpec(
+    val radiusPx: Float,
+    val force: Float
+)
+
+/** Resultado de la explosión ya convertido a unidades del mundo físico. */
+data class Explosion(
+    val centerX: Double,
+    val centerY: Double,
+    val radiusM: Double,
+    val force: Float,
+    val pixelsPerMeter: Float
+)
 
 class DefaultExplosionForce(private val mapper: ScreenMapper) : ExplosionForce {
 
-    /** Aplica la onda expansiva centrada en [bird]. */
-    override fun apply(bird: GameEntity, radiusPx: Float, force: Float, bodies: Map<GameEntity, Body>) {
-        val center = centerOf(bird, bodies)
-        val radiusM = (radiusPx / mapper.pixelsPerMeter).toDouble()
-        applyImpulses(center, radiusM, force, bird, bodies)
+    /** Aplica la onda explosiva centrada en [bird]. */
+    override fun apply(bird: GameEntity, spec: ExplosionSpec, bodies: Map<GameEntity, Body>) {
+        val (cx, cy) = centerOf(bird, bodies)
+        val radiusM = (spec.radiusPx / mapper.pixelsPerMeter).toDouble()
+        val explosion = Explosion(cx, cy, radiusM, spec.force, mapper.pixelsPerMeter)
+        applyImpulses(explosion, bird, bodies)
     }
 
     /** Centro del pájaro en coordenadas del mundo (cuerpo o hitbox). */
@@ -34,30 +50,23 @@ class DefaultExplosionForce(private val mapper: ScreenMapper) : ExplosionForce {
     }
 
     /** Aplica el impulso radial a los cuerpos dinámicos dentro del radio. */
-    private fun applyImpulses(
-        center: Pair<Double, Double>, radiusM: Double, force: Float,
-        bird: GameEntity, bodies: Map<GameEntity, Body>
-    ) {
-        val ppm = mapper.pixelsPerMeter
-        val (cx, cy) = center
+    private fun applyImpulses(explosion: Explosion, bird: GameEntity, bodies: Map<GameEntity, Body>) {
         for ((entity, otherBody) in bodies) {
             if (entity === bird || otherBody.mass.type != MassType.NORMAL) continue
-            applyImpulseTo(otherBody, cx, cy, radiusM, force, ppm)
+            applyImpulseTo(otherBody, explosion)
         }
     }
 
     /** Aplica el impulso a un cuerpo si está dentro del radio. */
-    private fun applyImpulseTo(
-        body: Body, cx: Double, cy: Double, radiusM: Double, force: Float, ppm: Float
-    ) {
+    private fun applyImpulseTo(body: Body, explosion: Explosion) {
         val t = body.transform
-        val dx = t.translationX - cx
-        val dy = t.translationY - cy
+        val dx = t.translationX - explosion.centerX
+        val dy = t.translationY - explosion.centerY
         val dist = sqrt(dx * dx + dy * dy)
-        if (dist <= 0 || dist >= radiusM) return
-        val falloff = 1.0 - dist / radiusM
-        val fx = (dx / dist) * force * falloff / ppm
-        val fy = (dy / dist) * force * falloff / ppm
+        if (dist <= 0 || dist >= explosion.radiusM) return
+        val falloff = 1.0 - dist / explosion.radiusM
+        val fx = (dx / dist) * explosion.force * falloff / explosion.pixelsPerMeter
+        val fy = (dy / dist) * explosion.force * falloff / explosion.pixelsPerMeter
         body.applyImpulse(Vector2(fx, fy))
     }
 }
