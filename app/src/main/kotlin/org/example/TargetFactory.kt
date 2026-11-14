@@ -7,6 +7,14 @@ import javafx.scene.layout.Pane
  * [Target] fuera de [DianaManager], para que este dependa de abstracciones
  * (DIP) y solo se ocupe de la escena y los impactos.
  */
+/** Especificación de una diana móvil (reduce parámetros sueltos). */
+data class TargetSpec(
+    val cx: Double,
+    val baseY: Double,
+    val amp: Double,
+    val speed: Double
+)
+
 object TargetFactory {
 
     fun createFixedView(spriteSource: SpriteSource, config: GameConfig, size: Double): EntityView =
@@ -40,19 +48,16 @@ object TargetFactory {
         spriteSource: SpriteSource,
         config: GameConfig,
         pane: Pane,
-        cx: Double,
-        baseY: Double,
-        amp: Double,
-        speed: Double
+        spec: TargetSpec
     ): Target {
         val size = Target.MOBILE_SIZE * config.scale
         val view = createMobileView(spriteSource, config, size)
         val target = Target.mobile(
             view = view,
-            cx = cx,
-            baseY = baseY,
-            amp = amp * config.scale,
-            speed = speed
+            cx = spec.cx,
+            baseY = spec.baseY,
+            amp = spec.amp * config.scale,
+            speed = spec.speed
         )
         target.placeIn(pane)
         return target

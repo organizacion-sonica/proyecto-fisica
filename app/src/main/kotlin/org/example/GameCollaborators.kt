@@ -49,9 +49,7 @@ interface ExplosionVisuals {
  */
 data class GameCollaborators(
     val angleIndicator: AngleDisplay,
-    val trajectoryLayer: Pane,
-    val trajectoryCalculator: TrajectoryPredictor,
-    val trajectoryRenderer: TrajectoryRenderer,
+    val aimAssist: AimAssist,
     val explosionPlayer: ExplosionVisuals,
     val scoreBoard: ScoreKeeper,
     val dianaManager: TargetScene,

@@ -9,9 +9,7 @@ import javafx.scene.layout.Pane
  * Colaboradores de un nivel del minijuego de basket (DIP).
  */
 data class BasketGameCollaborators(
-    val trajectoryLayer: Pane,
-    val trajectoryCalculator: TrajectoryPredictor,
-    val trajectoryRenderer: TrajectoryRenderer,
+    val aimAssist: AimAssist,
     val scoreLabel: Label,
     val rankView: ImageView,
     val timerLabel: Label,

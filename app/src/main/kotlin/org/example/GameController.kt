@@ -25,9 +25,7 @@ class GameController(
     private lateinit var collaborators: GameCollaborators
 
     private val angleIndicator: AngleDisplay get() = collaborators.angleIndicator
-    private val trajectoryLayer: Pane get() = collaborators.trajectoryLayer
-    private val trajectoryCalculator: TrajectoryPredictor get() = collaborators.trajectoryCalculator
-    private val trajectoryRenderer: TrajectoryRenderer get() = collaborators.trajectoryRenderer
+    private val aimAssist: AimAssist get() = collaborators.aimAssist
     private val explosionPlayer: ExplosionVisuals get() = collaborators.explosionPlayer
     private val scoreBoard: ScoreKeeper get() = collaborators.scoreBoard
     private val dianaManager: TargetScene get() = collaborators.dianaManager
@@ -38,7 +36,6 @@ class GameController(
     override fun setupLevel() {
         collaborators = collaboratorFactory(pane, physics)
         angleIndicator.placeIn(pane)
-        pane.children.add(trajectoryLayer)
         scoreBoard.placeIn(pane)
         scoreBoard.reset()
         scoreBoard.onTimeOver = { rankScreen.show(pane, scoreBoard.score(), RankEvaluator.rankFor(scoreBoard.score())) }
@@ -53,15 +50,15 @@ class GameController(
 
     override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {
         angleIndicator.showAngle(pull)
-        showTrajectory(stretchPos, pull)
+        aimAssist.show(stretchPos, pull)
     }
 
     override fun clearAimLayer() {
         angleIndicator.reset()
-        trajectoryLayer.children.clear()
+        aimAssist.clear()
     }
 
-    override fun onBirdLoaded() {
+    override fun onBirdLoadedOntoSlingshot() {
         if (!timerStarted) {
             scoreBoard.reset()
             timerStarted = true
@@ -79,15 +76,5 @@ class GameController(
     override fun explosionAt(cx: Double, cy: Double, radiusPx: Double) {
         explosionPlayer.playAt(cx, cy)
         dianaManager.breakTargetsWithin(cx, cy, radiusPx)
-    }
-
-    private fun showTrajectory(start: Point2D, pull: Point2D) {
-        trajectoryRenderer.render(start, pull) { dot ->
-            javafx.scene.shape.Circle(dot.x, dot.y, 4.5 * config.scale).apply {
-                fill = javafx.scene.paint.Color.web("#FFFFFF", 0.85)
-                stroke = javafx.scene.paint.Color.web("#222222", 0.6)
-                strokeWidth = 1.0
-            }
-        }
     }
 }

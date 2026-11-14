@@ -60,7 +60,7 @@ class Hoop(
 
         val wallX = hoopX + width * 0.30
         val wallY = centerY + 15.0 * config.scale
-        physics.addNamedStaticBox(backboardName, wallX, wallY, backboardWidth, backboardHeight)
+        physics.addNamedStaticBox(backboardName, BoxSpec(wallX, wallY, backboardWidth, backboardHeight))
     }
 
     /** Mueve el aro (y su backboard) a una nueva posición Y aleatoria. */

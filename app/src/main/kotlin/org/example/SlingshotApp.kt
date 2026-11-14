@@ -18,7 +18,7 @@ import java.io.File
  */
 class SlingshotApp : Application() {
 
-    private val assetsDir = "D:\\downloads\\proyecto-fisica\\elementos graficos"
+    private val assetsDir = "elementos graficos"
 
     private lateinit var spriteSource: SpriteSource
     private lateinit var config: GameConfig
@@ -51,7 +51,7 @@ class SlingshotApp : Application() {
             onStartBasketGame = { startBasket() },
             menuBuilder = menuBuilder
         )
-        stage.scene = menuController.menuScene
+        stage.scene = menuController.menuScene()
         stage.title = "Minijuegos de Fisica"
         stage.width = config.windowWidth
         stage.height = config.windowHeight

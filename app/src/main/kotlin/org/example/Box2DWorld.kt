@@ -14,19 +14,18 @@ import org.dyn4j.world.World
  * la interfaz, no de este adaptador (Inversión de Dependencias).
  */
 class Box2DWorld(
-    private val config: GameConfig,
+    gravity: Float,
     private val mapper: ScreenMapper,
     private val bodyFactory: BodyFactory,
     private val synchronizer: EntitySynchronizer,
-    private val explosionForce: ExplosionForce
+    private val explosionForce: ExplosionForce,
+    private val registry: BodyRegistry = BodyRegistry()
 ) : PhysicsWorld {
 
     private val world: World<Body> = World()
 
-    private val registry = BodyRegistry()
-
     init {
-        world.setGravity(0.0, -config.gravity.toDouble())
+        world.setGravity(0.0, -gravity.toDouble())
         createGround()
     }
 
@@ -54,29 +53,14 @@ class Box2DWorld(
     }
 
     /** Caja estática (en px de pantalla) para que los cuerpos reboten. */
-    override fun addStaticBox(
-        centerXPx: Double,
-        centerYPx: Double,
-        widthPx: Double,
-        heightPx: Double,
-        friction: Double,
-        restitution: Double
-    ) {
-        val body = bodyFactory.createStaticBoxBody(BoxSpec(centerXPx, centerYPx, widthPx, heightPx, friction, restitution))
+    override fun addStaticBox(spec: BoxSpec) {
+        val body = bodyFactory.createStaticBoxBody(spec)
         world.addBody(body)
     }
 
     /** Caja estática con nombre, para poder moverla después (backboard del aro). */
-    override fun addNamedStaticBox(
-        name: String,
-        centerXPx: Double,
-        centerYPx: Double,
-        widthPx: Double,
-        heightPx: Double,
-        friction: Double,
-        restitution: Double
-    ) {
-        val body = bodyFactory.createStaticBoxBody(BoxSpec(centerXPx, centerYPx, widthPx, heightPx, friction, restitution))
+    override fun addNamedStaticBox(name: String, spec: BoxSpec) {
+        val body = bodyFactory.createStaticBoxBody(spec)
         world.addBody(body)
         registry.registerStatic(name, body)
     }

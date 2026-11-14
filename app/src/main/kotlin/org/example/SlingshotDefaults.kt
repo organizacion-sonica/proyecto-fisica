@@ -11,7 +11,7 @@ object SlingshotDefaults {
 
     fun physicsFactory(config: GameConfig): () -> PhysicsWorld = {
         val m = DefaultScreenMapper(config)
-        Box2DWorld(config, m, DefaultBodyFactory(config, m), DefaultEntitySynchronizer(m), DefaultExplosionForce(m))
+        Box2DWorld(config.gravity, m, DefaultBodyFactory(config, m), DefaultEntitySynchronizer(m), DefaultExplosionForce(m))
     }
 
     fun levelFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> SlingshotLevelComponents =
@@ -29,13 +29,19 @@ object SlingshotDefaults {
 
     fun gameCollaboratorFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> GameCollaborators =
         { pane, _ ->
-            val trajectoryLayer = Pane()
+            val trajectoryLayer = Pane().also { pane.children.add(it) }
             val trajectoryCalculator = TrajectoryCalculator(config)
+            val aimAssist = AimAssist(
+                trajectoryLayer,
+                TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                4.5 * config.scale,
+                0.85,
+                0.6,
+                1.0
+            )
             GameCollaborators(
                 angleIndicator = AngleIndicator(config),
-                trajectoryLayer = trajectoryLayer,
-                trajectoryCalculator = trajectoryCalculator,
-                trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                aimAssist = aimAssist,
                 explosionPlayer = ExplosionPlayer(pane, spriteSource, config),
                 scoreBoard = ScoreBoard(config),
                 dianaManager = DianaManager(spriteSource, config, pane),
@@ -48,19 +54,9 @@ object SlingshotDefaults {
             recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
         }
 
-    fun backgroundView(spriteSource: SpriteSource, config: GameConfig): BackgroundView =
-        BackgroundView(spriteSource, config)
-
     /** Fábrica de menús con navegación diferida (permite inyectar el controlador después). */
     fun menuBuilder(spriteSource: SpriteSource, config: GameConfig, navigator: () -> MenuNavigator): MenuBuilder =
         MenuFactory(spriteSource, config, DeferredMenuNavigator { navigator() })
-
-    fun gameLoop(
-        physics: PhysicsWorld,
-        onStep: (Double) -> Unit,
-        onRemoveSettled: () -> Unit,
-        onTickSettled: (Double) -> Unit
-    ): GameLoop = GameLoop(physics, onStep, onRemoveSettled, onTickSettled)
 
     fun gameController(
         spriteSource: SpriteSource,
@@ -91,12 +87,18 @@ object SlingshotDefaults {
             BackgroundView(spriteSource, config).placeIn(pane)
             val trajectoryLayer = Pane().also { pane.children.add(it) }
             val trajectoryCalculator = TrajectoryCalculator(config)
+            val aimAssist = AimAssist(
+                trajectoryLayer,
+                TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                3.5 * config.scale,
+                0.22,
+                0.12,
+                0.5
+            )
             val scoreBoard = BasketScoreBoard(spriteSource, config, hud.scoreLabel, hud.rankView)
             val timer = BasketTimer(config, hud.timerLabel, BasketGameController.BASKET_TIME_LIMIT)
             BasketGameCollaborators(
-                trajectoryLayer = trajectoryLayer,
-                trajectoryCalculator = trajectoryCalculator,
-                trajectoryRenderer = TrajectoryRenderer(trajectoryLayer, trajectoryCalculator),
+                aimAssist = aimAssist,
                 scoreLabel = hud.scoreLabel,
                 rankView = hud.rankView,
                 timerLabel = hud.timerLabel,
