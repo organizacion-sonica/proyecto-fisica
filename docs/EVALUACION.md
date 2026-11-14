@@ -249,6 +249,61 @@ xychart-beta
 | 27 | 2026-11-13 | `04874b1` | dqmdz-etec | 3,442 | 81 | 96% | 0.7% | 0 |
 | 28 | 2026-11-13 | `fe4c80f` | simonK2010 | 3,576 | 80 | 96% | 1.8% | 0 |
 
+<!-- actividad-clases:inicio -->
+## Actividad en días de clase
+
+> Período evaluado **2026-08-14 → 2026-11-14** · **21 clases** (lunes, viernes) · días de clase del calendario, extendidos hasta la fecha de corte.
+>
+> `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**. El cuadro principal usa sólo las fechas de clase del calendario oficial.
+>
+> **Aportes fuera del calendario:** cada alumno tiene un cuadro aparte con las fechas no lectivas con actividad, desde **2026-08-14** hasta **2026-11-14** (ventana de aportes). Esas fechas no forman parte del cuadro principal, pero se muestran para no perder trabajo hecho en fines de semana, feriados o después del período.
+>
+> Se recorre `git log --all` sobre un mirror (todas las ramas y `refs/pull/*`), con deduplicación por commit. Fecha = fecha de autor en UTC-3. Los commits locales no pusheados no se ven. Si el trabajo fue en pareja y el commit es de otra persona, figura a nombre del autor del commit; para reflejarlo, usar `Co-authored-by` o una nota manual.
+>
+> Sección informativa: no modifica el semáforo de aprobación.
+
+### simonK2010
+
+**11/21 clases con actividad** · 27 commits · 16 merges
+
+| Fecha | Marca | Repositorios | Commits / merges |
+|---|:--:|---|--:|
+| 2026-08-14 | **Sí** | proyecto-fisica | 1 / 0 |
+| 2026-08-21 | No | sin actividad | 0 / 0 |
+| 2026-08-24 | No | sin actividad | 0 / 0 |
+| 2026-08-28 | No | sin actividad | 0 / 0 |
+| 2026-08-31 | No | sin actividad | 0 / 0 |
+| 2026-09-04 | No | sin actividad | 0 / 0 |
+| 2026-09-07 | No | sin actividad | 0 / 0 |
+| 2026-09-14 | **Sí** | proyecto-fisica | 1 / 0 |
+| 2026-09-25 | No | sin actividad | 0 / 0 |
+| 2026-09-28 | **Sí** | proyecto-fisica | 2 / 3 |
+| 2026-10-02 | No | sin actividad | 0 / 0 |
+| 2026-10-05 | **Sí** | proyecto-fisica | 1 / 0 |
+| 2026-10-09 | **Sí** | proyecto-fisica | 0 / 1 |
+| 2026-10-16 | No | sin actividad | 0 / 0 |
+| 2026-10-19 | No | sin actividad | 0 / 0 |
+| 2026-10-23 | **Sí** | proyecto-fisica | 3 / 2 |
+| 2026-10-26 | **Sí** | proyecto-fisica | 8 / 2 |
+| 2026-10-30 | **Sí** | proyecto-fisica | 4 / 2 |
+| 2026-11-02 | **Sí** | proyecto-fisica | 1 / 1 |
+| 2026-11-06 | **Sí** | proyecto-fisica | 3 / 3 |
+| 2026-11-13 | **Sí** | proyecto-fisica | 3 / 2 |
+
+#### Aportes fuera del calendario de clases — simonK2010
+
+**simonK2010 — 5 fechas fuera del calendario** · 6 commits · 5 merges
+
+| Alumno | Fecha | Repositorios | Commits / merges |
+|---|---|---|---|
+| simonK2010 (`simonK2010`) | 2026-11-07 | proyecto-fisica | 1 / 0 |
+| simonK2010 (`simonK2010`) | 2026-11-08 | proyecto-fisica | 1 / 2 |
+| simonK2010 (`simonK2010`) | 2026-11-09 | proyecto-fisica | 1 / 1 |
+| simonK2010 (`simonK2010`) | 2026-11-10 | proyecto-fisica | 1 / 1 |
+| simonK2010 (`simonK2010`) | 2026-11-11 | proyecto-fisica | 2 / 1 |
+
+<!-- actividad-clases:fin -->
+
 ---
 _Informe generado por la cátedra. Los criterios y umbrales de medición corresponden al perfil `exigente` de `calidad.py`; el semáforo de aprobación, a `CRITERIOS-CALIDAD.md` (ver `README.md`). Ante dudas, revisá el archivo señalado._
 <!-- evaluacion:fin -->
