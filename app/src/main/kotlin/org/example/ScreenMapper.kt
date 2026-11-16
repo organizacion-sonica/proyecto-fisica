@@ -3,49 +3,28 @@ package org.example
 import org.dyn4j.geometry.Vector2
 
 /**
- * Abstracción de la conversión de coordenadas pantalla ↔ mundo físico
- * (DIP): los colaboradores dependen de esta interfaz, no de la
- * implementación concreta.
+ * Conversión de coordenadas entre pantalla (px, Y-down) y el mundo físico
+ * dyn4j (m, Y-up). Responsabilidad única: traducir unidades; no conoce
+ * cuerpos ni entidades (SRP + ISP).
  */
-interface ScreenMapper {
-    /** Pantalla (px, Y-down) → dyn4j (m, Y-up). */
-    fun toWorld(sx: Double, sy: Double): Vector2
-
-    /** dyn4j (m, Y-up) → Pantalla (px, Y-down). */
-    fun toScreen(wx: Double, wy: Double): Pair<Double, Double>
-
-    /** Píxeles por metro (escala física). */
-    val pixelsPerMeter: Float
-
-    /** Convierte una distancia en metros a píxeles de pantalla. */
-    fun metersToPixels(meters: Double): Double {
-        return meters * pixelsPerMeter
-    }
-}
-
-/**
- * Implementación concreta de [ScreenMapper] basada en [GameConfig].
- */
-class DefaultScreenMapper(private val config: GameConfig) : ScreenMapper {
+class ScreenMapper(private val config: GameConfig) {
 
     private val ppm: Float = config.ppm
 
-    override fun toWorld(sx: Double, sy: Double): Vector2 {
+    /** Pantalla (px, Y-down) → dyn4j (m, Y-up). */
+    fun toWorld(sx: Double, sy: Double): Vector2 {
         val wx = sx / ppm
-        val wy = (config.windowHeight - sy) / ppm
+        val wy = (config.windowHeight - sy) / ppm       
         return Vector2(wx, wy)
     }
 
-    override fun toScreen(wx: Double, wy: Double): Pair<Double, Double> {
+    /** dyn4j (m, Y-up) → Pantalla (px, Y-down). */
+    fun toScreen(wx: Double, wy: Double): Pair<Double, Double> {
         val sx = wx * ppm
         val sy = config.windowHeight - wy * ppm
         return sx to sy
     }
 
-    override val pixelsPerMeter: Float get() = ppm
-
-    /** Convierte una distancia en metros a píxeles de pantalla. */
-    override fun metersToPixels(meters: Double): Double {
-        return meters * ppm
-    }
+    /** Píxeles por metro (escala física). */
+    val pixelsPerMeter: Float get() = ppm
 }
