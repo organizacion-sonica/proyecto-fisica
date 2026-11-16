@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane
 object LevelDefaults {
     fun physicsFactory(config: GameConfig): () -> PhysicsWorld = {
         val m = DefaultScreenMapper(config)
-        Box2DWorld(config, m, DefaultBodyFactory(config, m), DefaultEntitySynchronizer(m), DefaultExplosionForce(m))
+        Box2DWorld(config.gravity, m, DefaultBodyFactory(config, m), DefaultEntitySynchronizer(m), DefaultExplosionForce(m))
     }
 
     fun levelFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> SlingshotLevelComponents =
