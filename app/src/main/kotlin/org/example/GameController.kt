@@ -18,9 +18,11 @@ class GameController(
     spriteSource: SpriteSource,
     config: GameConfig,
     onExitToMenu: () -> Unit = {},
+    physicsFactory: () -> PhysicsWorld,
+    levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents,
     private val collaboratorFactory: (Pane, PhysicsWorld) -> GameCollaborators
 ) :
-    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu), AbilityEffects {
+    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu, physicsFactory = physicsFactory, levelFactory = levelFactory), AbilityEffects {
 
     private lateinit var collaborators: GameCollaborators
 
@@ -58,7 +60,7 @@ class GameController(
         aimAssist.clear()
     }
 
-    override fun onBirdLoadedOntoSlingshot() {
+    override fun onBirdLoaded() {
         if (!timerStarted) {
             scoreBoard.reset()
             timerStarted = true

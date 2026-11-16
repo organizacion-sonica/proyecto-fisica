@@ -1,8 +1,9 @@
 {
   "0": "AbstractEntity",
   "1": "GameEntity",
+  "2": "SlingshotGameCallbacks",
+  "3": "BasketGameController",
   "4": "GameController",
-  "5": "BodyRegistry",
   "6": "MenuController",
   "7": "GameConfig",
   "8": "ScoreBoard",
@@ -21,5 +22,13 @@
   "29": "MenuStyles.kt",
   "30": "CircularHitbox.kt",
   "31": "DefaultExplosionForce",
-  "34": "GameLoop"
+  "32": "BasketTimer",
+  "33": "BasketScoreBoard",
+  "34": "GameLoop",
+  "35": ".rankForBasket",
+  "36": "Hoop",
+  "37": "HoopScorer",
+  "38": "BasketGameCollaborators",
+  "39": "BasketHoop",
+  "40": "SlingshotGame"
 }

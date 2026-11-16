@@ -10,7 +10,7 @@ import kotlin.math.atan2
  */
 class AngleIndicator(private val config: GameConfig) : AngleDisplay {
 
-    val text: Text = Text("Ángulo de tiro: —").apply {
+    private val text: Text = Text("Ángulo de tiro: —").apply {
         style = "-fx-font-size: ${18 * config.scale}px; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 3, 0.8, 0, 0);"
     }
 

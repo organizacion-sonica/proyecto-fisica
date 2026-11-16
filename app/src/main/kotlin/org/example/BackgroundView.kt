@@ -11,7 +11,7 @@ class BackgroundView(
     spriteSource: SpriteSource,
     private val config: GameConfig
 ) {
-    val imageView: ImageView = ImageView(spriteSource.load("bg.jpg")).apply {
+    private val imageView: ImageView = ImageView(spriteSource.load("bg.jpg")).apply {
         fitWidth = config.windowWidth
         fitHeight = config.windowHeight
         isPreserveRatio = false

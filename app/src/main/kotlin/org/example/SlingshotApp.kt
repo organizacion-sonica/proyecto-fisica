@@ -44,7 +44,7 @@ class SlingshotApp : Application() {
 
     /** Muestra (o re-muestra) el menú principal con una instancia fresca. */
     private fun showMenu() {
-        val menuBuilder = SlingshotDefaults.menuBuilder(spriteSource, config) { menuController }
+        val menuBuilder = MenuDefaults.menuBuilder(spriteSource, config) { menuController }
         menuController = MenuController(
             config,
             onStartGame = { startGame() },
@@ -73,7 +73,7 @@ class SlingshotApp : Application() {
     }
 
     private fun startGame() {
-        val controller = SlingshotDefaults.gameController(
+        val controller = TargetGameDefaults.gameController(
             spriteSource,
             config,
             onExitToMenu = { Platform.runLater { showMenu() } }
@@ -82,7 +82,7 @@ class SlingshotApp : Application() {
     }
 
     private fun startBasket() {
-        val controller = SlingshotDefaults.basketController(
+        val controller = BasketDefaults.basketController(
             spriteSource,
             config,
             onExitToMenu = { Platform.runLater { showMenu() } }
