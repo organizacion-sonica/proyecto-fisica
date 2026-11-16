@@ -10,9 +10,11 @@ class BasketGameController(
     spriteSource: SpriteSource,
     config: GameConfig,
     onExitToMenu: () -> Unit = {},
+    physicsFactory: () -> PhysicsWorld,
+    levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents,
     private val collaboratorFactory: (Pane, PhysicsWorld) -> BasketGameCollaborators
 ) :
-    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu) {
+    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu, physicsFactory = physicsFactory, levelFactory = levelFactory) {
 
     private lateinit var collaborators: BasketGameCollaborators
 
@@ -25,6 +27,8 @@ class BasketGameController(
     private var rankShown = false
 
     private var trajectoryFramesRemaining = -1
+
+    private lateinit var hoopScorer: HoopScorer
 
     /** Pájaros que ya encestaron en este vuelo (evita puntajes repetidos). */
     private val scoredBirds = mutableSetOf<Bird>()
@@ -40,6 +44,7 @@ class BasketGameController(
         scoredBirds.clear()
         scoreBoard.reset()
         timer.reset()
+        hoopScorer.reset()
         scoreBoard.refreshRank()
     }
 
@@ -47,7 +52,7 @@ class BasketGameController(
         scoredBirds.clear()
     }
 
-    override fun onBirdLoadedOntoSlingshot() {
+    override fun onBirdLoaded() {
         timer.start()
     }
 
@@ -78,7 +83,7 @@ class BasketGameController(
             }
         }
 
-        if (!timer.isOver()) checkHoops()
+        if (!timer.isOver()) { hoopScorer.tick(dt); hoopScorer.check() }
 
         if (timer.isOver() && !rankShown) {
             rankShown = true
@@ -86,34 +91,6 @@ class BasketGameController(
         }
     }
 
-    private fun checkHoops() {
-        val hoopCenterX = hoop.centerX
-        val hoopCenterY = hoop.centerY
-        val hoopRadiusSq = hoop.scoreRadiusSq
-
-        val fallen = inFlight.filter { isOutsideScreen(it) }
-        for (bird in fallen) {
-            physics.remove(bird)
-            inFlight.remove(bird)
-            markBirdSettled(bird)
-        }
-
-        for (bird in inFlight) {
-            val dx = bird.hitbox.centerX - hoopCenterX
-            val dy = bird.hitbox.centerY - hoopCenterY
-            val entered = dx * dx + dy * dy < hoopRadiusSq
-            if (entered && bird !in scoredBirds) {
-                scoreBasket(bird)
-            }
-        }
-    }
-
-    private fun isOutsideScreen(bird: Bird): Boolean {
-        val h = bird.hitbox
-        return h.centerX < -100 ||
-            h.centerX > config.windowWidth + 200 ||
-            h.centerY > config.windowHeight + 100
-    }
 
     private fun scoreBasket(bird: Bird) {
         if (timer.isOver()) return

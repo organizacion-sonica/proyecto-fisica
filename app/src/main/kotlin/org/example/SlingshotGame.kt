@@ -22,12 +22,12 @@ abstract class SlingshotGame(
     protected val spriteSource: SpriteSource,
     protected val config: GameConfig,
     /** Callback para volver al menú principal (tecla ESC). */
-    private val onExitToMenu: () -> Unit = { Unit },
-    /** Fábrica del mundo físico (Inversión de Dependencias: un test podría simularlo). */
-    private val physicsFactory: () -> PhysicsWorld = SlingshotDefaults.physicsFactory(config),
+    private val onExitToMenu: () -> Unit = {},
+    /** Fábrica del mundo físico (DIP: inyectada, no creada acá). */
+    private val physicsFactory: () -> PhysicsWorld,
     /** Fábrica de los colaboradores del nivel con resortera (DIP). */
-    private val levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents = SlingshotDefaults.levelFactory(spriteSource, config)
-) {
+    private val levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents
+) : SlingshotGameCallbacks {
     protected var physics: PhysicsWorld = physicsFactory()
     private var gameLoop: GameLoop? = null
 
@@ -73,7 +73,7 @@ abstract class SlingshotGame(
         return scene
     }
 
-    fun resetLevel() {
+    override fun resetLevel() {
         stopPhysicsLoop()
         physics.dispose()
         physics = physicsFactory()
@@ -95,7 +95,9 @@ abstract class SlingshotGame(
         pile = levelComponents.pile
 
         // Hitbox al ras del piso (invisible).
-        floorHitbox = SlingshotDefaults.floorHitbox(config)
+        floorHitbox = BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0).apply {
+            recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
+        }
 
         flightTracker = FlightTracker(physics, pane, floorHitbox) { onBirdSettled(it) }
 
@@ -112,7 +114,7 @@ abstract class SlingshotGame(
                     this@SlingshotGame.onBirdGrabbed()
                 }
                 override fun onBirdLoaded() {
-                    this@SlingshotGame.onBirdLoadedOntoSlingshot()
+                    this@SlingshotGame.onBirdLoaded()
                 }
                 override fun onBirdSettled(bird: Bird) {
                     this@SlingshotGame.onBirdSettled(bird)
@@ -148,32 +150,16 @@ abstract class SlingshotGame(
     /** Construye lo propio del nivel (dianas, aro, marcadores...). */
     protected abstract fun setupLevel()
 
-    /** Ajustes al reiniciar el nivel (puntaje a cero, cronómetro...). */
-    protected open fun onLevelReset() { Unit }
 
     /** Lógica propia del nivel en cada paso fijo de física. */
     protected abstract fun onPhysicsStep(dt: Double)
 
-    /** Se sigue estirando: efectos de ayuda de tiro (ángulo, trayectoria...). */
-    protected open fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) { Unit }
 
-    /** Se suelta la resortera (antes de decidir si el tiro es válido). */
-    protected open fun clearAimLayer() { Unit }
 
-    /** Tecla G: habilidad especial del último pájaro lanzado, si la hay. */
-    protected open fun onAbilityKey() { Unit }
 
-    /** Tras lanzar un pájaro (para que cada nivel limpie su estado). */
-    protected open fun onLaunch() { Unit }
 
-    /** Un pájaro lanzado quedó en reposo (puntos de basket, etc.). */
-    protected open fun onBirdSettled(bird: Bird) { Unit }
 
-    /** Se acaba de agarrar un pájaro (de la pila o para la resortera). */
-    protected open fun onBirdGrabbed() { Unit }
 
-    /** Un pájaro quedó fijado en la resortera (momento en que arranca el timer). */
-    protected open fun onBirdLoadedOntoSlingshot() { Unit }
 
     /** Marca un pájaro como asentado (p. ej. salió de la pantalla) para que se desvanezca. */
     protected fun markBirdSettled(bird: Bird) = flightTracker.markSettled(bird)

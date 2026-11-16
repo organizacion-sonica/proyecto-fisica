@@ -18,11 +18,13 @@ class Box2DWorld(
     private val mapper: ScreenMapper,
     private val bodyFactory: BodyFactory,
     private val synchronizer: EntitySynchronizer,
-    private val explosionForce: ExplosionForce,
-    private val registry: BodyRegistry = BodyRegistry()
+    private val explosionForce: ExplosionForce
 ) : PhysicsWorld {
 
     private val world: World<Body> = World()
+
+    private val birdBodies = mutableMapOf<GameEntity, Body>()
+    private val staticBodies = mutableMapOf<String, Body>()
 
     init {
         world.setGravity(0.0, -gravity.toDouble())
@@ -49,7 +51,7 @@ class Box2DWorld(
     override fun registerBird(bird: GameEntity, mass: Float) {
         val body = bodyFactory.createBirdBody(bird, mass)
         world.addBody(body)
-        registry.registerBird(bird, body)
+        birdBodies[bird] = body
     }
 
     /** Caja estática (en px de pantalla) para que los cuerpos reboten. */
@@ -62,12 +64,12 @@ class Box2DWorld(
     override fun addNamedStaticBox(name: String, spec: BoxSpec) {
         val body = bodyFactory.createStaticBoxBody(spec)
         world.addBody(body)
-        registry.registerStatic(name, body)
+        staticBodies[name] = body
     }
 
     /** Mueve una caja estática nombrada a una nueva posición. */
     override fun moveNamedStaticBox(name: String, centerXPx: Double, centerYPx: Double) {
-        val body = registry.staticBody(name) ?: return
+        val body = staticBodies[name] ?: return
         val pos = screenToWorld(centerXPx, centerYPx)
         val t = body.transform
         t.setTranslation(pos.x, pos.y)
@@ -76,7 +78,7 @@ class Box2DWorld(
 
     /** Aplica un impulso de lanzamiento a un pájaro registrado. */
     override fun launchBird(bird: GameEntity, vx: Double, vy: Double) {
-        val body = registry.birdBody(bird) ?: return
+        val body = birdBodies[bird] ?: return
         // Impulso = masa * velocidad deseada (dyn4j usa kg·m/s).
         // dyn4j usa Y-up, JavaFX usa Y-down → invertir vy.
         val mass = body.mass.mass
@@ -86,19 +88,19 @@ class Box2DWorld(
 
     /** Marca un cuerpo como kinemático (fijo, no responde a fuerzas). */
     override fun setKinematic(entity: GameEntity) {
-        val body = registry.birdBody(entity) ?: return
+        val body = birdBodies[entity] ?: return
         body.setMass(MassType.FIXED_LINEAR_VELOCITY)
     }
 
     /** Marca un cuerpo como dinámico. */
     override fun setDynamic(entity: GameEntity) {
-        val body = registry.birdBody(entity) ?: return
+        val body = birdBodies[entity] ?: return
         body.setMass(MassType.NORMAL)
     }
 
     /** Mueve un cuerpo a una posición específica (para drag del pájaro). */
     override fun setTransform(entity: GameEntity, sx: Double, sy: Double) {
-        val body = registry.birdBody(entity) ?: return
+        val body = birdBodies[entity] ?: return
         // El cuerpo está centrado en el centro de la hitbox, no del sprite:
         // convertir la posición de sprite a posición de hitbox.
         val spriteCx = entity.x + entity.width / 2
@@ -113,26 +115,26 @@ class Box2DWorld(
 
     /** Verifica si un cuerpo está en reposo (velocidad < umbral). */
     override fun isResting(entity: GameEntity): Boolean {
-        val body = registry.birdBody(entity) ?: return true
+        val body = birdBodies[entity] ?: return true
         val v = body.linearVelocity
         return v.magnitudeSquared < 0.01
     }
 
     /** Aumenta la velocidad del pájaro (habilidad de Chuck). */
     override fun boostBirdSpeed(bird: GameEntity, multiplier: Float) {
-        val body = registry.birdBody(bird) ?: return
+        val body = birdBodies[bird] ?: return
         val v = body.linearVelocity
         body.linearVelocity = Vector2(v.x * multiplier, v.y * multiplier)
     }
 
     /** Genera onda expansiva en la posición del pájaro (habilidad de Bomb). */
     override fun explodeAt(bird: GameEntity, radiusPx: Float, force: Float) {
-        explosionForce.apply(bird, ExplosionSpec(radiusPx, force), registry.birdBodies())
+        explosionForce.apply(bird, ExplosionSpec(radiusPx, force), birdBodies)
     }
 
     /** Elimina un cuerpo del mundo físico. */
     override fun remove(entity: GameEntity) {
-        val body = registry.removeBird(entity) ?: return
+        val body = birdBodies.remove(entity) ?: return
         world.removeBody(body)
     }
 
@@ -146,17 +148,18 @@ class Box2DWorld(
 
     /** Sincroniza la posición y rotación de cada entidad con su Body de dyn4j. */
     private fun syncAll() {
-        synchronizer.sync(registry.birdBodies())
+        synchronizer.sync(birdBodies)
     }
 
     /** Libera todo el mundo dyn4j. */
     override fun dispose() {
-        for (body in registry.birdBodies().values) {
+        for (body in birdBodies.values) {
             world.removeBody(body)
         }
-        for (body in registry.staticBodies().values) {
+        for (body in staticBodies.values) {
             world.removeBody(body)
         }
-        registry.clear()
+        birdBodies.clear()
+        staticBodies.clear()
     }
 }
