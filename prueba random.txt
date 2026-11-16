@@ -1,1 +1,0 @@
-profe esto lo hago nada mas para ver si el opencode dtecta los cambios de la evaluacion.md porquen no estaria detectando nada
