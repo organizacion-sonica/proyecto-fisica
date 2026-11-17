@@ -18,7 +18,7 @@ import java.io.File
  */
 class SlingshotApp : Application() {
 
-    private val assetsDir = "elementos graficos"
+    private val assetsDir = "D:\\downloads\\proyecto-fisica\\elementos graficos"
 
     private lateinit var spriteSource: SpriteSource
     private lateinit var config: GameConfig
