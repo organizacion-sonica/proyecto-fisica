@@ -11,18 +11,13 @@ import javafx.scene.layout.Pane
  * Depende de la abstracción [SlingshotGameCallbacks] (DIP), no del juego.
  */
 class SlingshotInput(
-    private val config: GameConfig,
     private val pane: Pane,
     private val slingshot: SlingshotView,
     private val launchZone: LaunchZone,
     private val physics: PhysicsWorld,
     private val pile: BirdPile,
-    private val flightTracker: FlightTracker,
-    private val callbacks: SlingshotGameCallbacks,
-    private val onExitToMenu: () -> Unit
+    private val callbacks: SlingshotGameCallbacks
 ) {
-    private val grabRadius = 45.0 * config.scale
-
     var dragBird: Bird? = null
         private set
     var slingshotBird: Bird? = null
@@ -31,9 +26,7 @@ class SlingshotInput(
     fun availableBirds(): List<Bird> = pile.available()
 
     fun isNearBird(bird: Bird, x: Double, y: Double): Boolean {
-        val cx = bird.x + bird.width / 2
-        val cy = bird.y + bird.height / 2
-        return Point2D(x, y).distance(cx, cy) < grabRadius
+        return pile.birdNear(x, y) == bird
     }
 
     fun handlePressed(e: MouseEvent) {
@@ -45,7 +38,7 @@ class SlingshotInput(
             return
         }
 
-        val bird = pile.available().firstOrNull { isNearBird(it, mx, my) }
+        val bird = pile.birdNear(mx, my)
         if (bird != null) {
             dragBird = bird
             bird.placeAt(pane, mx - bird.width / 2, my - bird.height / 2)
@@ -81,7 +74,12 @@ class SlingshotInput(
             callbacks.clearAimLayer()
             val pull = slingshot.release() ?: return
             if (pull.magnitude() > MIN_STRETCH) {
-                launch(loaded, pull)
+                slingshotBird = null
+                val (vx, vy) = slingshot.launchVelocity(pull)
+                physics.setDynamic(loaded)
+                physics.launchBird(loaded, vx, vy)
+                callbacks.onBirdLaunched(loaded)
+                callbacks.onLaunch()
             } else {
                 loaded.placeAt(pane, slingshot.anchor.x - loaded.width / 2, slingshot.anchor.y - loaded.height / 2)
                 physics.setTransform(loaded, slingshot.anchor.x, slingshot.anchor.y)
@@ -101,7 +99,7 @@ class SlingshotInput(
 
     fun handleKeyPressed(e: KeyEvent) {
         when (e.code) {
-            KeyCode.ESCAPE -> onExitToMenu()
+            KeyCode.ESCAPE -> callbacks.onExitRequested()
             KeyCode.G -> callbacks.onAbilityKey()
             KeyCode.R -> callbacks.resetLevel()
             else -> Unit
@@ -127,23 +125,6 @@ class SlingshotInput(
         dragBird = null
         callbacks.onBirdGrabbed()
         callbacks.onBirdLoaded()
-    }
-
-    private fun launch(bird: Bird, pull: Point2D) {
-        slingshotBird = null
-        flightTracker.recordLaunch(bird)
-        callbacks.setLastLaunchedBird(bird)
-
-        val (vx, vy) = launchVelocity(pull)
-        physics.setDynamic(bird)
-        physics.launchBird(bird, vx, vy)
-        callbacks.onLaunch()
-    }
-
-    private fun launchVelocity(pull: Point2D): Pair<Double, Double> {
-        val mag = kotlin.math.min(pull.magnitude(), config.maxStretch)
-        val speed = mag / config.maxStretch * config.maxLaunchSpeed
-        return pull.x / mag * speed to pull.y / mag * speed
     }
 
     fun putBack(bird: Bird) = pile.putBack(bird)

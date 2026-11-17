@@ -10,9 +10,12 @@ import javafx.scene.layout.Pane
 class FlightTracker(
     private val physics: PhysicsWorld,
     private val pane: Pane,
-    private val floorHitbox: Hitbox,
+    private val config: GameConfig,
     private val onBirdSettled: (Bird) -> Unit
 ) {
+    private val floorHitbox: Hitbox = BoxHitbox(halfWidth = config.windowWidth / 2.0, halfHeight = 5.0).apply {
+        recenter(config.windowWidth / 2.0, config.windowHeight - 5.0)
+    }
     /** Pájaros ya lanzados que siguen en vuelo. */
     val inFlight: MutableList<Bird> = mutableListOf()
 

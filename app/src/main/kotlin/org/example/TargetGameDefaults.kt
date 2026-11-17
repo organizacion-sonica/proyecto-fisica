@@ -2,9 +2,6 @@ package org.example
 
 import javafx.scene.layout.Pane
 
-/**
- * Defaults del minijuego de dianas (colaboradores + controlador).
- */
 object TargetGameDefaults {
     fun gameCollaboratorFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> GameCollaborators =
         { pane, _ ->
@@ -29,15 +26,11 @@ object TargetGameDefaults {
         }
 
     fun gameController(
-        spriteSource: SpriteSource,
-        config: GameConfig,
+        parts: SlingshotGameParts,
         onExitToMenu: () -> Unit
     ): GameController = GameController(
-        spriteSource,
-        config,
+        parts,
         onExitToMenu = onExitToMenu,
-        physicsFactory = LevelDefaults.physicsFactory(config),
-        levelFactory = LevelDefaults.levelFactory(spriteSource, config),
-        collaboratorFactory = gameCollaboratorFactory(spriteSource, config)
+        collaboratorFactory = gameCollaboratorFactory(parts.spriteSource, parts.config)
     )
 }
