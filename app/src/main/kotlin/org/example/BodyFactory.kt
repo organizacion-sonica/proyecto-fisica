@@ -2,6 +2,7 @@ package org.example
 
 import org.dyn4j.dynamics.Body
 import org.dyn4j.geometry.Circle
+import org.dyn4j.geometry.Vector2
 import org.dyn4j.geometry.MassType
 import org.dyn4j.geometry.Rectangle
 
@@ -27,6 +28,8 @@ interface BodyFactory {
     fun createBirdBody(bird: GameEntity, mass: Float): org.dyn4j.dynamics.Body
     fun createStaticBoxBody(spec: BoxSpec): org.dyn4j.dynamics.Body
     fun createGroundBody(): org.dyn4j.dynamics.Body
+    fun toWorld(sx: Double, sy: Double): org.dyn4j.geometry.Vector2
+    fun launchImpulse(mass: Double, vx: Double, vy: Double): org.dyn4j.geometry.Vector2
 }
 
 class DefaultBodyFactory(private val config: GameConfig, private val mapper: ScreenMapper) : BodyFactory {
@@ -68,5 +71,14 @@ class DefaultBodyFactory(private val config: GameConfig, private val mapper: Scr
         ground.addFixture(groundShape, 0.0, 0.0, 0.0)
         ground.translate(config.windowWidth / 2.0 / ppm, config.floorMargin / ppm - 0.5)
         return ground
+    }
+
+    /** Conversión de coordenadas pantalla → mundo (delegada al mapper). */
+    override fun toWorld(sx: Double, sy: Double): Vector2 = mapper.toWorld(sx, sy)
+
+    /** Impulso de lanzamiento en unidades del mundo físico. */
+    override fun launchImpulse(mass: Double, vx: Double, vy: Double): Vector2 {
+        val ppm = mapper.pixelsPerMeter
+        return Vector2(mass * vx / ppm, mass * -vy / ppm)
     }
 }

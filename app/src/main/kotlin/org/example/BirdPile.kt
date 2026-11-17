@@ -1,5 +1,6 @@
 package org.example
 
+import javafx.geometry.Point2D
 import javafx.scene.layout.Pane
 
 /**
@@ -18,6 +19,9 @@ class BirdPile(
     private val slotBirds = mutableListOf<Bird>()
     private val birdType = mutableMapOf<Bird, String>()
 
+    /** Radio de agarre para detectar pájaros bajo el puntero. */
+    val grabRadius: Double = config.slingshotGrabRadius
+
     /** Crea los tres pájaros iniciales de la pila. */
     fun setup() {
         slotTypes.forEach { spawnSlotBird(it) }
@@ -25,6 +29,17 @@ class BirdPile(
 
     /** Pájaros disponibles para agarrar (instantánea). */
     fun available(): List<Bird> = slotBirds.toList()
+
+    /** Devuelve el pájaro más cercano al punto (x, y), o null si no hay ninguno dentro del radio de agarre. */
+    fun birdNear(x: Double, y: Double): Bird? {
+        return available().firstOrNull { isNearBird(it, x, y) }
+    }
+
+    private fun isNearBird(bird: Bird, x: Double, y: Double): Boolean {
+        val cx = bird.x + bird.width / 2
+        val cy = bird.y + bird.height / 2
+        return Point2D(x, y).distance(cx, cy) < grabRadius
+    }
 
     /** Coordenada (esq. sup. izq.) del slot [index]. */
     fun slotCoord(index: Int): Pair<Double, Double> {

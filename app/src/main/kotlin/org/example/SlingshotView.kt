@@ -53,6 +53,13 @@ class SlingshotView(
     /** Punto donde se empezó a arrastrar (para medir el estiramiento relativo). */
     private var dragStart: Point2D? = null
 
+    /** Convierte un estiramiento en velocidad de lanzamiento (px/s). */
+    fun launchVelocity(pull: Point2D): Pair<Double, Double> {
+        val mag = kotlin.math.min(pull.magnitude(), config.maxStretch)
+        val speed = mag / config.maxStretch * config.maxLaunchSpeed
+        return pull.x / mag * speed to pull.y / mag * speed
+    }
+
     /** Posición del pájaro estirado (ancla + desplazamiento de drag, cap 200px). */
     var birdStretchPos: Point2D
         private set

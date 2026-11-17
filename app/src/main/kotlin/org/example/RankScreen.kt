@@ -4,18 +4,12 @@ import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 
-/**
- * Pantalla final del nivel: fondo, rango obtenido, puntaje y la fila de
- * pájaros. Responsabilidad única: dibujar la pantalla de resultado.
- */
 class RankScreen(
     private val spriteSource: SpriteSource,
     private val config: GameConfig
 ) : RankDisplay {
-    /** Sprites de la fila inferior, en el orden del nivel. */
     private val birdSpriteFiles = listOf("Red.png", "chuck .png", "bomb.png")
 
-    /** Dibuja la pantalla final sobre [pane] con el [score] obtenido. */
     override fun show(pane: Pane, score: Int, rankLetter: String?) {
         pane.children.clear()
         BackgroundView(spriteSource, config).placeIn(pane)
@@ -46,16 +40,14 @@ class RankScreen(
         showBirdsRow(pane)
     }
 
-    /**
-     * Los tres pájaros en fila horizontal, un poco a la izquierda de
-     * pantalla y con el mismo tamaño que en el juego (solo sprites, sin
-     * hitbox). Simulan la pantalla del minijuego tras terminar.
-     */
+    override fun showFor(pane: Pane, score: Int) {
+        show(pane, score, RankEvaluator.rankFor(score))
+    }
+
     private fun showBirdsRow(pane: Pane) {
         val s = config.scale
         val size = config.birdSize
         val gapBetween = 20.0 * s
-        val total = birdSpriteFiles.size
         val startX = 40.0 * s
         val yPos = config.windowHeight * 0.62
         birdSpriteFiles.forEachIndexed { i, file ->

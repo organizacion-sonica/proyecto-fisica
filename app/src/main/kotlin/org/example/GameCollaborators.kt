@@ -14,6 +14,7 @@ interface TrajectoryPredictor {
 
 interface RankDisplay {
     fun show(pane: Pane, score: Int, rankLetter: String? = null)
+    fun showFor(pane: Pane, score: Int)
 }
 
 interface ScoreKeeper {

@@ -3,26 +3,14 @@ package org.example
 import javafx.geometry.Point2D
 import javafx.scene.layout.Pane
 
-/**
- * Minijuego 2: Tiro al aro de basket.
- */
 class BasketGameController(
-    spriteSource: SpriteSource,
-    config: GameConfig,
+    parts: SlingshotGameParts,
     onExitToMenu: () -> Unit = {},
-    physicsFactory: () -> PhysicsWorld,
-    levelFactory: (Pane, PhysicsWorld) -> SlingshotLevelComponents,
     private val collaboratorFactory: (Pane, PhysicsWorld) -> BasketGameCollaborators
 ) :
-    SlingshotGame(spriteSource, config, onExitToMenu = onExitToMenu, physicsFactory = physicsFactory, levelFactory = levelFactory) {
+    SlingshotGame(parts, onExitToMenu = onExitToMenu) {
 
     private lateinit var collaborators: BasketGameCollaborators
-
-    private val aimAssist: AimAssist get() = collaborators.aimAssist
-    private val hoop: BasketHoop get() = collaborators.hoop
-    private val rankScreen: RankDisplay get() = collaborators.rankScreen
-    private val scoreBoard: BasketScoreBoard get() = collaborators.scoreBoard
-    private val timer: BasketTimer get() = collaborators.timer
 
     private var rankShown = false
 
@@ -35,17 +23,17 @@ class BasketGameController(
 
     override fun setupLevel() {
         collaborators = collaboratorFactory(pane, physics)
-        createPole()
+        BasketDefaults.createPole(pane, physics, collaborators.hoop, config)
     }
 
     override fun onLevelReset() {
         trajectoryFramesRemaining = -1
         rankShown = false
         scoredBirds.clear()
-        scoreBoard.reset()
-        timer.reset()
+        collaborators.scoreBoard.reset()
+        collaborators.timer.reset()
         hoopScorer.reset()
-        scoreBoard.refreshRank()
+        collaborators.scoreBoard.refreshRank()
     }
 
     override fun onLaunch() {
@@ -53,50 +41,32 @@ class BasketGameController(
     }
 
     override fun onBirdLoaded() {
-        timer.start()
-    }
-
-    private fun createPole() {
-        val poleWidth = 22.0 * config.scale
-        val poleHeight = config.windowHeight
-        val poleX = config.windowWidth - poleWidth
-        val poleCenterX = poleX + poleWidth / 2.0
-
-        val poleRect = javafx.scene.shape.Rectangle(poleX, 0.0, poleWidth, poleHeight).apply {
-            fill = javafx.scene.paint.Color.web("#5c3a21")
-            stroke = javafx.scene.paint.Color.web("#2b1d0c")
-            strokeWidth = 1.0
-        }
-        pane.children.add(poleRect)
-        hoop.view.toFront()
-
-        physics.addStaticBox(BoxSpec(poleCenterX, poleHeight / 2.0, poleWidth, poleHeight))
+        collaborators.timer.start()
     }
 
     override fun onPhysicsStep(dt: Double) {
-        timer.tick(dt)
+        collaborators.timer.tick(dt)
 
         if (trajectoryFramesRemaining > 0) {
             trajectoryFramesRemaining--
             if (trajectoryFramesRemaining == 0) {
-                aimAssist.clear()
+                collaborators.aimAssist.clear()
             }
         }
 
-        if (!timer.isOver()) { hoopScorer.tick(dt); hoopScorer.check() }
+        if (!collaborators.timer.isOver()) { hoopScorer.tick(dt); hoopScorer.check() }
 
-        if (timer.isOver() && !rankShown) {
+        if (collaborators.timer.isOver() && !rankShown) {
             rankShown = true
-            rankScreen.show(pane, scoreBoard.score, RankEvaluator.rankForBasket(scoreBoard.score))
+            collaborators.rankScreen.showFor(pane, collaborators.scoreBoard.score)
         }
     }
 
-
     private fun scoreBasket(bird: Bird) {
-        if (timer.isOver()) return
-        scoreBoard.addPoint()
+        if (collaborators.timer.isOver()) return
+        collaborators.scoreBoard.addPoint()
         scoredBirds += bird
-        hoop.moveToNewPosition()
+        collaborators.hoop.moveToNewPosition()
     }
 
     override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {
@@ -104,7 +74,7 @@ class BasketGameController(
             trajectoryFramesRemaining = TRAJECTORY_FRAMES
         }
         if (trajectoryFramesRemaining > 0) {
-            aimAssist.show(stretchPos, pull)
+            collaborators.aimAssist.show(stretchPos, pull)
         }
     }
 
@@ -113,7 +83,7 @@ class BasketGameController(
     }
 
     override fun clearAimLayer() {
-        aimAssist.clear()
+        collaborators.aimAssist.clear()
         trajectoryFramesRemaining = -1
     }
 

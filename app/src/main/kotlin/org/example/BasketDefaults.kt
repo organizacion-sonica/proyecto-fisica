@@ -2,9 +2,6 @@ package org.example
 
 import javafx.scene.layout.Pane
 
-/**
- * Defaults del minijuego de basket (HUD + colaboradores + controlador).
- */
 object BasketDefaults {
     fun basketCollaboratorFactory(spriteSource: SpriteSource, config: GameConfig): (Pane, PhysicsWorld) -> BasketGameCollaborators =
         { pane, physics ->
@@ -36,15 +33,28 @@ object BasketDefaults {
         }
 
     fun basketController(
-        spriteSource: SpriteSource,
-        config: GameConfig,
+        parts: SlingshotGameParts,
         onExitToMenu: () -> Unit
     ): BasketGameController = BasketGameController(
-        spriteSource,
-        config,
+        parts,
         onExitToMenu = onExitToMenu,
-        physicsFactory = LevelDefaults.physicsFactory(config),
-        levelFactory = LevelDefaults.levelFactory(spriteSource, config),
-        collaboratorFactory = basketCollaboratorFactory(spriteSource, config)
+        collaboratorFactory = basketCollaboratorFactory(parts.spriteSource, parts.config)
     )
+
+    fun createPole(pane: Pane, physics: PhysicsWorld, hoop: BasketHoop, config: GameConfig) {
+        val poleWidth = 22.0 * config.scale
+        val poleHeight = config.windowHeight
+        val poleX = config.windowWidth - poleWidth
+        val poleCenterX = poleX + poleWidth / 2.0
+
+        val poleRect = javafx.scene.shape.Rectangle(poleX, 0.0, poleWidth, poleHeight).apply {
+            fill = javafx.scene.paint.Color.web("#5c3a21")
+            stroke = javafx.scene.paint.Color.web("#2b1d0c")
+            strokeWidth = 1.0
+        }
+        pane.children.add(poleRect)
+        hoop.view.toFront()
+
+        physics.addStaticBox(BoxSpec(poleCenterX, poleHeight / 2.0, poleWidth, poleHeight))
+    }
 }
