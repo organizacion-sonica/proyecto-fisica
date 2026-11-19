@@ -15,7 +15,6 @@ import org.dyn4j.world.World
  */
 class Box2DWorld(
     gravity: Float,
-    private val mapper: ScreenMapper,
     private val bodyFactory: BodyFactory,
     private val synchronizer: EntitySynchronizer,
     private val explosionForce: ExplosionForce
@@ -30,14 +29,6 @@ class Box2DWorld(
         world.setGravity(0.0, -gravity.toDouble())
         createGround()
     }
-
-    // ── Conversiones de coordenadas (delegadas a ScreenMapper) ─────────
-
-    /** Pantalla (px, Y-down) → dyn4j (m, Y-up). */
-    fun screenToWorld(sx: Double, sy: Double): Vector2 = mapper.toWorld(sx, sy)
-
-    /** dyn4j (m, Y-up) → Pantalla (px, Y-down). */
-    fun worldToScreen(wx: Double, wy: Double): Pair<Double, Double> = mapper.toScreen(wx, wy)
 
     // ── Cuerpos ────────────────────────────────────────────────────────
 
@@ -70,7 +61,7 @@ class Box2DWorld(
     /** Mueve una caja estática nombrada a una nueva posición. */
     override fun moveNamedStaticBox(name: String, centerXPx: Double, centerYPx: Double) {
         val body = staticBodies[name] ?: return
-        val pos = screenToWorld(centerXPx, centerYPx)
+        val pos = bodyFactory.toWorld(centerXPx, centerYPx)
         val t = body.transform
         t.setTranslation(pos.x, pos.y)
         t.setRotation(0.0)
@@ -82,7 +73,7 @@ class Box2DWorld(
         // Impulso = masa * velocidad deseada (dyn4j usa kg·m/s).
         // dyn4j usa Y-up, JavaFX usa Y-down → invertir vy.
         val mass = body.mass.mass
-        val impulse = Vector2(mass * vx / mapper.pixelsPerMeter, mass * -vy / mapper.pixelsPerMeter)
+        val impulse = bodyFactory.launchImpulse(mass, vx, vy)
         body.applyImpulse(impulse)
     }
 
@@ -107,7 +98,7 @@ class Box2DWorld(
         val spriteCy = entity.y + entity.height / 2
         val ox = entity.hitbox.centerX - spriteCx
         val oy = entity.hitbox.centerY - spriteCy
-        val pos = screenToWorld(sx + ox, sy + oy)
+        val pos = bodyFactory.toWorld(sx + ox, sy + oy)
         val t = body.transform
         t.setTranslation(pos.x, pos.y)
         t.setRotation(0.0)

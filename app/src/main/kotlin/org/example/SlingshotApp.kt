@@ -9,16 +9,9 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import java.io.File
 
-/**
- * Raíz de composición.
- *
- * La aplicación se muestra siempre en pantalla completa real (ventana sin
- * decoraciones del tamaño de la pantalla): sin barra de tareas ni botones
- * de cerrar/minimizar. ESC vuelve al menú principal.
- */
 class SlingshotApp : Application() {
 
-    private val assetsDir = "elementos graficos"
+    private val assetsDir = "/home/simonkrasner/proyecto-fisica/elementos graficos/"
 
     private lateinit var spriteSource: SpriteSource
     private lateinit var config: GameConfig
@@ -32,7 +25,6 @@ class SlingshotApp : Application() {
         val bounds = javafx.stage.Screen.getPrimary().bounds
         config = GameConfig(windowWidth = bounds.width, windowHeight = bounds.height)
 
-        // Pantalla completa real: sin barra de tareas ni decoraciones.
         stage.initStyle(StageStyle.UNDECORATED)
         stage.isAlwaysOnTop = true
         stage.isFullScreen = true
@@ -42,7 +34,6 @@ class SlingshotApp : Application() {
         showMenu()
     }
 
-    /** Muestra (o re-muestra) el menú principal con una instancia fresca. */
     private fun showMenu() {
         val menuBuilder = MenuDefaults.menuBuilder(spriteSource, config) { menuController }
         menuController = MenuController(
@@ -62,7 +53,6 @@ class SlingshotApp : Application() {
         stage.requestFocus()
     }
 
-    /** Muestra una escena en pantalla completa. */
     private fun showScene(scene: javafx.scene.Scene, title: String) {
         stage.scene = scene
         stage.title = title
@@ -73,18 +63,18 @@ class SlingshotApp : Application() {
     }
 
     private fun startGame() {
+        val parts = SlingshotGameParts(spriteSource, config, PhysicsDefaults.physicsFactory(config), LevelDefaults.levelFactory(spriteSource, config))
         val controller = TargetGameDefaults.gameController(
-            spriteSource,
-            config,
+            parts,
             onExitToMenu = { Platform.runLater { showMenu() } }
         )
         showScene(controller.buildScene(), "Minijuegos de Fisica - Juego")
     }
 
     private fun startBasket() {
+        val parts = SlingshotGameParts(spriteSource, config, PhysicsDefaults.physicsFactory(config), LevelDefaults.levelFactory(spriteSource, config))
         val controller = BasketDefaults.basketController(
-            spriteSource,
-            config,
+            parts,
             onExitToMenu = { Platform.runLater { showMenu() } }
         )
         showScene(controller.buildScene(), "Minijuegos de Fisica - Tiro al Aro")
