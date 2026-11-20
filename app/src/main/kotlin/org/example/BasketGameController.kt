@@ -23,6 +23,7 @@ class BasketGameController(
 
     override fun setupLevel() {
         collaborators = collaboratorFactory(pane, physics)
+        hoopScorer = HoopScorer(config, collaborators.hoop, collaborators.scoreBoard, collaborators.timer, physics, inFlight) { markBirdSettled(it) }
         BasketDefaults.createPole(pane, physics, collaborators.hoop, config)
     }
 
