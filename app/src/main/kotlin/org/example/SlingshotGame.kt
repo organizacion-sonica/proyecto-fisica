@@ -82,18 +82,6 @@ abstract class SlingshotGame(
 
     protected abstract fun onPhysicsStep(dt: Double)
 
-    override fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) { Unit }
-
-    override fun clearAimLayer() { Unit }
-
-    override fun onAbilityKey() { Unit }
-
-    override fun onLaunch() { Unit }
-
-    override fun onBirdGrabbed() { Unit }
-
-    override fun onBirdLoaded() { }
-
     override fun onBirdLaunched(bird: Bird) {
         lastLaunched = bird
         flightTracker.recordLaunch(bird)
