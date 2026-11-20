@@ -7,20 +7,20 @@ import javafx.geometry.Point2D
  * invocar (DIP: el manejador depende de la abstracción, no del juego).
  */
 interface AimCallbacks {
-    fun onStretchUpdate(pull: Point2D, stretchPos: Point2D)
-    fun clearAimLayer()
+    fun onStretchUpdate(pull: Point2D, stretchPos: Point2D) {}
+    fun clearAimLayer() {}
 }
 
 interface BirdCallbacks {
-    fun onBirdGrabbed()
-    fun onBirdLoaded()
+    fun onBirdGrabbed() {}
+    fun onBirdLoaded() {}
     fun onBirdLaunched(bird: Bird)
-    fun onLaunch()
+    fun onLaunch() {}
 }
 
 interface GameKeyCallbacks {
-    fun onAbilityKey()
-    fun resetLevel()
+    fun onAbilityKey() {}
+    fun resetLevel() {}
     fun onExitRequested()
 }
 
