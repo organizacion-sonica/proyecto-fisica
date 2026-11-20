@@ -217,14 +217,14 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 ## 5. Evolución por commit
 
-Métricas calculadas sobre el estado de `main` en **cada commit** (39 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
+Métricas calculadas sobre el estado de `main` en **cada commit** (40 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
 
 ```mermaid
 xychart-beta
     title "Índice POO/SOLID a lo largo de los commits"
-    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af", "9fc92df", "031ae05", "144808c", "17760fb", "627bcff", "1deb8d2", "631b308", "b386b9c", "8a205a3", "0aca0b4", "34db6b7", "0bae7a2", "e47921a", "70a9b91", "04874b1", "fe4c80f", "323fe09", "1ed7a03", "0b855c1", "63e9e29", "31f3106", "0a1a3ed", "cd3a2b4", "e03ed00", "2cf1497", "f97a90e", "ea89042"]
+    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af", "9fc92df", "031ae05", "144808c", "17760fb", "627bcff", "1deb8d2", "631b308", "b386b9c", "8a205a3", "0aca0b4", "34db6b7", "0bae7a2", "e47921a", "70a9b91", "04874b1", "fe4c80f", "323fe09", "1ed7a03", "0b855c1", "63e9e29", "31f3106", "0a1a3ed", "cd3a2b4", "e03ed00", "2cf1497", "f97a90e", "ea89042", "dc325fa"]
     y-axis "Índice" 0 --> 100
-    line [0, 0, 0, 0, 65, 70, 48, 49, 49, 83, 79, 80, 83, 84, 88, 89, 89, 89, 89, 89, 90, 90, 88, 88, 88, 88, 88, 87, 87, 87, 92, 92, 92, 92, 92, 94, 94, 94, 94]
+    line [0, 0, 0, 0, 65, 70, 48, 49, 49, 83, 79, 80, 83, 84, 88, 89, 89, 89, 89, 89, 90, 90, 88, 88, 88, 88, 88, 87, 87, 87, 92, 92, 92, 92, 92, 94, 94, 94, 94, 94]
 ```
 
 | # | Fecha | Commit | Autor | LOC | Índice | %POO | Duplic. | Sueltas |
@@ -268,67 +268,7 @@ xychart-beta
 | 37 | 2026-11-20 | `2cf1497` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
 | 38 | 2026-11-20 | `f97a90e` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
 | 39 | 2026-11-20 | `ea89042` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
-
-<!-- actividad-clases:inicio -->
-## Actividad en días de clase
-
-> Período evaluado **2026-08-14 → 2026-11-20** · **23 clases** (lunes, viernes) · días de clase del calendario, extendidos hasta la fecha de corte.
->
-> `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**. El cuadro principal usa sólo las fechas de clase del calendario oficial.
->
-> **Aportes fuera del calendario:** cada alumno tiene un cuadro aparte con las fechas no lectivas con actividad, desde **2026-08-14** hasta **2026-11-20** (ventana de aportes). Esas fechas no forman parte del cuadro principal, pero se muestran para no perder trabajo hecho en fines de semana, feriados o después del período.
->
-> Se recorre `git log --all` sobre un mirror (todas las ramas y `refs/pull/*`), con deduplicación por commit. Fecha = fecha de autor en UTC-3. Los commits locales no pusheados no se ven. Si el trabajo fue en pareja y el commit es de otra persona, figura a nombre del autor del commit; para reflejarlo, usar `Co-authored-by` o una nota manual.
->
-> Sección informativa: no modifica el semáforo de aprobación.
-
-### simonK2010
-
-**13/23 clases con actividad** · 33 commits · 18 merges
-
-| Fecha | Marca | Repositorios | Commits / merges |
-|---|:--:|---|--:|
-| 2026-08-14 | **Sí** | proyecto-fisica | 1 / 0 |
-| 2026-08-21 | No | sin actividad | 0 / 0 |
-| 2026-08-24 | No | sin actividad | 0 / 0 |
-| 2026-08-28 | No | sin actividad | 0 / 0 |
-| 2026-08-31 | No | sin actividad | 0 / 0 |
-| 2026-09-04 | No | sin actividad | 0 / 0 |
-| 2026-09-07 | No | sin actividad | 0 / 0 |
-| 2026-09-14 | **Sí** | proyecto-fisica | 1 / 0 |
-| 2026-09-25 | No | sin actividad | 0 / 0 |
-| 2026-09-28 | **Sí** | proyecto-fisica | 2 / 3 |
-| 2026-10-02 | No | sin actividad | 0 / 0 |
-| 2026-10-05 | **Sí** | proyecto-fisica | 1 / 0 |
-| 2026-10-09 | **Sí** | proyecto-fisica | 0 / 1 |
-| 2026-10-16 | No | sin actividad | 0 / 0 |
-| 2026-10-19 | No | sin actividad | 0 / 0 |
-| 2026-10-23 | **Sí** | proyecto-fisica | 3 / 2 |
-| 2026-10-26 | **Sí** | proyecto-fisica | 8 / 2 |
-| 2026-10-30 | **Sí** | proyecto-fisica | 4 / 2 |
-| 2026-11-02 | **Sí** | proyecto-fisica | 1 / 1 |
-| 2026-11-06 | **Sí** | proyecto-fisica | 3 / 3 |
-| 2026-11-13 | **Sí** | proyecto-fisica | 3 / 2 |
-| 2026-11-16 | **Sí** | proyecto-fisica | 5 / 2 |
-| 2026-11-20 | **Sí** | proyecto-fisica | 1 / 0 |
-
-#### Aportes fuera del calendario de clases — simonK2010
-
-**simonK2010 — 9 fechas fuera del calendario** · 15 commits · 8 merges
-
-| Alumno | Fecha | Repositorios | Commits / merges |
-|---|---|---|---|
-| simonK2010 (`simonK2010`) | 2026-11-07 | proyecto-fisica | 1 / 0 |
-| simonK2010 (`simonK2010`) | 2026-11-08 | proyecto-fisica | 1 / 2 |
-| simonK2010 (`simonK2010`) | 2026-11-09 | proyecto-fisica | 1 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-10 | proyecto-fisica | 1 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-11 | proyecto-fisica | 2 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-14 | proyecto-fisica | 5 / 2 |
-| simonK2010 (`simonK2010`) | 2026-11-17 | proyecto-fisica | 2 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-18 | proyecto-fisica | 1 / 0 |
-| simonK2010 (`simonK2010`) | 2026-11-19 | proyecto-fisica | 1 / 0 |
-
-<!-- actividad-clases:fin -->
+| 40 | 2026-11-20 | `dc325fa` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
 
 ---
 _Informe generado por la cátedra. Los criterios y umbrales de medición corresponden al perfil `exigente` de `calidad.py`; el semáforo de aprobación, a `CRITERIOS-CALIDAD.md` (ver `README.md`). Ante dudas, revisá el archivo señalado._
