@@ -3,13 +3,14 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación II (RepoSense + análisis de calidad POO/SOLID). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-11-20.
+> Generado: 2026-11-25.
 
 ## 1. Veredicto
 
 | Aspecto | Resultado |
 |---|---|
 | Índice de calidad POO/SOLID | **94/100** |
+| Commit evaluado | `58ed704c6d33` (2026-11-20) |
 | Código (LOC) | 3,342 |
 | Archivos de código | 71 |
 | Clases (bien usadas) | 89 (51 OK) |
@@ -181,6 +182,28 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 - **Por qué importa:** Es comportamiento procedural disfrazado de clase: no se instancia ni participa del modelo de objetos.
 - **Tu resultado:** **0** clase(s) solo con métodos estáticos
 
+### Resumen de señales por tipo
+
+| Señal | Cantidad | Principio | Archivos |
+|---|---:|---|---:|
+| baja cohesión | 5 | S | 5 |
+| acoplamiento alto | 4 | D | 4 |
+
+### Resumen por archivo
+
+> Archivos ordenados por cantidad de señales. Se excluyen **0** señal(es) de nivel repositorio sin archivo propio.
+
+| Archivo | Señales | Aspectos | Líneas |
+|---|---:|---|---|
+| `app/src/main/kotlin/org/example/SlingshotGame.kt` | 2 | acoplamiento, cohesión | 10 |
+| `app/src/main/kotlin/org/example/BasketDefaults.kt` | 1 | acoplamiento | 5 |
+| `app/src/main/kotlin/org/example/BirdPile.kt` | 1 | cohesión | 11 |
+| `app/src/main/kotlin/org/example/Box2DWorld.kt` | 1 | acoplamiento | 16 |
+| `app/src/main/kotlin/org/example/MenuController.kt` | 1 | cohesión | 17 |
+| `app/src/main/kotlin/org/example/SlingshotInput.kt` | 1 | acoplamiento | 13 |
+| `app/src/main/kotlin/org/example/SlingshotView.kt` | 1 | cohesión | 18 |
+| `app/src/main/kotlin/org/example/Target.kt` | 1 | cohesión | 13 |
+
 ### Archivos donde se originan las señales
 
 > Se listan **9** hallazgo(s) localizados en **8** archivo(s). La columna `Línea` es la línea del archivo donde el análisis detectó la señal; `—` indica una señal de nivel repositorio (sin archivo propio).
@@ -196,6 +219,40 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 | Acoplamiento alto (CBO) | `app/src/main/kotlin/org/example/Box2DWorld.kt` | 16 | clase 'Box2DWorld' muy acoplada (CBO=8) |
 | Acoplamiento alto (CBO) | `app/src/main/kotlin/org/example/SlingshotGame.kt` | 10 | clase 'SlingshotGame' muy acoplada (CBO=10) |
 | Acoplamiento alto (CBO) | `app/src/main/kotlin/org/example/SlingshotInput.kt` | 13 | clase 'SlingshotInput' muy acoplada (CBO=8) |
+
+### Clases señaladas — métricas
+
+> Solo clases con al menos una señal. `LOC lóg.` y `Mét. lóg.` descuentan getters/setters; `LCOM` es la cantidad de pares de métodos sin campos en común.
+
+| Clase | Archivo | Línea | LOC lóg. | Mét. lóg. | Campos | CBO | LCOM | Cohesión | WMC | RFC | Señales |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `SlingshotGame` | `app/src/main/kotlin/org/example/SlingshotGame.kt` | 10 | 63 | 10 | 12 | 10 | 15 | 46% | 12 | 44 | acoplamiento alto×1, baja cohesión×1 |
+| `SlingshotInput` | `app/src/main/kotlin/org/example/SlingshotInput.kt` | 13 | 93 | 9 | 9 | 8 | 10 | 72% | 24 | 46 | acoplamiento alto×1 |
+| `Box2DWorld` | `app/src/main/kotlin/org/example/Box2DWorld.kt` | 16 | 88 | 16 | 6 | 8 | 34 | 72% | 26 | 52 | acoplamiento alto×1 |
+| `SlingshotView` | `app/src/main/kotlin/org/example/SlingshotView.kt` | 18 | 82 | 9 | 20 | 6 | 19 | 47% | 24 | 42 | baja cohesión×1 |
+| `BasketDefaults` | `app/src/main/kotlin/org/example/BasketDefaults.kt` | 5 | 42 | 2 | 0 | 8 | 0 | 100% | 2 | 25 | acoplamiento alto×1 |
+| `BirdPile` | `app/src/main/kotlin/org/example/BirdPile.kt` | 11 | 34 | 8 | 7 | 4 | 14 | 33% | 11 | 26 | baja cohesión×1 |
+| `Target` | `app/src/main/kotlin/org/example/Target.kt` | 13 | 27 | 6 | 17 | 3 | 8 | 47% | 9 | 20 | baja cohesión×1 |
+| `MenuController` | `app/src/main/kotlin/org/example/MenuController.kt` | 17 | 26 | 9 | 9 | 5 | 17 | 39% | 9 | 30 | baja cohesión×1 |
+
+### Umbrales aplicados (perfil exigente)
+
+| Señal | Regla |
+|---|---|
+| Clase grande (SRP) | ≥ 200 LOC lógico, o ≥ 15 métodos con lógica y ≥ 100 LOC lógico; no cuentan getters/setters. |
+| Baja cohesión (LCOM) | < 50 % de pares de métodos comparten algún campo, con ≥ 4 métodos con lógica y ≥ 3 campos. |
+| Complejidad alta | algún método con complejidad ciclomática ≥ 10. |
+| Método largo | ≥ 30 líneas. |
+| Muchos parámetros | > 4 parámetros (5 o más). |
+| Acoplamiento alto (CBO) | CBO ≥ 8. |
+| Herencia profunda | DIT ≥ 3. |
+| Type-check / switch de tipos | ≥ 1 cadena de type-check. |
+| Interfaz demasiado grande (ISP) | > 6 métodos (7 o más). |
+| Override vacío (LSP) | método vacío o marcado como 'no implementado'. |
+| Clase solo de datos | 0 métodos y ≥ 3 campos. |
+| Campos mutables públicos | ≥ 4 campos mutables públicos y ≥ 4 campos. |
+| Clase estática | ≥ 2 métodos y todos estáticos. |
+| Duplicación lógica | ventana de 8 líneas; solo lógica; se informa desde 1 %. |
 
 ### Desglose de la columna S (SRP)
 
@@ -217,14 +274,14 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 ## 5. Evolución por commit
 
-Métricas calculadas sobre el estado de `main` en **cada commit** (40 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
+Métricas calculadas sobre el estado de `main` en **cada commit** (41 commits con trabajo), del primero al último. La calidad usa el perfil `exigente`; el aporte de código lo mide RepoSense. El índice puede **bajar** al crecer el proyecto: se acumulan señales.
 
 ```mermaid
 xychart-beta
     title "Índice POO/SOLID a lo largo de los commits"
-    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af", "9fc92df", "031ae05", "144808c", "17760fb", "627bcff", "1deb8d2", "631b308", "b386b9c", "8a205a3", "0aca0b4", "34db6b7", "0bae7a2", "e47921a", "70a9b91", "04874b1", "fe4c80f", "323fe09", "1ed7a03", "0b855c1", "63e9e29", "31f3106", "0a1a3ed", "cd3a2b4", "e03ed00", "2cf1497", "f97a90e", "ea89042", "dc325fa"]
+    x-axis ["dd8527c", "6011506", "4cafe61", "82041cc", "b371234", "d5a0e6c", "577df69", "ee78559", "b932959", "656642a", "9c6db33", "d7f64af", "9fc92df", "031ae05", "144808c", "17760fb", "627bcff", "1deb8d2", "631b308", "b386b9c", "8a205a3", "0aca0b4", "34db6b7", "0bae7a2", "e47921a", "70a9b91", "04874b1", "fe4c80f", "323fe09", "1ed7a03", "0b855c1", "63e9e29", "31f3106", "0a1a3ed", "cd3a2b4", "e03ed00", "2cf1497", "f97a90e", "ea89042", "dc325fa", "58ed704"]
     y-axis "Índice" 0 --> 100
-    line [0, 0, 0, 0, 65, 70, 48, 49, 49, 83, 79, 80, 83, 84, 88, 89, 89, 89, 89, 89, 90, 90, 88, 88, 88, 88, 88, 87, 87, 87, 92, 92, 92, 92, 92, 94, 94, 94, 94, 94]
+    line [0, 0, 0, 0, 65, 70, 48, 49, 49, 83, 79, 80, 83, 84, 88, 89, 89, 89, 89, 89, 90, 90, 88, 88, 88, 88, 88, 87, 87, 87, 92, 92, 92, 92, 92, 94, 94, 94, 94, 94, 94]
 ```
 
 | # | Fecha | Commit | Autor | LOC | Índice | %POO | Duplic. | Sueltas |
@@ -269,67 +326,7 @@ xychart-beta
 | 38 | 2026-11-20 | `f97a90e` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
 | 39 | 2026-11-20 | `ea89042` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
 | 40 | 2026-11-20 | `dc325fa` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
-
-<!-- actividad-clases:inicio -->
-## Actividad en días de clase
-
-> Período evaluado **2026-08-14 → 2026-11-20** · **23 clases** (lunes, viernes) · días de clase del calendario, extendidos hasta la fecha de corte.
->
-> `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**. El cuadro principal usa sólo las fechas de clase del calendario oficial.
->
-> **Aportes fuera del calendario:** cada alumno tiene un cuadro aparte con las fechas no lectivas con actividad, desde **2026-08-14** hasta **2026-11-20** (ventana de aportes). Esas fechas no forman parte del cuadro principal, pero se muestran para no perder trabajo hecho en fines de semana, feriados o después del período.
->
-> Se recorre `git log --all` sobre un mirror (todas las ramas y `refs/pull/*`), con deduplicación por commit. Fecha = fecha de autor en UTC-3. Los commits locales no pusheados no se ven. Si el trabajo fue en pareja y el commit es de otra persona, figura a nombre del autor del commit; para reflejarlo, usar `Co-authored-by` o una nota manual.
->
-> Sección informativa: no modifica el semáforo de aprobación.
-
-### simonK2010
-
-**13/23 clases con actividad** · 33 commits · 18 merges
-
-| Fecha | Marca | Repositorios | Commits / merges |
-|---|:--:|---|--:|
-| 2026-08-14 | **Sí** | proyecto-fisica | 1 / 0 |
-| 2026-08-21 | No | sin actividad | 0 / 0 |
-| 2026-08-24 | No | sin actividad | 0 / 0 |
-| 2026-08-28 | No | sin actividad | 0 / 0 |
-| 2026-08-31 | No | sin actividad | 0 / 0 |
-| 2026-09-04 | No | sin actividad | 0 / 0 |
-| 2026-09-07 | No | sin actividad | 0 / 0 |
-| 2026-09-14 | **Sí** | proyecto-fisica | 1 / 0 |
-| 2026-09-25 | No | sin actividad | 0 / 0 |
-| 2026-09-28 | **Sí** | proyecto-fisica | 2 / 3 |
-| 2026-10-02 | No | sin actividad | 0 / 0 |
-| 2026-10-05 | **Sí** | proyecto-fisica | 1 / 0 |
-| 2026-10-09 | **Sí** | proyecto-fisica | 0 / 1 |
-| 2026-10-16 | No | sin actividad | 0 / 0 |
-| 2026-10-19 | No | sin actividad | 0 / 0 |
-| 2026-10-23 | **Sí** | proyecto-fisica | 3 / 2 |
-| 2026-10-26 | **Sí** | proyecto-fisica | 8 / 2 |
-| 2026-10-30 | **Sí** | proyecto-fisica | 4 / 2 |
-| 2026-11-02 | **Sí** | proyecto-fisica | 1 / 1 |
-| 2026-11-06 | **Sí** | proyecto-fisica | 3 / 3 |
-| 2026-11-13 | **Sí** | proyecto-fisica | 3 / 2 |
-| 2026-11-16 | **Sí** | proyecto-fisica | 5 / 2 |
-| 2026-11-20 | **Sí** | proyecto-fisica | 1 / 0 |
-
-#### Aportes fuera del calendario de clases — simonK2010
-
-**simonK2010 — 9 fechas fuera del calendario** · 15 commits · 8 merges
-
-| Alumno | Fecha | Repositorios | Commits / merges |
-|---|---|---|---|
-| simonK2010 (`simonK2010`) | 2026-11-07 | proyecto-fisica | 1 / 0 |
-| simonK2010 (`simonK2010`) | 2026-11-08 | proyecto-fisica | 1 / 2 |
-| simonK2010 (`simonK2010`) | 2026-11-09 | proyecto-fisica | 1 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-10 | proyecto-fisica | 1 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-11 | proyecto-fisica | 2 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-14 | proyecto-fisica | 5 / 2 |
-| simonK2010 (`simonK2010`) | 2026-11-17 | proyecto-fisica | 2 / 1 |
-| simonK2010 (`simonK2010`) | 2026-11-18 | proyecto-fisica | 1 / 0 |
-| simonK2010 (`simonK2010`) | 2026-11-19 | proyecto-fisica | 1 / 0 |
-
-<!-- actividad-clases:fin -->
+| 41 | 2026-11-20 | `58ed704` | dqmdz-etec | 3,342 | 94 | 96% | 0.0% | 0 |
 
 ---
 _Informe generado por la cátedra. Los criterios y umbrales de medición corresponden al perfil `exigente` de `calidad.py`; el semáforo de aprobación, a `CRITERIOS-CALIDAD.md` (ver `README.md`). Ante dudas, revisá el archivo señalado._
